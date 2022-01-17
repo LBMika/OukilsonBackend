@@ -16,13 +16,20 @@ public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "user_id")
     private Long id;
     private String password;
     private String email;
     private String nickname;
-
-
+    @ManyToMany(cascade = {CascadeType.ALL})
+    @JoinTable(name = "friend_list",
+    joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "friend_id"))
+    private List<User> friendList;
+    @ManyToMany(cascade = {CascadeType.ALL})
+    @JoinTable(name = "denied_list",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "denied_id"))
+    private List<User> deniedList;
 
     public User() {
     }
@@ -32,6 +39,9 @@ public class User {
         this.password = password;
         this.email = email;
         this.nickname = nickname;
+        this.friendList = new ArrayList<>();
+        this.deniedList = new ArrayList<>();
+
     }
 
     @Override
