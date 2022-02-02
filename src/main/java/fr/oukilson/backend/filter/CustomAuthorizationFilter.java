@@ -99,13 +99,18 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
         boolean result;
         String httpMethod = request.getMethod();
         if (httpMethod.equalsIgnoreCase("PUT")) {
+            if (uri.equals("")) {   // Update user's data
+                request.setAttribute("username", username);
+                result = true;
+            }
+            else
             if (uri.startsWith("/add_user/"+username) || uri.startsWith("/add_user/waiting/"+username)
                     || uri.startsWith("/remove_user/"+username) || uri.startsWith("/remove_user/waiting/"+username))
                 result = true;
             else
                 result = false;
         }
-        else if (httpMethod.equalsIgnoreCase("DELETE") || httpMethod.equalsIgnoreCase("PUT")) {
+        else if (httpMethod.equalsIgnoreCase("DELETE")) {
             request.setAttribute("username", username);
             result = true;
         }
