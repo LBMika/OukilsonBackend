@@ -50,7 +50,8 @@ public class EventService {
      * @param uuid Event's uuid
      */
     @Transactional
-    public void deleteByUuid(String uuid) {
+    public void deleteByUuid(String uuid, String username) {
+        // TODO soft delete
         this.repository.deleteByUuid(uuid);
     }
 

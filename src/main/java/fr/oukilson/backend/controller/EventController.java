@@ -54,7 +54,8 @@ public class EventController {
      * @return The created event
      */
     @PostMapping
-    public ResponseEntity<EventDTO> save(@RequestBody EventCreateDTO toCreate) {
+    public ResponseEntity<EventDTO> save(@RequestBody EventCreateDTO toCreate,
+                                         @RequestAttribute(name="username")String username) {
         ResponseEntity<EventDTO> result;
         try {
             EventDTO event = this.service.save(toCreate);
@@ -75,7 +76,8 @@ public class EventController {
      * @return The updated event
      */
     @PutMapping
-    public ResponseEntity<EventDTO> update(@RequestBody EventUpdateDTO toUpdate) {
+    public ResponseEntity<EventDTO> update(@RequestBody EventUpdateDTO toUpdate,
+                                           @RequestAttribute(name="username")String username) {
         ResponseEntity<EventDTO> result;
         try {
             EventDTO event = this.service.update(toUpdate);
@@ -96,8 +98,10 @@ public class EventController {
      * @return Always true
      */
     @DeleteMapping
-    public ResponseEntity<Boolean> deleteByUuid(@RequestBody EventDeleteDTO toDelete) {
-        this.service.deleteByUuid(toDelete.getUuid());
+    public ResponseEntity<Boolean> deleteByUuid(@RequestBody EventDeleteDTO toDelete,
+                                                @RequestAttribute(name="username")String username) {
+        // TODO soft delete
+        this.service.deleteByUuid(toDelete.getUuid(), username);
         return ResponseEntity.ok(true);
     }
 
