@@ -7,11 +7,15 @@ import fr.oukilson.backend.entity.User;
 import fr.oukilson.backend.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import java.util.*;
 import java.util.Optional;
 
 @RequiredArgsConstructor
-public class UserService {
+public class UserService implements UserDetailsService {
     private UserRepository userRepository;
     private ModelMapper modelMapper;
     private RegexCollection regexCollection;
@@ -20,6 +24,17 @@ public class UserService {
         this.userRepository = userRepository;
         this.modelMapper = modelMapper;
         this.regexCollection = regexCollection;
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        Optional<User> optionalUser = this.userRepository.findByNickname(username);
+        if (optionalUser.isEmpty()) {
+            throw new UsernameNotFoundException("User not found");
+        }
+        User user = optionalUser.get();
+        Collection<SimpleGrantedAuthority> auths = new ArrayList<>();
+        return new org.springframework.security.core.userdetails.User(user.getNickname(), user.getPassword(), auths);
     }
 
     /**
