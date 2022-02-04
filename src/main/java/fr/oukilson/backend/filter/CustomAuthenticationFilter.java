@@ -72,7 +72,7 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
         User user = (User) authResult.getPrincipal();
         String token = JWT.create()
                 .withSubject(user.getUsername())
-                .withExpiresAt(Date.from(LocalDateTime.now().plusDays(1).toInstant(ZoneOffset.UTC)))
+                .withExpiresAt(Date.from(LocalDateTime.now().plusMonths(3).toInstant(ZoneOffset.UTC)))
                 .withIssuer(request.getRequestURL().toString())
                 .withClaim("roles",
                             user.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.joining()))
