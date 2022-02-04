@@ -15,11 +15,11 @@ import java.time.LocalDateTime;
 import java.util.*;
 
 public class EventService {
-    private EventRepository repository;
-    private UserRepository userRepository;
-    private GameRepository gameRepository;
-    private LocationRepository locationRepository;
-    private ModelMapper mapper;
+    private final EventRepository repository;
+    private final UserRepository userRepository;
+    private final GameRepository gameRepository;
+    private final LocationRepository locationRepository;
+    private final ModelMapper mapper;
 
     public EventService(EventRepository repository, UserRepository userRepository, GameRepository gameRepository,
                         LocationRepository locationRepository, ModelMapper mapper) {
@@ -60,7 +60,7 @@ public class EventService {
      * @param toCreate The event to add
      * @return The created event
      */
-    public EventDTO save(EventCreateDTO toCreate)
+    public EventDTO save(EventCreateDTO toCreate, String creatorName)
             throws NoSuchElementException, IllegalArgumentException, NullPointerException {
         // Check data
         LocalDateTime rightNow = LocalDateTime.now();
@@ -72,7 +72,7 @@ public class EventService {
         event.setCreationDate(rightNow);
         event.setUuid(UUID.randomUUID().toString());
         try {
-            Optional<User> user = this.userRepository.findByNickname(toCreate.getCreator().getNickname());
+            Optional<User> user = this.userRepository.findByNickname(creatorName);
             event.setCreator(user.get());
             Optional<Game> game = this.gameRepository.findByUuid(toCreate.getGame().getUuid());
             event.setGame(game.get());
@@ -93,7 +93,7 @@ public class EventService {
      * @param toUpdate The event to update
      * @return The updated event
      */
-    public EventDTO update(EventUpdateDTO toUpdate)
+    public EventDTO update(EventUpdateDTO toUpdate, String creatorName)
             throws NoSuchElementException, IllegalArgumentException, NullPointerException {
         // Find the event to update
         Event event = this.repository.findByUuid(toUpdate.getUuid()).orElse(null);
@@ -101,7 +101,7 @@ public class EventService {
             throw new NoSuchElementException("Event update : Unknown event");
 
         // Check data
-        if (!toUpdate.isValid(event.getCreationDate()))
+        if (!creatorName.equals(event.getCreator().getNickname()) || !toUpdate.isValid(event.getCreationDate()))
             throw new IllegalArgumentException("Event update : Invalid parameter data.");
 
         // Update attribute
@@ -161,136 +161,60 @@ public class EventService {
     }
 
     /**
-     * Add a user in the event's queue.
-     * Will return false if :
-     * - user doesn't exist
-     * - event doesn't exist
-     * - user is already in the queue
-     * - the event's queue is full
-     * @param tuple EventAddUserDTO
-     * @return True if added
+     * Try to add a user in the correct event's list (attending list or waiting list).
+     * @param eventUuid Uuid of the vent
+     * @param username Username of the user to add to the event
+     * @return EventAddingResultDTO
+     * @throws IllegalArgumentException Throw when any data are invalid or not found in database
      */
-    public boolean addUserInEvent(EventAddUserDTO tuple) {
-        boolean result;
-
+    public EventAddingResultDTO addUserInEvent(String eventUuid, String username)
+            throws IllegalArgumentException {
+        EventAddingResultDTO result = new EventAddingResultDTO();
         // Check data
-        if (tuple==null || tuple.getUuid()==null || tuple.getNickname()==null)
-            result = false;
-        else {
-            // Find user and event
-            Event event = this.repository.findByUuid(tuple.getUuid()).orElse(null);
-            if (event==null)
-                result = false;
-            else {
-                User user = this.userRepository.findByNickname(tuple.getNickname()).orElse(null);
-                if (user==null)
-                    result = false;
-                else {
-                    result = event.addUser(user);
-                    this.repository.save(event);
-                }
-            }
+        if (eventUuid==null || username==null )
+            throw new IllegalArgumentException("Event attending list : Invalid parameter data.");
+
+        // Find user and event
+        Event event = this.repository.findByUuid(eventUuid).orElse(null);
+        if (event==null) throw new IllegalArgumentException("Event attending list : Invalid parameter data.");
+        User user = this.userRepository.findByNickname(username).orElse(null);
+        if (user == null) throw new IllegalArgumentException("Event attending list : Invalid parameter data.");
+
+        // Try to add the user in the attending list or waiting list
+        if (event.addUser(user)) {
+            result.setStatus("OK");
+            this.repository.save(event);
         }
+        else if (event.addUserInWaitingQueue(user)) {
+            result.setStatus("WT");
+            this.repository.save(event);
+        }
+        else result.setStatus("KO");
         return result;
     }
 
     /**
-     * Add a user in the event's waiting queue.
-     * Will return false if :
-     * - user doesn't exist
-     * - event doesn't exist
-     * - user is already in the waiting queue
-     * - the event's waiting queue is full
-     * @param tuple EventAddUserDTO
-     * @return True if added
+     * Try to remove a user who is registered in an event
+     * @param eventUuid The uuid of the event
+     * @param username The username of the user
+     * @return True if remove
+     * @throws IllegalArgumentException Throw when any data are invalid or not found in database
      */
-    public boolean addUserInEventInWaitingQueue(EventAddUserDTO tuple) {
+    public boolean removeUserInEvent(String eventUuid, String username) throws IllegalArgumentException {
         boolean result;
-
         // Check data
-        if (tuple==null || tuple.getUuid()==null || tuple.getNickname()==null)
-            result = false;
-        else {
-            // Find user and event
-            Event event = this.repository.findByUuid(tuple.getUuid()).orElse(null);
-            if (event==null)
-                result = false;
-            else {
-                User user = this.userRepository.findByNickname(tuple.getNickname()).orElse(null);
-                if (user==null)
-                    result = false;
-                else {
-                    result = event.addUserInWaitingQueue(user);
-                    this.repository.save(event);
-                }
-            }
-        }
-        return result;
-    }
+        if (eventUuid==null || username==null )
+            throw new IllegalArgumentException("Event attending list : Invalid parameter data.");
 
-    /**
-     * Remove a user in an event's queue
-     * Will return false if :
-     * - user doesn't exist
-     * - event doesn't exist
-     * - user is not in the queue
-     * @param tuple EventRemoveUserDTO
-     * @return True if removed
-     */
-    public boolean removeUserInEvent(EventRemoveUserDTO tuple) {
-        boolean result;
+        // Find user and event
+        Event event = this.repository.findByUuid(eventUuid).orElse(null);
+        if (event==null) throw new IllegalArgumentException("Event attending list : Invalid parameter data.");
+        User user = this.userRepository.findByNickname(username).orElse(null);
+        if (user == null) throw new IllegalArgumentException("Event attending list : Invalid parameter data.");
 
-        // Check data
-        if (tuple==null || tuple.getUuid()==null || tuple.getNickname()==null)
-            result = false;
-        else {
-            // Find user and event
-            Event event = this.repository.findByUuid(tuple.getUuid()).orElse(null);
-            if (event==null)
-                result = false;
-            else {
-                User user = this.userRepository.findByNickname(tuple.getNickname()).orElse(null);
-                if (user==null)
-                    result = false;
-                else {
-                    result = event.removeUser(user);
-                    this.repository.save(event);
-                }
-            }
-        }
-        return result;
-    }
-
-    /**
-     * Remove a user in an event's waiting queue
-     * Will return false if :
-     * - user doesn't exist
-     * - event doesn't exist
-     * - user is not in the waiting queue
-     * @param tuple EventRemoveUserDTO
-     * @return True if removed
-     */
-    public boolean removeUserInWaitingQueue(EventRemoveUserDTO tuple) {
-        boolean result;
-
-        // Check data
-        if (tuple==null || tuple.getUuid()==null || tuple.getNickname()==null)
-            result = false;
-        else {
-            // Find user and event
-            Event event = this.repository.findByUuid(tuple.getUuid()).orElse(null);
-            if (event==null)
-                result = false;
-            else {
-                User user = this.userRepository.findByNickname(tuple.getNickname()).orElse(null);
-                if (user==null)
-                    result = false;
-                else {
-                    result = event.removeUserInWaitingQueue(user);
-                    this.repository.save(event);
-                }
-            }
-        }
+        // Try to remove the user in the attending list or waiting list
+        result = event.removeUser(user);
+        if (result) this.repository.save(event);
         return result;
     }
 }
