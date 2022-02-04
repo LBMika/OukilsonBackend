@@ -10,7 +10,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/events")
 public class EventController {
-    private EventService service;
+    private final EventService service;
 
     public EventController(EventService service) {
         this.service = service;
@@ -58,7 +58,7 @@ public class EventController {
                                          @RequestAttribute(name="username")String username) {
         ResponseEntity<EventDTO> result;
         try {
-            EventDTO event = this.service.save(toCreate);
+            EventDTO event = this.service.save(toCreate, username);
             if (event!=null)
                 result = ResponseEntity.status(HttpStatus.CREATED).body(event);
             else
@@ -80,7 +80,7 @@ public class EventController {
                                            @RequestAttribute(name="username")String username) {
         ResponseEntity<EventDTO> result;
         try {
-            EventDTO event = this.service.update(toUpdate);
+            EventDTO event = this.service.update(toUpdate, username);
             if (event!=null)
                 result = ResponseEntity.status(HttpStatus.CREATED).body(event);
             else
@@ -107,45 +107,40 @@ public class EventController {
 
     /**
      * Route to add a user (with his nickname) in an event (with its uuid)
-     * @param tuple EventAddUserDTO
-     * @return True if added
+     * @param event EventAddUserDTO Event's info
+     * @param username Username to add in the event
+     * @return EventAddingResultDTO
      */
     @PutMapping("/add_user")
-    public ResponseEntity<Boolean> addUserInEvent(@RequestBody EventAddUserDTO tuple) {
-        boolean result = this.service.addUserInEvent(tuple);
-        return ResponseEntity.ok(result);
+    public ResponseEntity<EventAddingResultDTO> addUserInEvent(@RequestBody EventAddUserDTO event,
+                                                               @RequestAttribute(name="username") String username) {
+        ResponseEntity<EventAddingResultDTO> result;
+        EventAddingResultDTO dto;
+        try {
+            dto = this.service.addUserInEvent(event.getUuid(), username);
+            result = ResponseEntity.ok(dto);
+        }
+        catch (Exception e) {
+            result = ResponseEntity.badRequest().build();
+        }
+        return result;
     }
-
-    /**
-     * Route to add a user (with his nickname) in the waiting list of an event (with its uuid)
-     * @param tuple EventAddUserDTO
-     * @return True if added
-     */
-    @PutMapping("/add_user/waiting")
-    public ResponseEntity<Boolean> addUserInEventInWaitingQueue(@RequestBody EventAddUserDTO tuple) {
-        boolean result = this.service.addUserInEventInWaitingQueue(tuple);
-        return ResponseEntity.ok(result);
-    }
-
     /**
      * Route to remove a user (with his nickname) in an event (with its uuid)
-     * @param tuple EventRemoveUserDTO
-     * @return True if removed
+     * @param event EventAddUserDTO Event's info
+     * @param username Username to add in the event
+     * @return ResponseEntity<Boolean> True if remove
      */
     @PutMapping("/remove_user")
-    public ResponseEntity<Boolean> removeUserInEvent(@RequestBody EventRemoveUserDTO tuple) {
-        boolean result = this.service.removeUserInEvent(tuple);
-        return ResponseEntity.ok(result);
-    }
-
-    /**
-     * Route to remove a user (with his nickname) in the waiting list of an event (with its uuid)
-     * @param tuple EventRemoveUserDTO
-     * @return True if removed
-     */
-    @PutMapping("/remove_user/waiting")
-    public ResponseEntity<Boolean> removeUserInWaitingQueue(@RequestBody EventRemoveUserDTO tuple) {
-        boolean result = this.service.removeUserInWaitingQueue(tuple);
-        return ResponseEntity.ok(result);
+    public ResponseEntity<Boolean> removeUserInEvent(@RequestBody EventRemoveUserDTO event,
+                                                     @RequestAttribute(name="username") String username) {
+        ResponseEntity<Boolean> result;
+        try {
+            result = ResponseEntity.ok(this.service.removeUserInEvent(event.getUuid(), username));
+        }
+        catch (Exception e) {
+            result = ResponseEntity.badRequest().build();
+        }
+        return result;
     }
 }
