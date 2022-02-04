@@ -3,28 +3,28 @@ package fr.oukilson.backend.controller;
 import com.google.gson.Gson;
 import fr.oukilson.backend.dto.user.UserCreationDTO;
 import fr.oukilson.backend.dto.user.UserDTO;
-import fr.oukilson.backend.service.UserService;
+import fr.oukilson.backend.entity.User;
+import fr.oukilson.backend.security.SecurityEnabledSetup;
+import fr.oukilson.backend.util.TestingToolBox;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.LinkedList;
 
 @WebMvcTest(controllers = UserController.class)
-public class UserControllerTest {
+public class UserControllerTest extends SecurityEnabledSetup {
     @Autowired
     private MockMvc mockMvc;
-    @MockBean
-    private UserService service;
     private final String route = "/users";
 
     // Method findByNickname
@@ -37,7 +37,7 @@ public class UserControllerTest {
     public void testFindByNicknameFound() throws Exception {
         String nickname = "Tutululu";
         UserDTO dto = new UserDTO(nickname, new LinkedList<>());
-        Mockito.when(this.service.findUserByNickname(nickname)).thenReturn(dto);
+        Mockito.when(this.userService.findUserByNickname(nickname)).thenReturn(dto);
         MvcResult result = this.mockMvc.perform(MockMvcRequestBuilders.get(route+"/"+nickname))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andReturn();
@@ -56,7 +56,7 @@ public class UserControllerTest {
     @Test
     public void testFindByNicknameNotFound() throws Exception {
         String nickname = "Tutululu";
-        Mockito.when(this.service.findUserByNickname(nickname)).thenReturn(null);
+        Mockito.when(this.userService.findUserByNickname(nickname)).thenReturn(null);
         this.mockMvc.perform(MockMvcRequestBuilders.get(route+"/"+nickname))
                 .andExpect(MockMvcResultMatchers.status().isNotFound());
     }
@@ -68,7 +68,7 @@ public class UserControllerTest {
     @Test
     public void testFindByNicknameInvalid() throws Exception {
         String nickname = "rené";
-        Mockito.when(this.service.findUserByNickname(nickname)).thenReturn(null);
+        Mockito.when(this.userService.findUserByNickname(nickname)).thenReturn(null);
         this.mockMvc.perform(MockMvcRequestBuilders.get(route+"/"+nickname))
                 .andExpect(MockMvcResultMatchers.status().isNotFound());
     }
@@ -79,8 +79,10 @@ public class UserControllerTest {
     @DisplayName("Test findByNickname : null nickname")
     @Test
     public void testFindByNicknameNull() throws Exception {
-        this.mockMvc.perform(MockMvcRequestBuilders.get(route))
+        this.mockMvc.perform(MockMvcRequestBuilders.get(route+"/"))
                 .andExpect(MockMvcResultMatchers.status().isMethodNotAllowed());
+        this.mockMvc.perform(MockMvcRequestBuilders.get(route))
+                .andExpect(MockMvcResultMatchers.status().is(403));
     }
 
     /**
@@ -90,7 +92,7 @@ public class UserControllerTest {
     @Test
     public void testFindByNicknameSQLProblem() throws Exception {
         String nickname = "Tutululu";
-        Mockito.when(this.service.findUserByNickname(nickname)).thenThrow(RuntimeException.class);
+        Mockito.when(this.userService.findUserByNickname(nickname)).thenThrow(RuntimeException.class);
         this.mockMvc.perform(MockMvcRequestBuilders.get(route+"/"+nickname))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest());
     }
@@ -162,7 +164,7 @@ public class UserControllerTest {
     @Test
     public void testCreateUserUserCreationFailed() throws Exception {
         UserCreationDTO body = new UserCreationDTO("Toupie", "sdfghjklmmdj", "hibiscus@george.fr");
-        Mockito.when(this.service.createUser(body)).thenReturn(null);
+        Mockito.when(this.userService.createUser(body)).thenReturn(null);
         Gson gson = new Gson();
         this.mockMvc.perform(MockMvcRequestBuilders
                         .post(route)
@@ -180,7 +182,7 @@ public class UserControllerTest {
     public void testCreateUserUserCreationSuccess() throws Exception {
         UserCreationDTO body = new UserCreationDTO("Toupie", "sdfghjklmmdj", "hibiscus@george.fr");
         UserDTO userDTO = new UserDTO("Toupie", new LinkedList<>());
-        Mockito.when(this.service.createUser(body)).thenReturn(userDTO);
+        Mockito.when(this.userService.createUser(body)).thenReturn(userDTO);
         Gson gson = new Gson();
         MvcResult result = this.mockMvc.perform(MockMvcRequestBuilders
                         .post(route)
@@ -204,7 +206,7 @@ public class UserControllerTest {
     @Test
     public void testCreateUserUserCreationThrowException() throws Exception {
         UserCreationDTO body = new UserCreationDTO("Toupie", "sdfghjklmmdj", "hibiscus@george.fr");
-        Mockito.when(this.service.createUser(body)).thenThrow(NullPointerException.class);
+        Mockito.when(this.userService.createUser(body)).thenThrow(NullPointerException.class);
         Gson gson = new Gson();
         this.mockMvc.perform(MockMvcRequestBuilders
                         .post(route)
@@ -217,51 +219,57 @@ public class UserControllerTest {
     // Method addUserToFriendList
 
     /**
-     * Test addUserToFriendList when the path variables id1 is null
+     * Test addUserToFriendList : no header
      */
-    @DisplayName("Test addUserToFriendList : null path variable id1")
+    @DisplayName("Test addUserToFriendList : no header")
     @Test
-    public void testAddUserToFriendListNullId1() throws Exception {
-        this.mockMvc.perform(MockMvcRequestBuilders.put(route+"/add/"))
-                .andExpect(MockMvcResultMatchers.status().isMethodNotAllowed());
+    public void testAddUserToFriendListNoHeader() throws Exception {
+        this.mockMvc.perform(MockMvcRequestBuilders.put(route+"/friend/add/toto"))
+                .andExpect(MockMvcResultMatchers.status().is(403));
     }
 
     /**
-     * Test addUserToFriendList when the path variables id2 is null
+     * Test addUserToFriendList : no friend to add
      */
-    @DisplayName("Test addUserToFriendList : null path variable id2")
+    @DisplayName("Test addUserToFriendList : no friend to add")
     @Test
-    public void testAddUserToFriendListNullId2() throws Exception {
-        String id1 = "Truc";
-        this.mockMvc.perform(MockMvcRequestBuilders.put(route+"/add/"+id1))
+    public void testAddUserToFriendListNoFriendToAdd() throws Exception {
+        User user = TestingToolBox.generateUser(1L, "Rubix", TestingToolBox.generatePasswordHash("KloPfD;?!"));
+        String token = TestingToolBox.generateToken(user.getNickname(),"http://localhost:8080/login", new ArrayList<>());
+        this.mockMvc.perform(MockMvcRequestBuilders.put(route+"/friend/add/")
+                        .header("Authorization", "Bearer "+token))
                 .andExpect(MockMvcResultMatchers.status().isNotFound());
     }
 
     /**
-     * Test addUserToFriendList when the method addUserToFriendList from the service returns false
+     * Test addUserToFriendList : can't add friend
      */
-    @DisplayName("Test addUserToFriendList : failed to add")
+    @DisplayName("Test addUserToFriendList : can't add friend")
     @Test
-    public void testAddUserToFriendListServiceReturnsFalse() throws Exception {
-        String id1 = "Elvis";
-        String id2 = "Presley";
-        Mockito.when(this.service.addUserToFriendList(id1, id2)).thenReturn(false);
-        this.mockMvc.perform(MockMvcRequestBuilders.put(route+"/add/"+id1+"/"+id2))
+    public void testAddUserToFriendListCannotAddFriend() throws Exception {
+        User user = TestingToolBox.generateUser(1L, "Borax", TestingToolBox.generatePasswordHash("fdQDHF554s"));
+        User friend = TestingToolBox.generateUser(2L, "Marco", "qsdftgyhujik");
+        Mockito.when(this.userService.addUserToFriendList(user.getNickname(), friend.getNickname())).thenReturn(false);
+        String token = TestingToolBox.generateToken(user.getNickname(),"http://localhost:8080/login", new ArrayList<>());
+        this.mockMvc.perform(MockMvcRequestBuilders.put(route+"/friend/add/"+friend.getNickname())
+                        .header("Authorization", "Bearer "+token))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$").isBoolean())
                 .andExpect(MockMvcResultMatchers.jsonPath("$").value("false"));
     }
 
     /**
-     * Test addUserToFriendList when the method addUserToFriendList from the service returns true
+     * Test addUserToFriendList : friend is added
      */
-    @DisplayName("Test addUserToFriendList : add successfully")
+    @DisplayName("Test addUserToFriendList : friend is added")
     @Test
-    public void testAddUserToFriendListServiceReturnsTrue() throws Exception {
-        String id1 = "Elvis";
-        String id2 = "Presley";
-        Mockito.when(this.service.addUserToFriendList(id1, id2)).thenReturn(true);
-        this.mockMvc.perform(MockMvcRequestBuilders.put(route+"/add/"+id1+"/"+id2))
+    public void testAddUserToFriendListFriendAdded() throws Exception {
+        User user = TestingToolBox.generateUser(1L, "Borax", TestingToolBox.generatePasswordHash("fdQDHF554s"));
+        User friend = TestingToolBox.generateUser(2L, "Marco", "qsdftgyhujik");
+        Mockito.when(this.userService.addUserToFriendList(user.getNickname(), friend.getNickname())).thenReturn(true);
+        String token = TestingToolBox.generateToken(user.getNickname(),"http://localhost:8080/login", new ArrayList<>());
+        this.mockMvc.perform(MockMvcRequestBuilders.put(route+"/friend/add/"+friend.getNickname())
+                        .header("Authorization", "Bearer "+token))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$").isBoolean())
                 .andExpect(MockMvcResultMatchers.jsonPath("$").value("true"));
@@ -270,51 +278,57 @@ public class UserControllerTest {
     // Method removeUserFromFriendList
 
     /**
-     * Test removeUserFromFriendList when the path variables id1 is null
+     * Test removeUserFromFriendList : no header
      */
-    @DisplayName("Test removeUserFromFriendList : null path variable id1")
+    @DisplayName("Test removeUserFromFriendList : no header")
     @Test
-    public void testRemoveUserFromFriendListNullId1() throws Exception {
-        this.mockMvc.perform(MockMvcRequestBuilders.put(route+"/remove/"))
-                .andExpect(MockMvcResultMatchers.status().isMethodNotAllowed());
+    public void testRemoveUserFromFriendListNoHeader() throws Exception {
+        this.mockMvc.perform(MockMvcRequestBuilders.put(route+"/friend/remove/toto"))
+                .andExpect(MockMvcResultMatchers.status().is(403));
     }
 
     /**
-     * Test removeUserFromFriendList when the path variables id2 is null
+     * Test removeUserFromFriendList : no friend to remove
      */
-    @DisplayName("Test removeUserFromFriendList : null path variable id2")
+    @DisplayName("Test removeUserFromFriendList : no friend to remove")
     @Test
-    public void testRemoveUserFromFriendListNullId2() throws Exception {
-        String id1 = "Bidulle";
-        this.mockMvc.perform(MockMvcRequestBuilders.put(route+"/remove/"+id1))
+    public void testRemoveUserFromFriendListNoFriendToRemove() throws Exception {
+        User user = TestingToolBox.generateUser(1L, "Rubix", TestingToolBox.generatePasswordHash("KloPfD;?!"));
+        String token = TestingToolBox.generateToken(user.getNickname(),"http://localhost:8080/login", new ArrayList<>());
+        this.mockMvc.perform(MockMvcRequestBuilders.put(route+"/friend/remove/")
+                        .header("Authorization", "Bearer "+token))
                 .andExpect(MockMvcResultMatchers.status().isNotFound());
     }
 
     /**
-     * Test removeUserFromFriendList when the method removeUserFromFriendList from the service returns false
+     * Test addUserToFriendList : can't remove friend
      */
-    @DisplayName("Test removeUserFromFriendList : failed to remove")
+    @DisplayName("Test removeUserFromFriendList : can't remove friend")
     @Test
-    public void testRemoveUserFromFriendListServiceReturnsFalse() throws Exception {
-        String id1 = "Bidulle";
-        String id2 = "Machin";
-        Mockito.when(this.service.removeUserFromFriendList(id1, id2)).thenReturn(false);
-        this.mockMvc.perform(MockMvcRequestBuilders.put(route+"/remove/"+id1+"/"+id2))
+    public void testRemoveUserFromFriendListCannotRemoveFriend() throws Exception {
+        User user = TestingToolBox.generateUser(1L, "Borax", TestingToolBox.generatePasswordHash("fdQDHF554s"));
+        User friend = TestingToolBox.generateUser(2L, "Marco", "qsdftgyhujik");
+        Mockito.when(this.userService.removeUserFromFriendList(user.getNickname(), friend.getNickname())).thenReturn(false);
+        String token = TestingToolBox.generateToken(user.getNickname(),"http://localhost:8080/login", new ArrayList<>());
+        this.mockMvc.perform(MockMvcRequestBuilders.put(route+"/friend/remove/"+friend.getNickname())
+                        .header("Authorization", "Bearer "+token))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$").isBoolean())
                 .andExpect(MockMvcResultMatchers.jsonPath("$").value("false"));
     }
 
     /**
-     * Test removeUserFromFriendList when the method removeUserFromFriendList from the service returns true
+     * Test addUserToFriendList : friend is removed
      */
-    @DisplayName("Test removeUserFromFriendList : remove successfully")
+    @DisplayName("Test removeUserFromFriendList : friend is removed")
     @Test
-    public void testRemoveUserFromFriendListServiceReturnsTrue() throws Exception {
-        String id1 = "Bidulle";
-        String id2 = "Machin";
-        Mockito.when(this.service.removeUserFromFriendList(id1, id2)).thenReturn(true);
-        this.mockMvc.perform(MockMvcRequestBuilders.put(route+"/remove/"+id1+"/"+id2))
+    public void testRemoveUserFromFriendListFriendRemoved() throws Exception {
+        User user = TestingToolBox.generateUser(1L, "Borax", TestingToolBox.generatePasswordHash("fdQDHF554s"));
+        User friend = TestingToolBox.generateUser(2L, "Marco", "qsdftgyhujik");
+        Mockito.when(this.userService.removeUserFromFriendList(user.getNickname(), friend.getNickname())).thenReturn(true);
+        String token = TestingToolBox.generateToken(user.getNickname(),"http://localhost:8080/login", new ArrayList<>());
+        this.mockMvc.perform(MockMvcRequestBuilders.put(route+"/friend/remove/"+friend.getNickname())
+                        .header("Authorization", "Bearer "+token))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$").isBoolean())
                 .andExpect(MockMvcResultMatchers.jsonPath("$").value("true"));
@@ -323,38 +337,42 @@ public class UserControllerTest {
     // Method emptyFriendList
 
     /**
-     * Test emptyFriendList when called with a null string
+     * Test emptyFriendList : no header
      */
-    @DisplayName("Test emptyFriendList : null nickname")
+    @DisplayName("Test emptyFriendList : no header")
     @Test
-    public void testEmptyFriendListNullNickname() throws Exception {
-        this.mockMvc.perform(MockMvcRequestBuilders.put(route+"/empty/"))
-                        .andExpect(MockMvcResultMatchers.status().isMethodNotAllowed());
+    public void testEmptyFriendListNoHeader() throws Exception {
+        this.mockMvc.perform(MockMvcRequestBuilders.put(route+"/friend/empty/"))
+                        .andExpect(MockMvcResultMatchers.status().is(403));
     }
 
     /**
-     * Test emptyFriendList when emptyFriendList from the service return false
+     * Test emptyFriendList : user not in database
      */
-    @DisplayName("Test emptyFriendList : failed to empty friend list")
+    @DisplayName("Test emptyFriendList : user not in database")
     @Test
-    public void testEmptyFriendListServiceReturnFalse() throws Exception {
-        String nickname = "toto";
-        Mockito.when(this.service.emptyFriendList(nickname)).thenReturn(false);
-        this.mockMvc.perform(MockMvcRequestBuilders.put(route+"/empty/"+nickname))
+    public void testEmptyFriendListUnknownUser() throws Exception {
+        User user = TestingToolBox.generateUser(1L, "William", TestingToolBox.generatePasswordHash("BestOfTheBest"));
+        Mockito.when(this.userService.emptyFriendList(user.getNickname())).thenReturn(false);
+        String token = TestingToolBox.generateToken(user.getNickname(),"http://localhost:8080/login", new ArrayList<>());
+        this.mockMvc.perform(MockMvcRequestBuilders.put(route+"/friend/empty/")
+                                                    .header("Authorization", "Bearer "+token))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$").isBoolean())
                 .andExpect(MockMvcResultMatchers.jsonPath("$").value("false"));
     }
 
     /**
-     * Test emptyFriendList when emptyFriendList from the service return true
+     * Test emptyFriendList : everything is ok
      */
-    @DisplayName("Test emptyFriendList : empty friend list successfully")
+    @DisplayName("Test emptyFriendList : everything is ok")
     @Test
-    public void testEmptyFriendListServiceReturnTrue() throws Exception {
-        String nickname = "Gandalf";
-        Mockito.when(this.service.emptyFriendList(nickname)).thenReturn(true);
-        this.mockMvc.perform(MockMvcRequestBuilders.put(route+"/empty/"+nickname))
+    public void testEmptyFriendListUserFound() throws Exception {
+        User user = TestingToolBox.generateUser(1L, "William", TestingToolBox.generatePasswordHash("BestOfTheBest"));
+        Mockito.when(this.userService.emptyFriendList(user.getNickname())).thenReturn(true);
+        String token = TestingToolBox.generateToken(user.getNickname(),"http://localhost:8080/login", new ArrayList<>());
+        this.mockMvc.perform(MockMvcRequestBuilders.put(route+"/friend/empty/")
+                                                    .header("Authorization", "Bearer "+token))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$").isBoolean())
                 .andExpect(MockMvcResultMatchers.jsonPath("$").value("true"));
