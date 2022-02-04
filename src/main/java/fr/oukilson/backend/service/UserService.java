@@ -53,7 +53,7 @@ public class UserService implements UserDetailsService {
         return result;
     }
 
-    /* Method to save a user entity to the database
+    /** Method to save a user entity to the database
      * @param userCreationDTO User's data
      * @return UserDTO
      */
