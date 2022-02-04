@@ -1,4 +1,4 @@
-package fr.oukilson.backend.dto;
+package fr.oukilson.backend.dto.user;
 
 import fr.oukilson.backend.dto.user.UserCreationDTO;
 import fr.oukilson.backend.model.RegexCollection;
