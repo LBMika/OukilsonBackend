@@ -241,7 +241,7 @@ public class EventTest {
         User user = this.createValidFullUser(1L, "toto");
 
         event.addUserInWaitingQueue(user);
-        Assertions.assertTrue(event.removeUserInWaitingQueue(user));
+        Assertions.assertTrue(event.removeUser(user));
         Assertions.assertEquals(0, event.getWaitingUsers().size());
     }
 
@@ -255,7 +255,7 @@ public class EventTest {
         event.setMaxPlayer(5);
         User user = this.createValidFullUser(1L, "toto");
         Assertions.assertEquals(0, event.getWaitingUsers().size());
-        Assertions.assertFalse(event.removeUserInWaitingQueue(user));
+        Assertions.assertFalse(event.removeUser(user));
     }
 
     /**
@@ -267,6 +267,6 @@ public class EventTest {
         Event event = new Event();
         event.setMaxPlayer(5);
         event.addUserInWaitingQueue(this.createValidFullUser(1L, "toto"));
-        Assertions.assertFalse(event.removeUserInWaitingQueue(this.createValidFullUser(2L, "tata")));
+        Assertions.assertFalse(event.removeUser(this.createValidFullUser(2L, "tata")));
     }
 }
