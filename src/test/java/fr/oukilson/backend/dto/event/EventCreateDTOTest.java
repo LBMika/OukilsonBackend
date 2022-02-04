@@ -32,7 +32,6 @@ public class EventCreateDTOTest {
         event.setStartingDate(now.plusDays(2));
         event.setEndingDate(now.plusDays(3));
         event.setMaxPlayer(event.getMinPlayer()+1);
-        event.setCreator(new UserNameDTO("Toto"));
         event.setGame(new GameUuidDTO("Oblivion"));
         event.setLocation(new EventCreateLocationDTO("Paris", "75000", "3 rue Michel Montaigne"));
         return event;
@@ -115,17 +114,6 @@ public class EventCreateDTOTest {
     }
 
     /**
-     * Test when the UserNameDTO attribute is null
-     */
-    @DisplayName("Test isValid : creator is null")
-    @Test
-    public void testIsValidWhenCreatorIsNull() {
-        EventCreateDTO event = createValidEventCreateDTO();
-        event.setCreator(null);
-        Assertions.assertFalse(event.isValid(LocalDateTime.now()));
-    }
-
-    /**
      * Test when the GameUuidDTO attribute is null
      */
     @DisplayName("Test isValid : game is null")
@@ -155,17 +143,6 @@ public class EventCreateDTOTest {
     public void testIsValidWhenLocationTownIsNull() {
         EventCreateDTO event = createValidEventCreateDTO();
         event.getLocation().setTown(null);
-        Assertions.assertFalse(event.isValid(LocalDateTime.now()));
-    }
-
-    /**
-     * Test when the attribute nickname of UserNameDTO is null
-     */
-    @DisplayName("Test isValid : creator.nickname is null")
-    @Test
-    public void testIsValidWhenCreatorNicknameIsNull() {
-        EventCreateDTO event = createValidEventCreateDTO();
-        event.getCreator().setNickname(null);
         Assertions.assertFalse(event.isValid(LocalDateTime.now()));
     }
 
