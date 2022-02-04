@@ -7,5 +7,4 @@ import lombok.*;
 @NoArgsConstructor
 public class EventAddUserDTO {
     private String uuid;
-    private String nickname;
 }
