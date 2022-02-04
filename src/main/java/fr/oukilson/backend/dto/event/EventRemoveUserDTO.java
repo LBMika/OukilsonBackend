@@ -9,5 +9,4 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class EventRemoveUserDTO {
     private String uuid;
-    private String nickname;
 }
