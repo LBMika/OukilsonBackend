@@ -12,7 +12,7 @@ import javax.validation.Valid;
 @CrossOrigin
 @RequestMapping("/users")
 public class UserController {
-    private UserService userService;
+    private final UserService userService;
 
     public UserController(UserService userService) {
         this.userService = userService;
@@ -65,9 +65,9 @@ public class UserController {
      * @param nickname2 Nickname of the friend to add
      * @return ResponseEntity<Boolean>
      */
-    @PutMapping("/add/{id1}/{id2}")
-    public ResponseEntity<Boolean> addUserToFriendList(@PathVariable(name = "id1") String nickname1,
-                                                       @PathVariable(name = "id2") String nickname2) {
+    @PutMapping("/friend/add/{id}")
+    public ResponseEntity<Boolean> addUserToFriendList(@RequestAttribute(name = "username") String nickname1,
+                                                       @PathVariable(name = "id") String nickname2) {
         return ResponseEntity.ok(this.userService.addUserToFriendList(nickname1, nickname2));
     }
 
@@ -77,9 +77,9 @@ public class UserController {
      * @param nickname2 Nickname of the friend to remove
      * @return ResponseEntity<Boolean>
      */
-    @PutMapping("/remove/{id1}/{id2}")
-    public ResponseEntity<Boolean> removeUserFromFriendList(@PathVariable(name = "id1") String nickname1,
-                                                                @PathVariable(name = "id2") String nickname2) {
+    @PutMapping("/friend/remove/{id}")
+    public ResponseEntity<Boolean> removeUserFromFriendList(@RequestAttribute(name = "username") String nickname1,
+                                                            @PathVariable(name = "id") String nickname2) {
         return ResponseEntity.ok(this.userService.removeUserFromFriendList(nickname1, nickname2));
     }
 
@@ -88,8 +88,8 @@ public class UserController {
      * @param nickname User's nickname
      * @return ResponseEntity<Boolean>
      */
-    @PutMapping("/empty/{id}")
-    public ResponseEntity<Boolean> emptyFriendList(@PathVariable(name = "id") String nickname) {
+    @PutMapping("/friend/empty")
+    public ResponseEntity<Boolean> emptyFriendList(@RequestAttribute(name = "username") String nickname) {
         return ResponseEntity.ok(this.userService.emptyFriendList(nickname));
     }
 }
