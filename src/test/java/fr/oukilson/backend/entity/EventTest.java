@@ -1,5 +1,6 @@
 package fr.oukilson.backend.entity;
 
+import fr.oukilson.backend.util.TestingToolBox;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -13,22 +14,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 @SpringBootTest
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class EventTest {
-    /**
-     * Create a valid User entity with all attributes set to valid data.
-     * @param id User's id in database
-     * @param nickname User's unique nickname
-     * @return User
-     */
-    private User createValidFullUser(Long id, String nickname) {
-        User user = new User();
-        user.setId(id);
-        user.setNickname(nickname);
-        user.setPassword("d1e8a70b5ccab1dc2f56bbf7e99f064a660c08e361a35751b9c483c88943d082");
-        user.setEmail("email@test.com");
-        user.setFirstName("John");
-        user.setLastName("Doe");
-        return user;
-    }
 
     /**
      * Test the method addUser when adding a user in the empty registered list
@@ -38,7 +23,7 @@ public class EventTest {
     public void testAddUserWhenRegisteredListIsEmpty() {
         Event event = new Event();
         event.setMaxPlayer(5);
-        User user = this.createValidFullUser(1L, "toto");
+        User user = TestingToolBox.createValidFullUser(1L, "toto");
 
         Assertions.assertNotNull(event.getRegisteredUsers());
         Assertions.assertEquals(0, event.getRegisteredUsers().size());
@@ -55,8 +40,8 @@ public class EventTest {
     public void testAddUser() {
         Event event = new Event();
         event.setMaxPlayer(5);
-        User user1 = this.createValidFullUser(1L, "toto");
-        User user2 = this.createValidFullUser(2L, "tata");
+        User user1 = TestingToolBox.createValidFullUser(1L, "toto");
+        User user2 = TestingToolBox.createValidFullUser(2L, "tata");
 
         Assertions.assertNotNull(event.getRegisteredUsers());
         Assertions.assertEquals(0, event.getRegisteredUsers().size());
@@ -76,10 +61,10 @@ public class EventTest {
     public void testAddUserWhenListIsFull() {
         Event event = new Event();
         event.setMaxPlayer(2);
-        event.addUser(this.createValidFullUser(1L, "toto"));
-        event.addUser(this.createValidFullUser(2L, "tata"));
+        event.addUser(TestingToolBox.createValidFullUser(1L, "toto"));
+        event.addUser(TestingToolBox.createValidFullUser(2L, "tata"));
         Assertions.assertEquals(event.getMaxPlayer(), event.getRegisteredUsers().size());
-        Assertions.assertFalse(event.addUser(this.createValidFullUser(3L, "alpha")));
+        Assertions.assertFalse(event.addUser(TestingToolBox.createValidFullUser(3L, "alpha")));
     }
 
     /**
@@ -90,7 +75,7 @@ public class EventTest {
     public void testAddUserWhenUserIsAlreadyInWaitingList() {
         Event event = new Event();
         event.setMaxPlayer(5);
-        User user = this.createValidFullUser(1L, "toto");
+        User user = TestingToolBox.createValidFullUser(1L, "toto");
 
         Assertions.assertTrue(event.addUserInWaitingQueue(user));
         Assertions.assertFalse(event.addUser(user));
@@ -104,7 +89,7 @@ public class EventTest {
     public void testAddUserWhenUserIsAlreadyInRegisteredList() {
         Event event = new Event();
         event.setMaxPlayer(5);
-        User user = this.createValidFullUser(1L, "toto");
+        User user = TestingToolBox.createValidFullUser(1L, "toto");
 
         Assertions.assertTrue(event.addUser(user));
         Assertions.assertFalse(event.addUser(user));
@@ -118,7 +103,7 @@ public class EventTest {
     public void testAddUserInWaitingListWhenEmpty() {
         Event event = new Event();
         event.setMaxPlayer(5);
-        User user = this.createValidFullUser(1L, "toto");
+        User user = TestingToolBox.createValidFullUser(1L, "toto");
 
         Assertions.assertNotNull(event.getWaitingUsers());
         Assertions.assertEquals(0, event.getWaitingUsers().size());
@@ -135,8 +120,8 @@ public class EventTest {
     public void testAddUserInWaitingQueue() {
         Event event = new Event();
         event.setMaxPlayer(5);
-        User user1 = this.createValidFullUser(1L, "toto");
-        User user2 = this.createValidFullUser(2L, "tata");
+        User user1 = TestingToolBox.createValidFullUser(1L, "toto");
+        User user2 = TestingToolBox.createValidFullUser(2L, "tata");
 
         Assertions.assertNotNull(event.getWaitingUsers());
         Assertions.assertEquals(0, event.getWaitingUsers().size());
@@ -156,10 +141,10 @@ public class EventTest {
     public void testAddUserInWaitingQueueWhenListIsFull() {
         Event event = new Event();
         event.setMaxPlayer(2);
-        event.addUserInWaitingQueue(this.createValidFullUser(1L, "toto"));
-        event.addUserInWaitingQueue(this.createValidFullUser(2L, "tata"));
+        event.addUserInWaitingQueue(TestingToolBox.createValidFullUser(1L, "toto"));
+        event.addUserInWaitingQueue(TestingToolBox.createValidFullUser(2L, "tata"));
         Assertions.assertEquals(event.getMaxPlayer(), event.getWaitingUsers().size());
-        Assertions.assertFalse(event.addUserInWaitingQueue(this.createValidFullUser(3L, "alpha")));
+        Assertions.assertFalse(event.addUserInWaitingQueue(TestingToolBox.createValidFullUser(3L, "alpha")));
     }
 
     /**
@@ -170,7 +155,7 @@ public class EventTest {
     public void testAddUserInWaitingQueueWhenUserIsAlreadyInWaitingList() {
         Event event = new Event();
         event.setMaxPlayer(5);
-        User user = this.createValidFullUser(1L, "toto");
+        User user = TestingToolBox.createValidFullUser(1L, "toto");
 
         Assertions.assertTrue(event.addUserInWaitingQueue(user));
         Assertions.assertFalse(event.addUserInWaitingQueue(user));
@@ -184,7 +169,7 @@ public class EventTest {
     public void testAddUserInWaitingQueueWhenUserIsAlreadyInRegisteredList() {
         Event event = new Event();
         event.setMaxPlayer(5);
-        User user = this.createValidFullUser(1L, "toto");
+        User user = TestingToolBox.createValidFullUser(1L, "toto");
 
         Assertions.assertTrue(event.addUser(user));
         Assertions.assertFalse(event.addUserInWaitingQueue(user));
@@ -198,7 +183,7 @@ public class EventTest {
     public void testRemoveUser() {
         Event event = new Event();
         event.setMaxPlayer(5);
-        User user = this.createValidFullUser(1L, "toto");
+        User user = TestingToolBox.createValidFullUser(1L, "toto");
 
         event.addUser(user);
         Assertions.assertTrue(event.removeUser(user));
@@ -213,7 +198,7 @@ public class EventTest {
     public void testRemoveUserWithEmptyList() {
         Event event = new Event();
         event.setMaxPlayer(5);
-        User user = this.createValidFullUser(1L, "toto");
+        User user = TestingToolBox.createValidFullUser(1L, "toto");
         Assertions.assertFalse(event.removeUser(user));
     }
 
@@ -225,9 +210,9 @@ public class EventTest {
     public void testRemoveUserWhoIsNotInList() {
         Event event = new Event();
         event.setMaxPlayer(5);
-        event.addUser(this.createValidFullUser(1L, "toto"));
+        event.addUser(TestingToolBox.createValidFullUser(1L, "toto"));
         Assertions.assertNotEquals(0, event.getRegisteredUsers().size());
-        Assertions.assertFalse(event.removeUser(this.createValidFullUser(2L, "tata")));
+        Assertions.assertFalse(event.removeUser(TestingToolBox.createValidFullUser(2L, "tata")));
     }
 
     /**
@@ -238,7 +223,7 @@ public class EventTest {
     public void testRemoveUserInWaitingQueue() {
         Event event = new Event();
         event.setMaxPlayer(5);
-        User user = this.createValidFullUser(1L, "toto");
+        User user = TestingToolBox.createValidFullUser(1L, "toto");
 
         event.addUserInWaitingQueue(user);
         Assertions.assertTrue(event.removeUser(user));
@@ -253,7 +238,7 @@ public class EventTest {
     public void testRemoveUserInWaitingQueueWithEmptyList() {
         Event event = new Event();
         event.setMaxPlayer(5);
-        User user = this.createValidFullUser(1L, "toto");
+        User user = TestingToolBox.createValidFullUser(1L, "toto");
         Assertions.assertEquals(0, event.getWaitingUsers().size());
         Assertions.assertFalse(event.removeUser(user));
     }
@@ -266,7 +251,7 @@ public class EventTest {
     public void testRemoveUserInWaitingQueueWhoIsNotInList() {
         Event event = new Event();
         event.setMaxPlayer(5);
-        event.addUserInWaitingQueue(this.createValidFullUser(1L, "toto"));
-        Assertions.assertFalse(event.removeUser(this.createValidFullUser(2L, "tata")));
+        event.addUserInWaitingQueue(TestingToolBox.createValidFullUser(1L, "toto"));
+        Assertions.assertFalse(event.removeUser(TestingToolBox.createValidFullUser(2L, "tata")));
     }
 }

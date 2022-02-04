@@ -6,6 +6,7 @@ import fr.oukilson.backend.dto.GameUuidDTO;
 import fr.oukilson.backend.entity.Game;
 import fr.oukilson.backend.security.SecurityEnabledSetup;
 import fr.oukilson.backend.service.GameService;
+import fr.oukilson.backend.util.TestingToolBox;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -22,7 +23,6 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import java.nio.charset.StandardCharsets;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.UUID;
 
 @WebMvcTest(controllers = GameController.class)
 public class GameControllerTest extends SecurityEnabledSetup {
@@ -31,28 +31,6 @@ public class GameControllerTest extends SecurityEnabledSetup {
     @MockBean
     private GameService service;
     private final String route = "/games";
-
-    // Convenient methods for testing
-
-    /**
-     * Return a valid Game entity with all attributes set to valid data.
-     * @param id Game's id in database
-     * @param name Game's name
-     * @return Game
-     */
-    private Game createValidFullGame(Long id, String name) {
-        Game game = new Game();
-        game.setId(id);
-        game.setName(name);
-        game.setUuid(UUID.randomUUID().toString());
-        game.setMinPlayer(2);
-        game.setMaxPlayer(5);
-        game.setMinAge(6);
-        game.setCreatorName("Le créateur d'un jeu");
-        game.setMinPlayingTime(30);
-        game.setMaxPlayingTime(120);
-        return game;
-    }
 
     // Route findByUuid GET
 
@@ -63,7 +41,7 @@ public class GameControllerTest extends SecurityEnabledSetup {
     @Test
     public void testFindByUuidWhenGameFound() throws Exception {
         // Mocking
-        Game game = this.createValidFullGame(1L, "Lords of Waterdeep");
+        Game game = TestingToolBox.createValidFullGame(1L, "Lords of Waterdeep");
         ModelMapper mapper = new ModelMapper();
         GameDTO dto = mapper.map(game, GameDTO.class);
         Mockito.when(this.service.findByUuid(game.getUuid())).thenReturn(dto);
@@ -90,7 +68,7 @@ public class GameControllerTest extends SecurityEnabledSetup {
     @Test
     public void testFindByUuidWhenGameNotFound() throws Exception {
         // Mocking
-        Game game = this.createValidFullGame(1L, "Lords of Waterdeep");
+        Game game = TestingToolBox.createValidFullGame(1L, "Lords of Waterdeep");
         Mockito.when(this.service.findByUuid(game.getUuid())).thenReturn(null);
 
         // Send request
@@ -112,7 +90,7 @@ public class GameControllerTest extends SecurityEnabledSetup {
         ModelMapper mapper = new ModelMapper();
         int size = 3;
         for (int i=0; i<size; i++) {
-            games.add(mapper.map(this.createValidFullGame((long) i, "Jeux n°"+i), GameUuidDTO.class));
+            games.add(mapper.map(TestingToolBox.createValidFullGame((long) i, "Jeux n°"+i), GameUuidDTO.class));
         }
         BDDMockito.when(this.service.findByName(name)).thenReturn(games);
 
@@ -144,7 +122,7 @@ public class GameControllerTest extends SecurityEnabledSetup {
         String name = "Les échos de Fäfnir !";
         List<GameUuidDTO> games = new LinkedList<>();
         ModelMapper mapper = new ModelMapper();
-        games.add(mapper.map(this.createValidFullGame(1L, name), GameUuidDTO.class));
+        games.add(mapper.map(TestingToolBox.createValidFullGame(1L, name), GameUuidDTO.class));
         BDDMockito.when(this.service.findByName(name)).thenReturn(games);
 
         // Request

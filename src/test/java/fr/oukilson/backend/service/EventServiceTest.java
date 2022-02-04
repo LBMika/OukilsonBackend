@@ -9,6 +9,7 @@ import fr.oukilson.backend.repository.EventRepository;
 import fr.oukilson.backend.repository.GameRepository;
 import fr.oukilson.backend.repository.LocationRepository;
 import fr.oukilson.backend.repository.UserRepository;
+import fr.oukilson.backend.util.TestingToolBox;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -21,7 +22,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import java.time.LocalDateTime;
 import java.util.*;
-import java.util.function.Function;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
@@ -44,72 +44,6 @@ public class EventServiceTest {
         service = new EventService(repository, userRepository, gameRepository, locationRepository, mapper);
     }
 
-    // Convenient methods for testing
-
-    /**
-     * Return a valid Game entity with all attributes set to valid data.
-     * @param id Game's id in database
-     * @param name Game's name
-     * @return Game
-     */
-    private Game createValidFullGame(Long id, String name) {
-        Game game = new Game();
-        game.setId(id);
-        game.setName(name);
-        game.setUuid(UUID.randomUUID().toString());
-        game.setMinPlayer(2);
-        game.setMaxPlayer(5);
-        game.setMinAge(6);
-        game.setCreatorName("Le créateur d'un jeu");
-        game.setMinPlayingTime(30);
-        game.setMaxPlayingTime(120);
-        return game;
-    }
-
-    /**
-     * Create a valid User entity with all attributes set to valid data.
-     * @param id User's id in database
-     * @param nickname User's unique nickname
-     * @return User
-     */
-    private User createValidFullUser(Long id, String nickname) {
-        User user = new User();
-        user.setId(id);
-        user.setNickname(nickname);
-        user.setPassword("d1e8a70b5ccab1dc2f56bbf7e99f064a660c08e361a35751b9c483c88943d082");
-        user.setEmail("email@test.com");
-        user.setFirstName(nickname);
-        user.setLastName("Doe");
-        return user;
-    }
-
-    /**
-     * Create a valid Event entity with all attributes set to valid data.
-     * @param id Event's id in database
-     * @param game Game for the event; must use method createValidFullGame
-     * @param user User who created the event; must use method createValidFullUser
-     * @return Event
-     */
-    private Event createValidEvent(Long id, Game game, User user, Location location) {
-        Event event = new Event();
-        event.setId(id);
-        event.setUuid(UUID.randomUUID().toString());
-        event.setTitle("Valid event's title. "+event.getUuid());
-        event.setMinPlayer(2);
-        event.setMaxPlayer(5);
-        event.setPrivate(false);
-        event.setDescription("Une description plus que valide. YEAAAAAHHHHHHHHHHHHHH !!!!!!!!!!!!");
-        event.setLocation(location);
-        event.setGame(game);
-        LocalDateTime localDateTime = LocalDateTime.now();
-        event.setCreationDate(localDateTime);
-        event.setLimitDate(localDateTime.plusDays(1L));
-        event.setStartingDate(localDateTime.plusDays(2L));
-        event.setEndingDate(event.getStartingDate().plusHours(5L));
-        event.setCreator(user);
-        return event;
-    }
-
     // Method findByUuid
 
     /**
@@ -128,10 +62,10 @@ public class EventServiceTest {
     @Test
     public void testFindByUuid() {
         // Mock event
-        Game game = this.createValidFullGame(1L, "Inis");
-        User user = this.createValidFullUser(1L, "toto");
+        Game game = TestingToolBox.createValidFullGame(1L, "Inis");
+        User user = TestingToolBox.createValidFullUser(1L, "toto");
         Location location = new Location(1L, "Euralille", "59777", "1 Place François Mitterrand", null);
-        Event event = this.createValidEvent(1L, game, user, location);
+        Event event = TestingToolBox.createValidEvent(1L, game, user, location);
         location.setEvent(event);
         BDDMockito.when(this.repository.findByUuid(event.getUuid())).thenReturn(Optional.of(event));
 
@@ -158,10 +92,10 @@ public class EventServiceTest {
         int size = 4;
         String town = "Lyon";
         for (int i=0; i<size; i++) {
-            User user = this.createValidFullUser((long)i, "Nom"+i);
-            Game game = this.createValidFullGame((long)i, "Jeu "+i);
+            User user = TestingToolBox.createValidFullUser((long)i, "Nom"+i);
+            Game game = TestingToolBox.createValidFullGame((long)i, "Jeu "+i);
             Location loc = new Location((long)i, town, null, null, null);
-            Event event = this.createValidEvent((long)i, game, user, loc);
+            Event event = TestingToolBox.createValidEvent((long)i, game, user, loc);
             loc.setEvent(event);
             events.add(event);
         }
@@ -188,10 +122,10 @@ public class EventServiceTest {
         List<Event> events = new LinkedList<>();
         int size = 8;
         for (int i=0; i<size; i++) {
-            User user = this.createValidFullUser((long)i, "Nom"+i);
-            Game game = this.createValidFullGame((long)i, "Jeu "+i);
+            User user = TestingToolBox.createValidFullUser((long)i, "Nom"+i);
+            Game game = TestingToolBox.createValidFullGame((long)i, "Jeu "+i);
             Location loc = new Location((long)i, "Ville "+i, null, null, null);
-            Event event = this.createValidEvent((long)i, game, user, loc);
+            Event event = TestingToolBox.createValidEvent((long)i, game, user, loc);
             loc.setEvent(event);
             events.add(event);
         }
@@ -259,10 +193,10 @@ public class EventServiceTest {
         List<Event> dateEvents = new LinkedList<>();
         int size = 3;
         for (int i=0; i<size; i++) {
-            User user = this.createValidFullUser((long)i, "Nom"+i);
-            Game game = this.createValidFullGame((long)i, "Jeu "+i);
+            User user = TestingToolBox.createValidFullUser((long)i, "Nom"+i);
+            Game game = TestingToolBox.createValidFullGame((long)i, "Jeu "+i);
             Location loc = new Location((long)i, "Ville "+i, null, null, null);
-            Event event = this.createValidEvent((long)i, game, user, loc);
+            Event event = TestingToolBox.createValidEvent((long)i, game, user, loc);
             loc.setEvent(event);
             dateEvents.add(event);
         }
@@ -270,9 +204,9 @@ public class EventServiceTest {
         size += 2;
         Location loc = new Location((long) size, town, null, null, null);
         for (int i=0; i<size; i++) {
-            User user = this.createValidFullUser(2L *size+i, "NomBis"+i);
-            Game game = this.createValidFullGame(2L *size+i, "JeuBis"+i);
-            Event event = this.createValidEvent(2L *size+i, game, user, loc);
+            User user = TestingToolBox.createValidFullUser(2L *size+i, "NomBis"+i);
+            Game game = TestingToolBox.createValidFullGame(2L *size+i, "JeuBis"+i);
+            Event event = TestingToolBox.createValidEvent(2L *size+i, game, user, loc);
             loc.setEvent(event);
             townEvents.add(event);
         }
@@ -307,10 +241,10 @@ public class EventServiceTest {
     @Test
     public void testSaveNullUsername() {
         // Mocking
-        Game game = this.createValidFullGame(10L, "Innovation");
-        User user = this.createValidFullUser(10L, "SuperAlbert");
+        Game game = TestingToolBox.createValidFullGame(10L, "Innovation");
+        User user = TestingToolBox.createValidFullUser(10L, "SuperAlbert");
         Location location = new Location(10L, "Gan", "64290", "123 Rue d'Ossau", null);
-        Event event = this.createValidEvent(10L, game, user, location);
+        Event event = TestingToolBox.createValidEvent(10L, game, user, location);
         location.setEvent(event);
         BDDMockito.when(this.repository.save(ArgumentMatchers.any(Event.class))).thenReturn(event);
         BDDMockito.when(this.userRepository.findByNickname(user.getNickname())).thenReturn(Optional.of(user));
@@ -329,10 +263,10 @@ public class EventServiceTest {
     @Test
     public void testSaveInvalidData() {
         // Create a valid data
-        Game game = this.createValidFullGame(10L, "Innovation");
-        User user = this.createValidFullUser(10L, "SuperAlbert");
+        Game game = TestingToolBox.createValidFullGame(10L, "Innovation");
+        User user = TestingToolBox.createValidFullUser(10L, "SuperAlbert");
         Location location = new Location(10L, "Gan", "64290", "123 Rue d'Ossau", null);
-        Event event = this.createValidEvent(10L, game, user, location);
+        Event event = TestingToolBox.createValidEvent(10L, game, user, location);
         location.setEvent(event);
         EventCreateDTO data = this.mapper.map(event, EventCreateDTO.class);
 
@@ -442,10 +376,10 @@ public class EventServiceTest {
     @Test
     public void testSaveUnknownUser() {
         // Mocking
-        Game game = this.createValidFullGame(10L, "Innovation");
-        User user = this.createValidFullUser(10L, "SuperAlbert");
+        Game game = TestingToolBox.createValidFullGame(10L, "Innovation");
+        User user = TestingToolBox.createValidFullUser(10L, "SuperAlbert");
         Location location = new Location(10L, "Gan", "64290", "123 Rue d'Ossau", null);
-        Event event = this.createValidEvent(10L, game, user, location);
+        Event event = TestingToolBox.createValidEvent(10L, game, user, location);
         location.setEvent(event);
         BDDMockito.when(this.repository.save(ArgumentMatchers.any(Event.class))).thenReturn(event);
         BDDMockito.when(this.userRepository.findByNickname(user.getNickname())).thenReturn(Optional.empty());
@@ -464,10 +398,10 @@ public class EventServiceTest {
     @Test
     public void testSaveUnknownGame() {
         // Mocking
-        Game game = this.createValidFullGame(10L, "Innovation");
-        User user = this.createValidFullUser(10L, "SuperAlbert");
+        Game game = TestingToolBox.createValidFullGame(10L, "Innovation");
+        User user = TestingToolBox.createValidFullUser(10L, "SuperAlbert");
         Location location = new Location(10L, "Gan", "64290", "123 Rue d'Ossau", null);
-        Event event = this.createValidEvent(10L, game, user, location);
+        Event event = TestingToolBox.createValidEvent(10L, game, user, location);
         location.setEvent(event);
         BDDMockito.when(this.repository.save(ArgumentMatchers.any(Event.class))).thenReturn(event);
         BDDMockito.when(this.userRepository.findByNickname(user.getNickname())).thenReturn(Optional.of(user));
@@ -486,10 +420,10 @@ public class EventServiceTest {
     @Test
     public void testSave() {
         // Mocking
-        Game game = this.createValidFullGame(10L, "Innovation");
-        User user = this.createValidFullUser(10L, "SuperAlbert");
+        Game game = TestingToolBox.createValidFullGame(10L, "Innovation");
+        User user = TestingToolBox.createValidFullUser(10L, "SuperAlbert");
         Location location = new Location(10L, "Gan", "64290", "123 Rue d'Ossau", null);
-        Event event = this.createValidEvent(10L, game, user, location);
+        Event event = TestingToolBox.createValidEvent(10L, game, user, location);
         location.setEvent(event);
         BDDMockito.when(this.repository.save(ArgumentMatchers.any(Event.class))).thenReturn(event);
         BDDMockito.when(this.userRepository.findByNickname(user.getNickname())).thenReturn(Optional.of(user));
@@ -529,10 +463,10 @@ public class EventServiceTest {
     @Test
     public void testUpdateInvalidData() {
         // Mocking
-        Game game = this.createValidFullGame(10L, "Innovation");
-        User user = this.createValidFullUser(10L, "SuperAlbert");
+        Game game = TestingToolBox.createValidFullGame(10L, "Innovation");
+        User user = TestingToolBox.createValidFullUser(10L, "SuperAlbert");
         Location location = new Location(10L, "Gan", "64290", "123 Rue d'Ossau", null);
-        Event event = this.createValidEvent(10L, game, user, location);
+        Event event = TestingToolBox.createValidEvent(10L, game, user, location);
         location.setEvent(event);
         BDDMockito.when(this.repository.save(ArgumentMatchers.any(Event.class))).thenReturn(event);
         BDDMockito.when(this.userRepository.findByNickname(user.getNickname())).thenReturn(Optional.of(user));
@@ -647,10 +581,10 @@ public class EventServiceTest {
     @Test
     public void testUpdateNullCreatorName() {
         // Mocking
-        Game game = this.createValidFullGame(10L, "Innovation");
-        User user = this.createValidFullUser(10L, "SuperAlbert");
+        Game game = TestingToolBox.createValidFullGame(10L, "Innovation");
+        User user = TestingToolBox.createValidFullUser(10L, "SuperAlbert");
         Location location = new Location(10L, "Gan", "64290", "123 Rue d'Ossau", null);
-        Event event = this.createValidEvent(10L, game, user, location);
+        Event event = TestingToolBox.createValidEvent(10L, game, user, location);
         location.setEvent(event);
         BDDMockito.when(this.repository.save(ArgumentMatchers.any(Event.class))).thenReturn(event);
         BDDMockito.when(this.userRepository.findByNickname(user.getNickname())).thenReturn(Optional.of(user));
@@ -670,10 +604,10 @@ public class EventServiceTest {
     @Test
     public void testUpdateUnknownCreator() {
         // Mocking
-        Game game = this.createValidFullGame(10L, "Innovation");
-        User user = this.createValidFullUser(10L, "SuperAlbert");
+        Game game = TestingToolBox.createValidFullGame(10L, "Innovation");
+        User user = TestingToolBox.createValidFullUser(10L, "SuperAlbert");
         Location location = new Location(10L, "Gan", "64290", "123 Rue d'Ossau", null);
-        Event event = this.createValidEvent(10L, game, user, location);
+        Event event = TestingToolBox.createValidEvent(10L, game, user, location);
         location.setEvent(event);
         BDDMockito.when(this.repository.save(ArgumentMatchers.any(Event.class))).thenReturn(event);
         BDDMockito.when(this.userRepository.findByNickname(user.getNickname())).thenReturn(Optional.of(user));
@@ -694,10 +628,10 @@ public class EventServiceTest {
     @Test
     public void testUpdateUnknownGame() {
         // Mocking
-        Game game = this.createValidFullGame(10L, "Innovation");
-        User user = this.createValidFullUser(10L, "SuperAlbert");
+        Game game = TestingToolBox.createValidFullGame(10L, "Innovation");
+        User user = TestingToolBox.createValidFullUser(10L, "SuperAlbert");
         Location location = new Location(10L, "Gan", "64290", "123 Rue d'Ossau", null);
-        Event event = this.createValidEvent(10L, game, user, location);
+        Event event = TestingToolBox.createValidEvent(10L, game, user, location);
         location.setEvent(event);
         BDDMockito.when(this.repository.save(ArgumentMatchers.any(Event.class))).thenReturn(event);
         BDDMockito.when(this.userRepository.findByNickname(user.getNickname())).thenReturn(Optional.of(user));
@@ -718,10 +652,10 @@ public class EventServiceTest {
     @Test
     public void testUpdateUnknownEvent() {
         // Mocking
-        Game game = this.createValidFullGame(10L, "Innovation");
-        User user = this.createValidFullUser(10L, "SuperAlbert");
+        Game game = TestingToolBox.createValidFullGame(10L, "Innovation");
+        User user = TestingToolBox.createValidFullUser(10L, "SuperAlbert");
         Location location = new Location(10L, "Gan", "64290", "123 Rue d'Ossau", null);
-        Event event = this.createValidEvent(10L, game, user, location);
+        Event event = TestingToolBox.createValidEvent(10L, game, user, location);
         location.setEvent(event);
         BDDMockito.when(this.repository.save(ArgumentMatchers.any(Event.class))).thenReturn(event);
         BDDMockito.when(this.userRepository.findByNickname(user.getNickname())).thenReturn(Optional.of(user));
@@ -740,10 +674,10 @@ public class EventServiceTest {
     @Test
     public void testUpdate() {
         // Mocking
-        Game game = this.createValidFullGame(10L, "Innovation");
-        User user = this.createValidFullUser(10L, "SuperAlbert");
+        Game game = TestingToolBox.createValidFullGame(10L, "Innovation");
+        User user = TestingToolBox.createValidFullUser(10L, "SuperAlbert");
         Location location = new Location(10L, "Gan", "64290", "123 Rue d'Ossau", null);
-        Event event = this.createValidEvent(10L, game, user, location);
+        Event event = TestingToolBox.createValidEvent(10L, game, user, location);
         location.setEvent(event);
         BDDMockito.when(this.repository.save(ArgumentMatchers.any(Event.class))).thenReturn(event);
         BDDMockito.when(this.userRepository.findByNickname(user.getNickname())).thenReturn(Optional.of(user));
@@ -765,12 +699,12 @@ public class EventServiceTest {
     @Test
     public void testUpdateWithNewGame() {
         // Mocking
-        Game game = this.createValidFullGame(10L, "Innovation");
-        User user = this.createValidFullUser(10L, "SuperAlbert");
+        Game game = TestingToolBox.createValidFullGame(10L, "Innovation");
+        User user = TestingToolBox.createValidFullUser(10L, "SuperAlbert");
         Location location = new Location(10L, "Gan", "64290", "123 Rue d'Ossau", null);
-        Event event = this.createValidEvent(10L, game, user, location);
+        Event event = TestingToolBox.createValidEvent(10L, game, user, location);
         location.setEvent(event);
-        Game newGame = this.createValidFullGame(50L, "7 Wonders");
+        Game newGame = TestingToolBox.createValidFullGame(50L, "7 Wonders");
         BDDMockito.when(this.repository.save(ArgumentMatchers.any(Event.class))).thenReturn(event);
         BDDMockito.when(this.userRepository.findByNickname(user.getNickname())).thenReturn(Optional.of(user));
         BDDMockito.when(this.locationRepository.save(ArgumentMatchers.any(Location.class))).thenReturn(location);
@@ -815,7 +749,7 @@ public class EventServiceTest {
     @DisplayName("Test addUserInEvent : event can't be found in database")
     @Test
     public void testAddUserInEventUnknownEvent() {
-        User user = this.createValidFullUser(3L, "Alpha");
+        User user = TestingToolBox.createValidFullUser(3L, "Alpha");
         BDDMockito.when(this.userRepository.findByNickname(user.getNickname())).thenReturn(Optional.of(user));
         Assertions.assertThrows(IllegalArgumentException.class,
                 () ->this.service.addUserInEvent(UUID.randomUUID().toString(), user.getNickname()));
@@ -827,10 +761,10 @@ public class EventServiceTest {
     @DisplayName("Test addUserInEvent : user can't be found in database")
     @Test
     public void testAddUserInEventUnknownUser() {
-        User user = this.createValidFullUser(3L, "Alpha");
-        Game game = this.createValidFullGame(3L, "Mafia de Cuba");
+        User user = TestingToolBox.createValidFullUser(3L, "Alpha");
+        Game game = TestingToolBox.createValidFullGame(3L, "Mafia de Cuba");
         Location location = new Location(10L, "Brest", null, null, null);
-        Event event = this.createValidEvent(10L, game, user, location);
+        Event event = TestingToolBox.createValidEvent(10L, game, user, location);
         location.setEvent(event);
         BDDMockito.when(this.repository.findByUuid(event.getUuid())).thenReturn(Optional.of(event));
         Assertions.assertThrows(IllegalArgumentException.class,
@@ -844,13 +778,13 @@ public class EventServiceTest {
     @Test
     public void testAddUserInEventUserAddedAttendingList() {
         // Mocking
-        User user = this.createValidFullUser(3L, "Alpha");
-        Game game = this.createValidFullGame(3L, "Mafia de Cuba");
+        User user = TestingToolBox.createValidFullUser(3L, "Alpha");
+        Game game = TestingToolBox.createValidFullGame(3L, "Mafia de Cuba");
         Location location = new Location(10L, "Brest", null, null, null);
-        Event event = this.createValidEvent(10L, game, user, location);
+        Event event = TestingToolBox.createValidEvent(10L, game, user, location);
         location.setEvent(event);
         for (int i=1; i<event.getMaxPlayer(); i++) {
-            User tempUser = this.createValidFullUser(user.getId()+i, "User n°"+i);
+            User tempUser = TestingToolBox.createValidFullUser(user.getId()+i, "User n°"+i);
             event.addUser(tempUser);
         }
         BDDMockito.when(this.userRepository.findByNickname(user.getNickname())).thenReturn(Optional.of(user));
@@ -879,13 +813,13 @@ public class EventServiceTest {
     @Test
     public void testAddUserInEventUserAddedWaitingList() {
         // Mocking
-        User user = this.createValidFullUser(3L, "Alpha");
-        Game game = this.createValidFullGame(3L, "Mafia de Cuba");
+        User user = TestingToolBox.createValidFullUser(3L, "Alpha");
+        Game game = TestingToolBox.createValidFullGame(3L, "Mafia de Cuba");
         Location location = new Location(10L, "Brest", null, null, null);
-        Event event = this.createValidEvent(10L, game, user, location);
+        Event event = TestingToolBox.createValidEvent(10L, game, user, location);
         location.setEvent(event);
         for (int i=0; i<event.getMaxPlayer(); i++) {
-            User tempUser = this.createValidFullUser(user.getId()+i, "User n°"+i);
+            User tempUser = TestingToolBox.createValidFullUser(user.getId()+i, "User n°"+i);
             event.addUser(tempUser);
         }
         BDDMockito.when(this.userRepository.findByNickname(user.getNickname())).thenReturn(Optional.of(user));
@@ -918,15 +852,15 @@ public class EventServiceTest {
     @Test
     public void testAddUserInEventFullEvent() {
         // Mocking
-        User user = this.createValidFullUser(3L, "Alpha");
-        Game game = this.createValidFullGame(3L, "Mafia de Cuba");
+        User user = TestingToolBox.createValidFullUser(3L, "Alpha");
+        Game game = TestingToolBox.createValidFullGame(3L, "Mafia de Cuba");
         Location location = new Location(10L, "Brest", null, null, null);
-        Event event = this.createValidEvent(10L, game, user, location);
+        Event event = TestingToolBox.createValidEvent(10L, game, user, location);
         location.setEvent(event);
         for (int i=0; i<event.getMaxPlayer(); i++) {
-            User tempUser1 = this.createValidFullUser(user.getId()+i, "User n°"+i);
+            User tempUser1 = TestingToolBox.createValidFullUser(user.getId()+i, "User n°"+i);
             event.addUser(tempUser1);
-            User temptUser2 = this.createValidFullUser(((long) event.getMaxPlayer() *i), "User n°"+event.getMaxPlayer()*i);
+            User temptUser2 = TestingToolBox.createValidFullUser(((long) event.getMaxPlayer() *i), "User n°"+event.getMaxPlayer()*i);
             event.addUserInWaitingQueue(temptUser2);
         }
         BDDMockito.when(this.userRepository.findByNickname(user.getNickname())).thenReturn(Optional.of(user));
@@ -983,10 +917,10 @@ public class EventServiceTest {
     @Test
     public void testRemoveUserInEventUnknownUser() {
         // Mocking
-        User user = this.createValidFullUser(3L, "Alpha");
-        Game game = this.createValidFullGame(3L, "Mafia de Cuba");
+        User user = TestingToolBox.createValidFullUser(3L, "Alpha");
+        Game game = TestingToolBox.createValidFullGame(3L, "Mafia de Cuba");
         Location location = new Location(10L, "Brest", null, null, null);
-        Event event = this.createValidEvent(10L, game, user, location);
+        Event event = TestingToolBox.createValidEvent(10L, game, user, location);
         location.setEvent(event);
         BDDMockito.when(this.repository.findByUuid(event.getUuid())).thenReturn(Optional.of(event));
 
@@ -1002,10 +936,10 @@ public class EventServiceTest {
     @Test
     public void testRemoveUserInEventUserRemovedAttendingList() {
         // Mocking
-        User user = this.createValidFullUser(3L, "Alpha");
-        Game game = this.createValidFullGame(3L, "Mafia de Cuba");
+        User user = TestingToolBox.createValidFullUser(3L, "Alpha");
+        Game game = TestingToolBox.createValidFullGame(3L, "Mafia de Cuba");
         Location location = new Location(10L, "Brest", null, null, null);
-        Event event = this.createValidEvent(10L, game, user, location);
+        Event event = TestingToolBox.createValidEvent(10L, game, user, location);
         location.setEvent(event);
         event.addUser(user);
         BDDMockito.when(this.repository.findByUuid(event.getUuid())).thenReturn(Optional.of(event));
@@ -1028,10 +962,10 @@ public class EventServiceTest {
     @Test
     public void testRemoveUserInEventUserRemovedWaitingList() {
         // Mocking
-        User user = this.createValidFullUser(3L, "Alpha");
-        Game game = this.createValidFullGame(3L, "Mafia de Cuba");
+        User user = TestingToolBox.createValidFullUser(3L, "Alpha");
+        Game game = TestingToolBox.createValidFullGame(3L, "Mafia de Cuba");
         Location location = new Location(10L, "Brest", null, null, null);
-        Event event = this.createValidEvent(10L, game, user, location);
+        Event event = TestingToolBox.createValidEvent(10L, game, user, location);
         location.setEvent(event);
         event.addUserInWaitingQueue(user);
         BDDMockito.when(this.repository.findByUuid(event.getUuid())).thenReturn(Optional.of(event));
@@ -1054,10 +988,10 @@ public class EventServiceTest {
     @Test
     public void testRemoveUserInEventUserNotInAnyEventList() {
         // Mocking
-        User user = this.createValidFullUser(3L, "Alpha");
-        Game game = this.createValidFullGame(3L, "Mafia de Cuba");
+        User user = TestingToolBox.createValidFullUser(3L, "Alpha");
+        Game game = TestingToolBox.createValidFullGame(3L, "Mafia de Cuba");
         Location location = new Location(10L, "Brest", null, null, null);
-        Event event = this.createValidEvent(10L, game, user, location);
+        Event event = TestingToolBox.createValidEvent(10L, game, user, location);
         location.setEvent(event);
         BDDMockito.when(this.repository.findByUuid(event.getUuid())).thenReturn(Optional.of(event));
         BDDMockito.when(this.userRepository.findByNickname(user.getNickname())).thenReturn(Optional.of(user));

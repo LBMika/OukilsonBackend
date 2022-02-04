@@ -4,6 +4,7 @@ import fr.oukilson.backend.dto.GameDTO;
 import fr.oukilson.backend.dto.GameUuidDTO;
 import fr.oukilson.backend.entity.Game;
 import fr.oukilson.backend.repository.GameRepository;
+import fr.oukilson.backend.util.TestingToolBox;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.BDDMockito;
@@ -15,7 +16,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
@@ -30,28 +30,6 @@ public class GameServiceTest {
     @BeforeAll
     public void init() {
         this.service = new GameService(repository, mapper);
-    }
-
-    // Convenient methods for testing
-
-    /**
-     * Return a valid Game entity with all attributes set to valid data.
-     * @param id Game's id in database
-     * @param name Game's name
-     * @return Game
-     */
-    private Game createValidFullGame(Long id, String name) {
-        Game game = new Game();
-        game.setId(id);
-        game.setName(name);
-        game.setUuid(UUID.randomUUID().toString());
-        game.setMinPlayer(2);
-        game.setMaxPlayer(5);
-        game.setMinAge(6);
-        game.setCreatorName("Le créateur d'un jeu");
-        game.setMinPlayingTime(30);
-        game.setMaxPlayingTime(120);
-        return game;
     }
 
     // Method findByUuid
@@ -71,7 +49,7 @@ public class GameServiceTest {
     @DisplayName("Test findByUuid : game is in database")
     @Test
     public void testFindByUuidGameInDatabase() {
-        Game game = this.createValidFullGame(1L, "Root");
+        Game game = TestingToolBox.createValidFullGame(1L, "Root");
         BDDMockito.when(this.repository.findByUuid(game.getUuid())).thenReturn(Optional.of(game));
         GameDTO dto = this.service.findByUuid(game.getUuid());
         Assertions.assertNotNull(dto);
@@ -84,7 +62,7 @@ public class GameServiceTest {
     @DisplayName("Test findByUuid : game is not in database")
     @Test
     public void testFindByUuidGameNotInDatabase() {
-        Game game = this.createValidFullGame(1L, "Root");
+        Game game = TestingToolBox.createValidFullGame(1L, "Root");
         GameDTO dto = this.service.findByUuid(game.getUuid());
         Assertions.assertNull(dto);
     }
@@ -136,7 +114,7 @@ public class GameServiceTest {
         List<Game> games = new LinkedList<>();
         int size = 4;
         for (int i=0; i<size; i++) {
-            games.add(this.createValidFullGame((long) i, "Jeux n°"+i));
+            games.add(TestingToolBox.createValidFullGame((long) i, "Jeux n°"+i));
         }
         BDDMockito.when(this.repository.findAllByNameContaining(name)).thenReturn(games);
         List<GameUuidDTO> list = this.service.findByName(name);
