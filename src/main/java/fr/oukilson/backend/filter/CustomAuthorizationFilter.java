@@ -83,10 +83,10 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
         boolean result;
         String httpMethod = request.getMethod();
         if (httpMethod.equalsIgnoreCase("PUT")) {
-            if (uri.startsWith("/add/" + username)
-                    || uri.startsWith("/remove/" + username)
-                    || uri.startsWith("/empty/" + username))
+            if (uri.startsWith("/friend/")) {
+                request.setAttribute("username", username);
                 result = true;
+            }
             else
                 result = false;
         }
@@ -99,14 +99,10 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
         boolean result;
         String httpMethod = request.getMethod();
         if (httpMethod.equalsIgnoreCase("PUT")) {
-            if (uri.equals("")) {   // Update user's data
+            if (uri.equals("") || uri.startsWith("/add_user/") || uri.startsWith("/remove_user/")) {
                 request.setAttribute("username", username);
                 result = true;
             }
-            else
-            if (uri.startsWith("/add_user/"+username) || uri.startsWith("/add_user/waiting/"+username)
-                    || uri.startsWith("/remove_user/"+username) || uri.startsWith("/remove_user/waiting/"+username))
-                result = true;
             else
                 result = false;
         }
