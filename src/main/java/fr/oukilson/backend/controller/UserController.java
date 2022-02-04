@@ -39,7 +39,8 @@ public class UserController {
         return result;
     }
 
-    /** Method to save a user in the database
+    /**
+     * Method to save a user in the database
      * @param userCreationDTO the user object to be saved
      * @return ResponseEntity<UserDTO>
      */
@@ -58,35 +59,35 @@ public class UserController {
         }
         return result;
     }
-  
+
     /**
-     * Add a user to another user's friend list, asking for both users' nickname
-     * @param nickname1 Nickname of the main user
-     * @param nickname2 Nickname of the friend to add
-     * @return ResponseEntity<Boolean>
+     * Add the user "nickname2" in the friend list of user "nickname1"
+     * @param nickname1 The user who want to remove a friend
+     * @param nickname2 The friend to remove
+     * @return True if added
      */
-    @PutMapping("/friend/add/{id}")
+    @PutMapping("/friend/add/{friend}")
     public ResponseEntity<Boolean> addUserToFriendList(@RequestAttribute(name = "username") String nickname1,
-                                                       @PathVariable(name = "id") String nickname2) {
+                                                       @PathVariable(name = "friend") String nickname2) {
         return ResponseEntity.ok(this.userService.addUserToFriendList(nickname1, nickname2));
     }
 
     /**
-     * Remove a user from another user's friend list
-     * @param nickname1 Nickname of the main user
-     * @param nickname2 Nickname of the friend to remove
-     * @return ResponseEntity<Boolean>
+     * Remove the user "nickname2" in the friend list of user "nickname1"
+     * @param nickname1 The user who want to remove a friend
+     * @param nickname2 The friend to remove
+     * @return True if removed
      */
-    @PutMapping("/friend/remove/{id}")
+    @PutMapping("/friend/remove/{friend}")
     public ResponseEntity<Boolean> removeUserFromFriendList(@RequestAttribute(name = "username") String nickname1,
-                                                            @PathVariable(name = "id") String nickname2) {
+                                                            @PathVariable(name = "friend") String nickname2) {
         return ResponseEntity.ok(this.userService.removeUserFromFriendList(nickname1, nickname2));
     }
 
     /**
-     * Empties a user's friend list
-     * @param nickname User's nickname
-     * @return ResponseEntity<Boolean>
+     * Empty the friend list of the user "nickname"
+     * @param nickname Name of the user
+     * @return True if emptied
      */
     @PutMapping("/friend/empty")
     public ResponseEntity<Boolean> emptyFriendList(@RequestAttribute(name = "username") String nickname) {
