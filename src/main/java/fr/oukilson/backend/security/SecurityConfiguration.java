@@ -21,11 +21,16 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 @EnableWebSecurity
-@RequiredArgsConstructor
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     private final UserService userDetailsService;
     private final CustomPasswordEncoder customPasswordEncoder;
     private final Gson gson;
+
+    public SecurityConfiguration(UserService userDetailsService, CustomPasswordEncoder customPasswordEncoder, Gson gson) {
+        this.userDetailsService = userDetailsService;
+        this.customPasswordEncoder = customPasswordEncoder;
+        this.gson = gson;
+    }
 
     @Bean
     @Override
