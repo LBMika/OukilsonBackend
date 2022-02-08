@@ -1,0 +1,35 @@
+version: "3.8"
+
+services:
+  mysqldb:
+    container_name: mysqldb
+    restart: always
+    image: mysql
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      - oukilson-network
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=oukilson
+    command: mysqld --lower_case_table_names=1 --skip-ssl --character_set_server=utf8
+
+  back:
+    container_name: oukilson
+    depends_on:
+      - mysqldb
+    restart: always
+    image: lemika/oukilson
+    build: .
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysqldb:3306/oukilson?useUnicode=true&characterEncoding=utf8&allowPublicKeyRetrieval=true&useSSL=false
+    ports:
+      - "80:8080"
+    networks:
+      - oukilson-network
+
+volumes:
+  db_data:
+
+networks:
+  oukilson-network:
