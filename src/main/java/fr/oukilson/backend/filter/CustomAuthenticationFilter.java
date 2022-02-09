@@ -52,7 +52,7 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
             }
             if (body!=null) {
                 UserConnection data = gson.fromJson(body, UserConnection.class);
-                token = new UsernamePasswordAuthenticationToken(data.getNickname(), data.getPassword());
+                token = new UsernamePasswordAuthenticationToken(data.getNickname(), data.getPassword().toLowerCase());
             }
             else
                 token = new UsernamePasswordAuthenticationToken("", "");
