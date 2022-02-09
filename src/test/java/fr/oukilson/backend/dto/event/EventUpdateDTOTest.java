@@ -9,8 +9,8 @@ import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
@@ -23,7 +23,7 @@ public class EventUpdateDTOTest {
      */
     private EventUpdateDTO createValidEventUpdateDTO() {
         EventUpdateDTO event = new EventUpdateDTO();
-        event.setUuid("8083229a-44a4-4179-a4da-06db3022be7f");
+        event.setUuid(UUID.randomUUID().toString());
         event.setTitle("Title");
         event.setDescription("Description");
         event.setMinPlayer(3);
@@ -32,7 +32,7 @@ public class EventUpdateDTOTest {
         event.setStartingDate(now.plusDays(2));
         event.setEndingDate(now.plusDays(3));
         event.setMaxPlayer(event.getMinPlayer()+1);
-        event.setGame(new GameUuidDTO("Oblivion"));
+        event.setGame(new GameUuidDTO(UUID.randomUUID().toString(), "Oblivion"));
         event.setLocation(new EventUpdateLocationDTO("Paris", "75000", "3 rue Michel Montaigne"));
         return event;
     }

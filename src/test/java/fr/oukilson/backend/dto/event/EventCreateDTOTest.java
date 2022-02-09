@@ -2,7 +2,6 @@ package fr.oukilson.backend.dto.event;
 
 import fr.oukilson.backend.dto.game.GameUuidDTO;
 import fr.oukilson.backend.dto.location.EventCreateLocationDTO;
-import fr.oukilson.backend.dto.user.UserNameDTO;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -10,8 +9,8 @@ import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
@@ -32,7 +31,7 @@ public class EventCreateDTOTest {
         event.setStartingDate(now.plusDays(2));
         event.setEndingDate(now.plusDays(3));
         event.setMaxPlayer(event.getMinPlayer()+1);
-        event.setGame(new GameUuidDTO("Oblivion"));
+        event.setGame(new GameUuidDTO(UUID.randomUUID().toString(),"Oblivion"));
         event.setLocation(new EventCreateLocationDTO("Paris", "75000", "3 rue Michel Montaigne"));
         return event;
     }

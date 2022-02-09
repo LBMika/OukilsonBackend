@@ -1,7 +1,7 @@
 package fr.oukilson.backend.service;
 
-import fr.oukilson.backend.dto.GameDTO;
-import fr.oukilson.backend.dto.GameUuidDTO;
+import fr.oukilson.backend.dto.game.GameDTO;
+import fr.oukilson.backend.dto.game.GameUuidDTO;
 import fr.oukilson.backend.entity.Game;
 import fr.oukilson.backend.repository.GameRepository;
 import fr.oukilson.backend.util.TestingToolBox;
