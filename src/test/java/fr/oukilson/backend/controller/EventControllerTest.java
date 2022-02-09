@@ -35,9 +35,6 @@ public class EventControllerTest extends SecurityEnabledSetup {
     private EventService service;
     private final String route = "/events";
 
-    // Convenient methods for testing
-
-
     // Test findByUuid route
 
     /**
