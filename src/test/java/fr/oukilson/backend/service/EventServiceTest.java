@@ -446,7 +446,6 @@ public class EventServiceTest {
 
     // Method update
 
-    // update(EventUpdateDTO toUpdate, String creatorName)
     /**
      * Test update : data is null
      */
@@ -794,16 +793,16 @@ public class EventServiceTest {
         EventAddingResultDTO result = null;
         Assertions.assertNotEquals(event.getRegisteredUsers().size(), event.getMaxPlayer());
         Assertions.assertFalse(event.getRegisteredUsers().stream()
-                                    .anyMatch(u -> u.getFirstName().equals(user.getFirstName())));
+                                    .anyMatch(u -> u.getNickname().equals(user.getNickname())));
         try {
-            result = this.service.addUserInEvent(event.getUuid(), user.getFirstName());
+            result = this.service.addUserInEvent(event.getUuid(), user.getNickname());
         }
         catch (Exception e) {}
         Assertions.assertNotNull(result);
         Assertions.assertEquals("OK", result.getStatus());
         Assertions.assertEquals(event.getRegisteredUsers().size(), event.getMaxPlayer());
         Assertions.assertTrue(event.getRegisteredUsers().stream()
-                                    .anyMatch(u -> u.getFirstName().equals(user.getFirstName())));
+                                    .anyMatch(u -> u.getNickname().equals(user.getNickname())));
     }
 
     /**
@@ -830,19 +829,19 @@ public class EventServiceTest {
         Assertions.assertEquals(event.getRegisteredUsers().size(), event.getMaxPlayer());
         Assertions.assertNotEquals(event.getWaitingUsers().size(), event.getMaxPlayer());
         Assertions.assertFalse(event.getRegisteredUsers().stream()
-                .anyMatch(u -> u.getFirstName().equals(user.getFirstName())));
+                .anyMatch(u -> u.getNickname().equals(user.getNickname())));
         Assertions.assertFalse(event.getWaitingUsers().stream()
-                .anyMatch(u -> u.getFirstName().equals(user.getFirstName())));
+                .anyMatch(u -> u.getNickname().equals(user.getNickname())));
         try {
-            result = this.service.addUserInEvent(event.getUuid(), user.getFirstName());
+            result = this.service.addUserInEvent(event.getUuid(), user.getNickname());
         }
         catch (Exception e) {}
         Assertions.assertNotNull(result);
         Assertions.assertEquals("WT", result.getStatus());
         Assertions.assertFalse(event.getRegisteredUsers().stream()
-                .anyMatch(u -> u.getFirstName().equals(user.getFirstName())));
+                .anyMatch(u -> u.getNickname().equals(user.getNickname())));
         Assertions.assertTrue(event.getWaitingUsers().stream()
-                .anyMatch(u -> u.getFirstName().equals(user.getFirstName())));
+                .anyMatch(u -> u.getNickname().equals(user.getNickname())));
     }
 
     /**
@@ -871,7 +870,7 @@ public class EventServiceTest {
         Assertions.assertEquals(event.getRegisteredUsers().size(), event.getMaxPlayer());
         Assertions.assertEquals(event.getWaitingUsers().size(), event.getMaxPlayer());
         try {
-            result = this.service.addUserInEvent(event.getUuid(), user.getFirstName());
+            result = this.service.addUserInEvent(event.getUuid(), user.getNickname());
         }
         catch (Exception e) {}
         Assertions.assertNotNull(result);
@@ -941,18 +940,21 @@ public class EventServiceTest {
         Location location = new Location(10L, "Brest", null, null, null);
         Event event = TestingToolBox.createValidEvent(10L, game, user, location);
         location.setEvent(event);
-        event.addUser(user);
+        Assertions.assertTrue(event.addUser(user));
+        User nextInLine = TestingToolBox.createValidFullUser(500L, "Le suivant");
+        Assertions.assertTrue(event.addUserInWaitingQueue(nextInLine));
         BDDMockito.when(this.repository.findByUuid(event.getUuid())).thenReturn(Optional.of(event));
         BDDMockito.when(this.userRepository.findByNickname(user.getNickname())).thenReturn(Optional.of(user));
 
         // Testing
         boolean result = false;
-        Assertions.assertTrue(event.getRegisteredUsers().stream()
-                                    .anyMatch(u -> u.getFirstName().equals(user.getNickname())));
-        try { result = this.service.removeUserInEvent(event.getUuid(), user.getFirstName()); } catch (Exception e) {}
+        Assertions.assertTrue(event.getRegisteredUsers().stream().anyMatch(u -> u.getNickname().equals(user.getNickname())));
+        Assertions.assertTrue(event.getWaitingUsers().stream().anyMatch(u -> u.getNickname().equals(nextInLine.getNickname())));
+        try { result = this.service.removeUserInEvent(event.getUuid(), user.getNickname()); } catch (Exception e) {}
         Assertions.assertTrue(result);
-        Assertions.assertFalse(event.getRegisteredUsers().stream()
-                                    .anyMatch(u -> u.getFirstName().equals(user.getNickname())));
+        Assertions.assertFalse(event.getRegisteredUsers().stream().anyMatch(u -> u.getNickname().equals(user.getNickname())));
+        Assertions.assertFalse(event.getWaitingUsers().stream().anyMatch(u -> u.getNickname().equals(nextInLine.getNickname())));
+        Assertions.assertTrue(event.getRegisteredUsers().stream().anyMatch(u -> u.getNickname().equals(nextInLine.getNickname())));
     }
 
     /**
@@ -967,18 +969,16 @@ public class EventServiceTest {
         Location location = new Location(10L, "Brest", null, null, null);
         Event event = TestingToolBox.createValidEvent(10L, game, user, location);
         location.setEvent(event);
-        event.addUserInWaitingQueue(user);
+        Assertions.assertTrue(event.addUserInWaitingQueue(user));
         BDDMockito.when(this.repository.findByUuid(event.getUuid())).thenReturn(Optional.of(event));
         BDDMockito.when(this.userRepository.findByNickname(user.getNickname())).thenReturn(Optional.of(user));
 
         // Testing
         boolean result = false;
-        Assertions.assertTrue(event.getWaitingUsers().stream()
-                .anyMatch(u -> u.getFirstName().equals(user.getNickname())));
-        try { result = this.service.removeUserInEvent(event.getUuid(), user.getFirstName()); } catch (Exception e) {}
+        Assertions.assertTrue(event.getWaitingUsers().stream().anyMatch(u -> u.getNickname().equals(user.getNickname())));
+        try { result = this.service.removeUserInEvent(event.getUuid(), user.getNickname()); } catch (Exception e) {}
         Assertions.assertTrue(result);
-        Assertions.assertFalse(event.getWaitingUsers().stream()
-                .anyMatch(u -> u.getFirstName().equals(user.getNickname())));
+        Assertions.assertFalse(event.getWaitingUsers().stream().anyMatch(u -> u.getNickname().equals(user.getNickname())));
     }
 
     /**
@@ -999,7 +999,7 @@ public class EventServiceTest {
         // Testing
         boolean result = true;
         Assertions.assertTrue(result);
-        try { result = this.service.removeUserInEvent(event.getUuid(), user.getFirstName()); } catch (Exception e) {}
+        try { result = this.service.removeUserInEvent(event.getUuid(), user.getNickname()); } catch (Exception e) {}
         Assertions.assertFalse(result);
     }
 }
