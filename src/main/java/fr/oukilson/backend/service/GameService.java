@@ -8,8 +8,8 @@ import org.modelmapper.ModelMapper;
 import java.util.*;
 
 public class GameService {
-    private GameRepository repository;
-    private ModelMapper mapper;
+    private final GameRepository repository;
+    private final ModelMapper mapper;
 
     public GameService(GameRepository repository, ModelMapper mapper) {
         this.repository = repository;
@@ -35,7 +35,7 @@ public class GameService {
      */
     public List<GameUuidDTO> findByName(String name) {
         List<GameUuidDTO> result = new LinkedList<>();
-        if (name!=null) {
+        if (name!=null && name.length()>=3) {
             repository.findAllByNameContaining(name).forEach(
                     g -> result.add(this.mapper.map(g, GameUuidDTO.class))
             );
