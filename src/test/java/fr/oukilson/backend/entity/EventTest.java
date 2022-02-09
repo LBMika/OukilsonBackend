@@ -78,7 +78,7 @@ public class EventTest {
         User user = TestingToolBox.createValidFullUser(1L, "toto");
 
         Assertions.assertTrue(event.addUserInWaitingQueue(user));
-        Assertions.assertFalse(event.addUser(user));
+        Assertions.assertTrue(event.getWaitingUsers().stream().anyMatch(u -> u.getNickname().equals(user.getNickname())));
     }
 
     /**
@@ -172,7 +172,7 @@ public class EventTest {
         User user = TestingToolBox.createValidFullUser(1L, "toto");
 
         Assertions.assertTrue(event.addUser(user));
-        Assertions.assertFalse(event.addUserInWaitingQueue(user));
+        Assertions.assertTrue(event.getRegisteredUsers().stream().anyMatch(u -> u.getNickname().equals(user.getNickname())));
     }
 
     /**
