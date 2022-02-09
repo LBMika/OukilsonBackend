@@ -160,6 +160,7 @@ public class Event {
             if (data.getId()==user.getId()) {
                 iter.remove();
                 result = true;
+                break;
             }
         }
         return result;
