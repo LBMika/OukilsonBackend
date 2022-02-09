@@ -36,7 +36,7 @@ public class GameService {
     public List<GameUuidDTO> findByName(String name) {
         List<GameUuidDTO> result = new LinkedList<>();
         if (name!=null && name.length()>=3) {
-            repository.findAllByNameContaining(name).forEach(
+            repository.findAllByNameContainingIgnoreCase(name).forEach(
                     g -> result.add(this.mapper.map(g, GameUuidDTO.class))
             );
         }

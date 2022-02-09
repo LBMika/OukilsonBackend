@@ -40,6 +40,6 @@ public class GameController {
      */
     @GetMapping("/search")
     public ResponseEntity<List<GameUuidDTO>> findByName(@RequestParam(name = "name") String name) {
-        return ResponseEntity.ok().body(service.findByName(name.toLowerCase()));
+        return ResponseEntity.ok().body(service.findByName(name));
     }
 }
