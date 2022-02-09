@@ -124,4 +124,22 @@ public class GameServiceTest {
             Assertions.assertEquals(this.mapper.map(games.get(i), GameUuidDTO.class), list.get(i));
         }
     }
+
+    /**
+     * Test findByName with a name's length below 3 characters
+     */
+    @Test
+    @DisplayName("Test findByName : name's length below 3 characters")
+    public void testFindByNameTooShortName() {
+        String name = "a";
+        List<Game> games = new LinkedList<>();
+        int size = 4;
+        for (int i=0; i<size; i++) {
+            games.add(TestingToolBox.createValidFullGame((long) i, "Jeux n°"+i));
+        }
+        BDDMockito.when(this.repository.findAllByNameContaining(name)).thenReturn(games);
+        List<GameUuidDTO> list = this.service.findByName(name);
+        Assertions.assertNotNull(list);
+        Assertions.assertEquals(0, list.size());
+    }
 }
