@@ -9,8 +9,9 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/games")
+@CrossOrigin
 public class GameController {
-    private GameService service;
+    private final GameService service;
 
     public GameController(GameService service) {
         this.service = service;
