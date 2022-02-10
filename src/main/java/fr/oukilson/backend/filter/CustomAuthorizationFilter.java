@@ -51,12 +51,8 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
                     UsernamePasswordAuthenticationToken authenticationToken =
                             new UsernamePasswordAuthenticationToken(username, null, new ArrayList<>());
                     SecurityContextHolder.getContext().setAuthentication(authenticationToken);
-                    if (this.isAuthorized(username, requestURI, request))
-                        filterChain.doFilter(request, response);
-                    else {
-                        response.setHeader("error", username+"is not allowed in "+requestURI);
-                        response.sendError(HttpStatus.FORBIDDEN.value());
-                    }
+                    request.setAttribute("username", username);
+                    filterChain.doFilter(request, response);
                 }
                 catch (Exception e) {
                     response.sendError(HttpStatus.FORBIDDEN.value());
@@ -65,53 +61,5 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
             else
                 filterChain.doFilter(request, response);
         }
-    }
-
-    private boolean isAuthorized(String username, String uri, HttpServletRequest request) {
-        boolean result;
-        if (uri.startsWith("/users"))
-            result = this.isAuthorizedUsersPath(username, uri.substring(6), request);
-        else
-        if (uri.startsWith("/events"))
-            result = this.isAuthorizedEventsPath(username, uri.substring(7), request);
-        else
-            result = true;
-        return result;
-    }
-
-    private boolean isAuthorizedUsersPath(String username, String uri, HttpServletRequest request) {
-        boolean result;
-        String httpMethod = request.getMethod();
-        if (httpMethod.equalsIgnoreCase("PUT")) {
-            if (uri.startsWith("/friend/")) {
-                request.setAttribute("username", username);
-                result = true;
-            }
-            else
-                result = false;
-        }
-        else
-            result = false;
-        return result;
-    }
-
-    private boolean isAuthorizedEventsPath(String username, String uri, HttpServletRequest request) {
-        boolean result;
-        String httpMethod = request.getMethod();
-        if (httpMethod.equalsIgnoreCase("PUT")) {
-            if (uri.equals("") || uri.startsWith("/add_user/") || uri.startsWith("/remove_user/")) {
-                request.setAttribute("username", username);
-                result = true;
-            }
-            else
-                result = false;
-        }
-        else if (httpMethod.equalsIgnoreCase("DELETE")) {
-            request.setAttribute("username", username);
-            result = true;
-        }
-        else
-            result = false;
-        return result;
     }
 }
