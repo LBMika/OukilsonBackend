@@ -500,8 +500,7 @@ public class EventControllerTest extends SecurityEnabledSetup {
                             .contentType(MediaType.APPLICATION_JSON)
                             .characterEncoding(StandardCharsets.UTF_8)
                             .content(gson.toJson(data)))
-                    .andExpect(MockMvcResultMatchers.status().isBadRequest())
-                    .andReturn();
+                    .andExpect(MockMvcResultMatchers.status().isBadRequest());
     }
 
     /**
@@ -590,4 +589,74 @@ public class EventControllerTest extends SecurityEnabledSetup {
 
     // Method removeUserInEvent
 
+    /**
+     * Test removeUserInEvent : service throws exception
+     */
+    @DisplayName("Test removeUserInEvent : service throws exception")
+    @Test
+    @WithMockUser(username = "Toto", password = "b41419df9bdaa5cd16d4766696bc486c8eca5fbcaa99a0e06bb034504f93f71a", roles = "")
+    public void testRemoveUserInEventServiceException() throws Exception {
+        // Mock
+        Mockito.when(this.service.removeUserInEvent(ArgumentMatchers.anyString(), ArgumentMatchers.anyString()))
+                .thenThrow(new RuntimeException());
+
+        // Assert
+        Gson gson = TestingToolBox.getInitializedGSON();
+        EventRemoveUserDTO data = new EventRemoveUserDTO("ljdsqlùghqsdgkfg");
+        this.mockMvc.perform(MockMvcRequestBuilders
+                        .put(route+"/remove_user")
+                        .requestAttr("username", "Toto")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .characterEncoding(StandardCharsets.UTF_8)
+                        .content(gson.toJson(data)))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+    }
+
+
+    /**
+     * Test removeUserInEvent : removal ok
+     */
+    @DisplayName("Test removeUserInEvent : user removed")
+    @Test
+    @WithMockUser(username = "Toto", password = "b41419df9bdaa5cd16d4766696bc486c8eca5fbcaa99a0e06bb034504f93f71a", roles = "")
+    public void testRemoveUserInEventUserRemoved() throws Exception {
+        // Mock
+        Mockito.when(this.service.removeUserInEvent(ArgumentMatchers.anyString(), ArgumentMatchers.anyString()))
+                .thenReturn(true);
+
+        // Assert
+        Gson gson = TestingToolBox.getInitializedGSON();
+        EventAddUserDTO data = new EventAddUserDTO("jjjjjjjjjjjjjjjjjjjj");
+        this.mockMvc.perform(MockMvcRequestBuilders.put(route+"/remove_user")
+                        .requestAttr("username", "Toto")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .characterEncoding(StandardCharsets.UTF_8)
+                        .content(gson.toJson(data)))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$").isBoolean())
+                .andExpect(MockMvcResultMatchers.jsonPath("$").value("true"));
+    }
+    /**
+     * Test removeUserInEvent : removal ko
+     */
+    @DisplayName("Test removeUserInEvent : user not removed")
+    @Test
+    @WithMockUser(username = "Toto", password = "b41419df9bdaa5cd16d4766696bc486c8eca5fbcaa99a0e06bb034504f93f71a", roles = "")
+    public void testRemoveUserInEventUserNotRemoved() throws Exception {
+        // Mock
+        Mockito.when(this.service.removeUserInEvent(ArgumentMatchers.anyString(), ArgumentMatchers.anyString()))
+                .thenReturn(false);
+
+        // Assert
+        Gson gson = TestingToolBox.getInitializedGSON();
+        EventAddUserDTO data = new EventAddUserDTO("jjjjjjjjjjjjjjjjjjjj");
+        this.mockMvc.perform(MockMvcRequestBuilders.put(route+"/remove_user")
+                        .requestAttr("username", "Toto")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .characterEncoding(StandardCharsets.UTF_8)
+                        .content(gson.toJson(data)))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$").isBoolean())
+                .andExpect(MockMvcResultMatchers.jsonPath("$").value("false"));
+    }
 }
