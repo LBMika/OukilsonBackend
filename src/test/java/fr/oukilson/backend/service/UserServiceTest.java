@@ -5,6 +5,7 @@ import fr.oukilson.backend.dto.user.UserDTO;
 import fr.oukilson.backend.entity.User;
 import fr.oukilson.backend.model.RegexCollection;
 import fr.oukilson.backend.repository.EventRepository;
+import fr.oukilson.backend.repository.GameRepository;
 import fr.oukilson.backend.repository.UserRepository;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -26,13 +27,15 @@ public class UserServiceTest {
     private UserRepository userRepository;
     @MockBean
     private EventRepository eventRepository;
+    @MockBean
+    private GameRepository gameRepository;
     @Autowired
     private RegexCollection regexCollection;
     private UserService service;
 
     @BeforeAll
     public void init() {
-        service = new UserService(userRepository, eventRepository, new ModelMapper(), regexCollection);
+        service = new UserService(userRepository, eventRepository, gameRepository, new ModelMapper(), regexCollection);
     }
 
     // Method findUserByNickname
