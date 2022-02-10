@@ -36,7 +36,7 @@ public class UserControllerTest extends SecurityEnabledSetup {
     @Test
     public void testFindByNicknameFound() throws Exception {
         String nickname = "Tutululu";
-        UserDTO dto = new UserDTO(nickname, new LinkedList<>(), new LinkedList<>());
+        UserDTO dto = new UserDTO(nickname, new LinkedList<>(), new LinkedList<>(), new LinkedList<>(), new LinkedList<>());
         Mockito.when(this.userService.findUserByNickname(nickname)).thenReturn(dto);
         MvcResult result = this.mockMvc.perform(MockMvcRequestBuilders.get(route+"/"+nickname))
                 .andExpect(MockMvcResultMatchers.status().isOk())
@@ -180,8 +180,9 @@ public class UserControllerTest extends SecurityEnabledSetup {
     @DisplayName("Test createUser : user creation successful")
     @Test
     public void testCreateUserUserCreationSuccess() throws Exception {
-        UserCreationDTO body = new UserCreationDTO("Toupie", "sdfghjklmmdj", "hibiscus@george.fr");
-        UserDTO userDTO = new UserDTO("Toupie", new LinkedList<>(), new LinkedList<>());
+        String nickname = "Toupie";
+        UserCreationDTO body = new UserCreationDTO(nickname, "sdfghjklmmdj", "hibiscus@george.fr");
+        UserDTO userDTO = new UserDTO(nickname, new LinkedList<>(), new LinkedList<>(), new LinkedList<>(), new LinkedList<>());
         Mockito.when(this.userService.createUser(body)).thenReturn(userDTO);
         Gson gson = new Gson();
         MvcResult result = this.mockMvc.perform(MockMvcRequestBuilders
