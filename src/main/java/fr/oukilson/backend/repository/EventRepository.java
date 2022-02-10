@@ -13,5 +13,8 @@ public interface EventRepository extends JpaRepository<Event, Long> {
     List<Event> findAllByStartingDateAfter(LocalDateTime date);
     List<Event> findAllByLocationTown(String town);
     List<Event> findAllByLocationTownContaining(String town);
+    List<Event> findAllByCreatorId(long id);
+    List<Event> findAllByRegisteredUsersId(long id);
+    List<Event> findAllByCreatorIdOrRegisteredUsersIdOrWaitingUsersId(long id1, long id2, long id3);
     void deleteByUuid(String uuid);
 }
