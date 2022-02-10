@@ -1,41 +1,16 @@
 package fr.oukilson.backend.util;
 
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.algorithms.Algorithm;
 import com.google.common.hash.Hashing;
 import com.google.gson.*;
 import fr.oukilson.backend.entity.Event;
 import fr.oukilson.backend.entity.Game;
 import fr.oukilson.backend.entity.Location;
 import fr.oukilson.backend.entity.User;
-import org.springframework.beans.factory.annotation.Autowired;
 import java.nio.charset.StandardCharsets;
-import java.sql.Date;
 import java.time.LocalDateTime;
-import java.time.ZoneOffset;
-import java.util.List;
 import java.util.UUID;
 
 public class TestingToolBox {
-    @Autowired
-    private static Algorithm algo;
-
-    /**
-     * Generate an authentication token
-     * @param username Username
-     * @param issuer The login url
-     * @param roles The list of roles bestowed to the user
-     * @return String Token
-     */
-    public static String generateToken(String username, String issuer, List<String> roles) {
-        return JWT.create()
-                .withSubject(username)
-                .withExpiresAt(Date.from(LocalDateTime.now().plusDays(1).toInstant(ZoneOffset.UTC)))
-                .withIssuer(issuer)
-                .withClaim("roles", roles)
-                .sign(algo);
-    }
-
     /**
      * Create a basic user
      * @param id Id
