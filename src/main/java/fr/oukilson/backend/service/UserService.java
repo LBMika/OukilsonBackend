@@ -57,7 +57,6 @@ public class UserService implements UserDetailsService {
             }
             else
                 result = null;
-
         }
         else
             result = null;
