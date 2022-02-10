@@ -91,11 +91,11 @@ public class EventServiceTest {
         List<Event> events = new LinkedList<>();
         int size = 4;
         String town = "Lyon";
-        for (int i=0; i<size; i++) {
-            User user = TestingToolBox.createValidFullUser((long)i, "Nom"+i);
-            Game game = TestingToolBox.createValidFullGame((long)i, "Jeu "+i);
-            Location loc = new Location((long)i, town, null, null, null);
-            Event event = TestingToolBox.createValidEvent((long)i, game, user, loc);
+        for (int i = 0; i < size; i++) {
+            User user = TestingToolBox.createValidFullUser((long) i, "Nom" + i);
+            Game game = TestingToolBox.createValidFullGame((long) i, "Jeu " + i);
+            Location loc = new Location((long) i, town, null, null, null);
+            Event event = TestingToolBox.createValidEvent((long) i, game, user, loc);
             loc.setEvent(event);
             events.add(event);
         }
@@ -106,7 +106,7 @@ public class EventServiceTest {
         List<EventDTO> result = this.service.findByFilter("", town);
         Assertions.assertNotNull(result);
         Assertions.assertEquals(events.size(), result.size());
-        for (int i=0; i<size; i++) {
+        for (int i = 0; i < size; i++) {
             Assertions.assertEquals(this.mapper.map(events.get(i), EventDTO.class), result.get(i));
         }
     }
@@ -121,11 +121,11 @@ public class EventServiceTest {
         // Setting up
         List<Event> events = new LinkedList<>();
         int size = 8;
-        for (int i=0; i<size; i++) {
-            User user = TestingToolBox.createValidFullUser((long)i, "Nom"+i);
-            Game game = TestingToolBox.createValidFullGame((long)i, "Jeu "+i);
-            Location loc = new Location((long)i, "Ville "+i, null, null, null);
-            Event event = TestingToolBox.createValidEvent((long)i, game, user, loc);
+        for (int i = 0; i < size; i++) {
+            User user = TestingToolBox.createValidFullUser((long) i, "Nom" + i);
+            Game game = TestingToolBox.createValidFullGame((long) i, "Jeu " + i);
+            Location loc = new Location((long) i, "Ville " + i, null, null, null);
+            Event event = TestingToolBox.createValidEvent((long) i, game, user, loc);
             loc.setEvent(event);
             events.add(event);
         }
@@ -137,7 +137,7 @@ public class EventServiceTest {
         List<EventDTO> result = this.service.findByFilter(date.toString(), "");
         Assertions.assertNotNull(result);
         Assertions.assertEquals(events.size(), result.size());
-        for (int i=0; i<size; i++) {
+        for (int i = 0; i < size; i++) {
             Assertions.assertEquals(this.mapper.map(events.get(i), EventDTO.class), result.get(i));
         }
     }
@@ -192,21 +192,21 @@ public class EventServiceTest {
         List<Event> townEvents = new LinkedList<>();
         List<Event> dateEvents = new LinkedList<>();
         int size = 3;
-        for (int i=0; i<size; i++) {
-            User user = TestingToolBox.createValidFullUser((long)i, "Nom"+i);
-            Game game = TestingToolBox.createValidFullGame((long)i, "Jeu "+i);
-            Location loc = new Location((long)i, "Ville "+i, null, null, null);
-            Event event = TestingToolBox.createValidEvent((long)i, game, user, loc);
+        for (int i = 0; i < size; i++) {
+            User user = TestingToolBox.createValidFullUser((long) i, "Nom" + i);
+            Game game = TestingToolBox.createValidFullGame((long) i, "Jeu " + i);
+            Location loc = new Location((long) i, "Ville " + i, null, null, null);
+            Event event = TestingToolBox.createValidEvent((long) i, game, user, loc);
             loc.setEvent(event);
             dateEvents.add(event);
         }
         LocalDateTime date = dateEvents.get(0).getStartingDate().minusYears(1);
         size += 2;
         Location loc = new Location((long) size, town, null, null, null);
-        for (int i=0; i<size; i++) {
-            User user = TestingToolBox.createValidFullUser(2L *size+i, "NomBis"+i);
-            Game game = TestingToolBox.createValidFullGame(2L *size+i, "JeuBis"+i);
-            Event event = TestingToolBox.createValidEvent(2L *size+i, game, user, loc);
+        for (int i = 0; i < size; i++) {
+            User user = TestingToolBox.createValidFullUser(2L * size + i, "NomBis" + i);
+            Game game = TestingToolBox.createValidFullGame(2L * size + i, "JeuBis" + i);
+            Event event = TestingToolBox.createValidEvent(2L * size + i, game, user, loc);
             loc.setEvent(event);
             townEvents.add(event);
         }
@@ -218,7 +218,7 @@ public class EventServiceTest {
         Assertions.assertNotNull(result);
         Assertions.assertEquals(dateEvents.size(), result.size());
         Assertions.assertNotEquals(townEvents.size(), result.size());
-        for (int i=0; i<dateEvents.size(); i++) {
+        for (int i = 0; i < dateEvents.size(); i++) {
             Assertions.assertEquals(this.mapper.map(dateEvents.get(i), EventDTO.class), result.get(i));
         }
     }
@@ -282,6 +282,7 @@ public class EventServiceTest {
     /**
      * Check if the event creation failed with a IllegalArgumentException when the title is null.
      * The parameter is a valid EventCreateDTO which will be altered according to the test purposes
+     *
      * @param data A valid EventCreateDTO
      */
     public void testInvalidTitle(EventCreateDTO data) {
@@ -293,6 +294,7 @@ public class EventServiceTest {
      * Check if the event creation failed with a IllegalArgumentException when the game object is null
      * or if the game's uuid is null.
      * The parameter is a valid EventCreateDTO which will be altered according to the test purposes
+     *
      * @param data A valid EventCreateDTO
      */
     public void testInvalidGame(EventCreateDTO data) {
@@ -305,6 +307,7 @@ public class EventServiceTest {
     /**
      * Check if the event creation failed with a IllegalArgumentException when the description is null.
      * The parameter is a valid EventCreateDTO which will be altered according to the test purposes
+     *
      * @param data A valid EventCreateDTO
      */
     public void testInvalidDescription(EventCreateDTO data) {
@@ -316,12 +319,13 @@ public class EventServiceTest {
      * Check if the event creation failed with a IllegalArgumentException when the player count is invalid;
      * meaning to low minimal player count or the minimal player count is higher than the maximal player count.
      * The parameter is a valid EventCreateDTO which will be altered according to the test purposes
+     *
      * @param data A valid EventCreateDTO
      */
     public void testInvalidPlayerCount(EventCreateDTO data) {
         data.setMinPlayer(1);
         Assertions.assertThrows(IllegalArgumentException.class, () -> this.service.save(data, ""));
-        data.setMinPlayer(data.getMaxPlayer()+1);
+        data.setMinPlayer(data.getMaxPlayer() + 1);
         Assertions.assertThrows(IllegalArgumentException.class, () -> this.service.save(data, ""));
     }
 
@@ -329,6 +333,7 @@ public class EventServiceTest {
      * Check if the event creation failed with a IllegalArgumentException when the location object is null
      * or the town's location is null.
      * The parameter is a valid EventCreateDTO which will be altered according to the test purposes
+     *
      * @param data A valid EventCreateDTO
      */
     public void testInvalidLocation(EventCreateDTO data) {
@@ -345,6 +350,7 @@ public class EventServiceTest {
      * Ending date must be after starting date.
      * Ending date can be null
      * The parameter is a valid EventCreateDTO which will be altered according to the test purposes
+     *
      * @param data A valid EventCreateDTO
      */
     public void testInvalidDate(EventCreateDTO data) {
@@ -435,8 +441,7 @@ public class EventServiceTest {
         EventDTO result = null;
         try {
             result = this.service.save(toCreate, user.getNickname());
-        }
-        finally {
+        } finally {
             Assertions.assertNotNull(result);
             event.setUuid(result.getUuid());
             event.setCreationDate(result.getCreationDate());
@@ -486,6 +491,7 @@ public class EventServiceTest {
     /**
      * Check if the event creation failed with a IllegalArgumentException when the title is null.
      * The parameter is a valid EventCreateDTO which will be altered according to the test purposes
+     *
      * @param data A valid EventCreateDTO
      */
     public void testInvalidTitle(EventUpdateDTO data) {
@@ -497,6 +503,7 @@ public class EventServiceTest {
      * Check if the event creation failed with a IllegalArgumentException when the game object is null
      * or if the game's uuid is null.
      * The parameter is a valid EventCreateDTO which will be altered according to the test purposes
+     *
      * @param data A valid EventCreateDTO
      */
     public void testInvalidGame(EventUpdateDTO data) {
@@ -509,6 +516,7 @@ public class EventServiceTest {
     /**
      * Check if the event creation failed with a IllegalArgumentException when the description is null.
      * The parameter is a valid EventCreateDTO which will be altered according to the test purposes
+     *
      * @param data A valid EventCreateDTO
      */
     public void testInvalidDescription(EventUpdateDTO data) {
@@ -520,12 +528,13 @@ public class EventServiceTest {
      * Check if the event creation failed with a IllegalArgumentException when the player count is invalid;
      * meaning to low minimal player count or the minimal player count is higher than the maximal player count.
      * The parameter is a valid EventCreateDTO which will be altered according to the test purposes
+     *
      * @param data A valid EventCreateDTO
      */
     public void testInvalidPlayerCount(EventUpdateDTO data) {
         data.setMinPlayer(1);
         Assertions.assertThrows(IllegalArgumentException.class, () -> this.service.update(data, ""));
-        data.setMinPlayer(data.getMaxPlayer()+1);
+        data.setMinPlayer(data.getMaxPlayer() + 1);
         Assertions.assertThrows(IllegalArgumentException.class, () -> this.service.update(data, ""));
     }
 
@@ -533,6 +542,7 @@ public class EventServiceTest {
      * Check if the event creation failed with a IllegalArgumentException when the location object is null
      * or the town's location is null.
      * The parameter is a valid EventCreateDTO which will be altered according to the test purposes
+     *
      * @param data A valid EventCreateDTO
      */
     public void testInvalidLocation(EventUpdateDTO data) {
@@ -549,6 +559,7 @@ public class EventServiceTest {
      * Ending date must be after starting date.
      * Ending date can be null
      * The parameter is a valid EventCreateDTO which will be altered according to the test purposes
+     *
      * @param data A valid EventCreateDTO
      */
     public void testInvalidDate(EventUpdateDTO data) {
@@ -617,7 +628,7 @@ public class EventServiceTest {
         // Testing
         EventUpdateDTO data = this.mapper.map(event, EventUpdateDTO.class);
         Assertions.assertThrows(IllegalArgumentException.class,
-                () -> this.service.update(data, user.getNickname()+"t"));
+                () -> this.service.update(data, user.getNickname() + "t"));
     }
 
     /**
@@ -729,7 +740,7 @@ public class EventServiceTest {
     @Test
     public void testAddUserInEventNullUuid() {
         Assertions.assertThrows(IllegalArgumentException.class,
-                () ->this.service.addUserInEvent(null, "Toto"));
+                () -> this.service.addUserInEvent(null, "Toto"));
     }
 
     /**
@@ -739,7 +750,7 @@ public class EventServiceTest {
     @Test
     public void testAddUserInEventNullUsername() {
         Assertions.assertThrows(IllegalArgumentException.class,
-                () ->this.service.addUserInEvent(UUID.randomUUID().toString(), null));
+                () -> this.service.addUserInEvent(UUID.randomUUID().toString(), null));
     }
 
     /**
@@ -751,7 +762,7 @@ public class EventServiceTest {
         User user = TestingToolBox.createValidFullUser(3L, "Alpha");
         BDDMockito.when(this.userRepository.findByNickname(user.getNickname())).thenReturn(Optional.of(user));
         Assertions.assertThrows(IllegalArgumentException.class,
-                () ->this.service.addUserInEvent(UUID.randomUUID().toString(), user.getNickname()));
+                () -> this.service.addUserInEvent(UUID.randomUUID().toString(), user.getNickname()));
     }
 
     /**
@@ -767,7 +778,7 @@ public class EventServiceTest {
         location.setEvent(event);
         BDDMockito.when(this.repository.findByUuid(event.getUuid())).thenReturn(Optional.of(event));
         Assertions.assertThrows(IllegalArgumentException.class,
-                () ->this.service.addUserInEvent(event.getUuid(), "Titi"));
+                () -> this.service.addUserInEvent(event.getUuid(), "Titi"));
     }
 
     /**
@@ -782,8 +793,8 @@ public class EventServiceTest {
         Location location = new Location(10L, "Brest", null, null, null);
         Event event = TestingToolBox.createValidEvent(10L, game, user, location);
         location.setEvent(event);
-        for (int i=1; i<event.getMaxPlayer(); i++) {
-            User tempUser = TestingToolBox.createValidFullUser(user.getId()+i, "User n°"+i);
+        for (int i = 1; i < event.getMaxPlayer(); i++) {
+            User tempUser = TestingToolBox.createValidFullUser(user.getId() + i, "User n°" + i);
             event.addUser(tempUser);
         }
         BDDMockito.when(this.userRepository.findByNickname(user.getNickname())).thenReturn(Optional.of(user));
@@ -793,16 +804,16 @@ public class EventServiceTest {
         EventAddingResultDTO result = null;
         Assertions.assertNotEquals(event.getRegisteredUsers().size(), event.getMaxPlayer());
         Assertions.assertFalse(event.getRegisteredUsers().stream()
-                                    .anyMatch(u -> u.getNickname().equals(user.getNickname())));
+                .anyMatch(u -> u.getNickname().equals(user.getNickname())));
         try {
             result = this.service.addUserInEvent(event.getUuid(), user.getNickname());
+        } catch (Exception e) {
         }
-        catch (Exception e) {}
         Assertions.assertNotNull(result);
         Assertions.assertEquals("OK", result.getStatus());
         Assertions.assertEquals(event.getRegisteredUsers().size(), event.getMaxPlayer());
         Assertions.assertTrue(event.getRegisteredUsers().stream()
-                                    .anyMatch(u -> u.getNickname().equals(user.getNickname())));
+                .anyMatch(u -> u.getNickname().equals(user.getNickname())));
     }
 
     /**
@@ -817,8 +828,8 @@ public class EventServiceTest {
         Location location = new Location(10L, "Brest", null, null, null);
         Event event = TestingToolBox.createValidEvent(10L, game, user, location);
         location.setEvent(event);
-        for (int i=0; i<event.getMaxPlayer(); i++) {
-            User tempUser = TestingToolBox.createValidFullUser(user.getId()+i, "User n°"+i);
+        for (int i = 0; i < event.getMaxPlayer(); i++) {
+            User tempUser = TestingToolBox.createValidFullUser(user.getId() + i, "User n°" + i);
             event.addUser(tempUser);
         }
         BDDMockito.when(this.userRepository.findByNickname(user.getNickname())).thenReturn(Optional.of(user));
@@ -834,8 +845,8 @@ public class EventServiceTest {
                 .anyMatch(u -> u.getNickname().equals(user.getNickname())));
         try {
             result = this.service.addUserInEvent(event.getUuid(), user.getNickname());
+        } catch (Exception e) {
         }
-        catch (Exception e) {}
         Assertions.assertNotNull(result);
         Assertions.assertEquals("WT", result.getStatus());
         Assertions.assertFalse(event.getRegisteredUsers().stream()
@@ -856,10 +867,10 @@ public class EventServiceTest {
         Location location = new Location(10L, "Brest", null, null, null);
         Event event = TestingToolBox.createValidEvent(10L, game, user, location);
         location.setEvent(event);
-        for (int i=0; i<event.getMaxPlayer(); i++) {
-            User tempUser1 = TestingToolBox.createValidFullUser(user.getId()+i, "User n°"+i);
+        for (int i = 0; i < event.getMaxPlayer(); i++) {
+            User tempUser1 = TestingToolBox.createValidFullUser(user.getId() + i, "User n°" + i);
             event.addUser(tempUser1);
-            User temptUser2 = TestingToolBox.createValidFullUser(((long) event.getMaxPlayer() *i), "User n°"+event.getMaxPlayer()*i);
+            User temptUser2 = TestingToolBox.createValidFullUser(((long) event.getMaxPlayer() * i), "User n°" + event.getMaxPlayer() * i);
             event.addUserInWaitingQueue(temptUser2);
         }
         BDDMockito.when(this.userRepository.findByNickname(user.getNickname())).thenReturn(Optional.of(user));
@@ -871,8 +882,8 @@ public class EventServiceTest {
         Assertions.assertEquals(event.getWaitingUsers().size(), event.getMaxPlayer());
         try {
             result = this.service.addUserInEvent(event.getUuid(), user.getNickname());
+        } catch (Exception e) {
         }
-        catch (Exception e) {}
         Assertions.assertNotNull(result);
         Assertions.assertEquals("KO", result.getStatus());
     }
@@ -886,7 +897,7 @@ public class EventServiceTest {
     @Test
     public void testRemoveUserInEventNullUuid() {
         Assertions.assertThrows(IllegalArgumentException.class,
-                () ->this.service.removeUserInEvent(null, "Toto"));
+                () -> this.service.removeUserInEvent(null, "Toto"));
     }
 
     /**
@@ -896,7 +907,7 @@ public class EventServiceTest {
     @Test
     public void testRemoveUserInEventNullUsername() {
         Assertions.assertThrows(IllegalArgumentException.class,
-                () ->this.service.removeUserInEvent(UUID.randomUUID().toString(), null));
+                () -> this.service.removeUserInEvent(UUID.randomUUID().toString(), null));
     }
 
     /**
@@ -906,7 +917,7 @@ public class EventServiceTest {
     @Test
     public void testRemoveUserInEventUnknownEvent() {
         Assertions.assertThrows(IllegalArgumentException.class,
-                () ->this.service.removeUserInEvent(UUID.randomUUID().toString(), "Truc"));
+                () -> this.service.removeUserInEvent(UUID.randomUUID().toString(), "Truc"));
     }
 
     /**
@@ -925,7 +936,7 @@ public class EventServiceTest {
 
         // Testing
         Assertions.assertThrows(IllegalArgumentException.class,
-                () ->this.service.removeUserInEvent(event.getUuid(), "Truc"));
+                () -> this.service.removeUserInEvent(event.getUuid(), "Truc"));
     }
 
     /**
@@ -950,7 +961,10 @@ public class EventServiceTest {
         boolean result = false;
         Assertions.assertTrue(event.getRegisteredUsers().stream().anyMatch(u -> u.getNickname().equals(user.getNickname())));
         Assertions.assertTrue(event.getWaitingUsers().stream().anyMatch(u -> u.getNickname().equals(nextInLine.getNickname())));
-        try { result = this.service.removeUserInEvent(event.getUuid(), user.getNickname()); } catch (Exception e) {}
+        try {
+            result = this.service.removeUserInEvent(event.getUuid(), user.getNickname());
+        } catch (Exception e) {
+        }
         Assertions.assertTrue(result);
         Assertions.assertFalse(event.getRegisteredUsers().stream().anyMatch(u -> u.getNickname().equals(user.getNickname())));
         Assertions.assertFalse(event.getWaitingUsers().stream().anyMatch(u -> u.getNickname().equals(nextInLine.getNickname())));
@@ -976,7 +990,10 @@ public class EventServiceTest {
         // Testing
         boolean result = false;
         Assertions.assertTrue(event.getWaitingUsers().stream().anyMatch(u -> u.getNickname().equals(user.getNickname())));
-        try { result = this.service.removeUserInEvent(event.getUuid(), user.getNickname()); } catch (Exception e) {}
+        try {
+            result = this.service.removeUserInEvent(event.getUuid(), user.getNickname());
+        } catch (Exception e) {
+        }
         Assertions.assertTrue(result);
         Assertions.assertFalse(event.getWaitingUsers().stream().anyMatch(u -> u.getNickname().equals(user.getNickname())));
     }
@@ -999,7 +1016,10 @@ public class EventServiceTest {
         // Testing
         boolean result = true;
         Assertions.assertTrue(result);
-        try { result = this.service.removeUserInEvent(event.getUuid(), user.getNickname()); } catch (Exception e) {}
+        try {
+            result = this.service.removeUserInEvent(event.getUuid(), user.getNickname());
+        } catch (Exception e) {
+        }
         Assertions.assertFalse(result);
     }
 }
