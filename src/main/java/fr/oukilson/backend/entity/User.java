@@ -35,6 +35,18 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "denied_id"))
     private List<User> deniedList = new ArrayList<>();
 
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinTable(name = "user_game_list",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "game_id"))
+    private List<Game> ownedGame = new ArrayList<>();
+
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinTable(name = "user_like_list",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "game_id"))
+    private List<Game> likedGame = new ArrayList<>();
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
