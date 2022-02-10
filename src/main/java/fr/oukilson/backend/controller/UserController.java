@@ -2,6 +2,7 @@ package fr.oukilson.backend.controller;
 
 import fr.oukilson.backend.dto.user.UserCreationDTO;
 import fr.oukilson.backend.dto.user.UserDTO;
+import fr.oukilson.backend.dto.user.UserGameDTO;
 import fr.oukilson.backend.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -92,5 +93,52 @@ public class UserController {
     @PutMapping("/friend/empty")
     public ResponseEntity<Boolean> emptyFriendList(@RequestAttribute(name = "username") String nickname) {
         return ResponseEntity.ok(this.userService.emptyFriendList(nickname));
+    }
+
+    /**
+     * Add a game into the owned game list
+     * @param nickname User's nickname
+     * @param game DTO holding the game's uuid
+     * @return True if removed
+     */
+    @PutMapping("/games/owned/add")
+    public ResponseEntity<Boolean> addOwnedGame(@RequestBody UserGameDTO game,
+                                                @RequestAttribute(name = "username") String nickname) {
+        return ResponseEntity.ok(this.userService.addOwnedGame(nickname, game));
+    }
+
+    /**
+     * Add a game into the liked game list
+     * @param nickname User's nickname
+     * @param game DTO holding the game's uuid
+     * @return True if removed
+     */
+    @PutMapping("/games/liked/add")
+    public ResponseEntity<Boolean> addLikedGame(@RequestBody UserGameDTO game,
+                                                @RequestAttribute(name = "username") String nickname) {
+        return ResponseEntity.ok(this.userService.addLikedGame(nickname, game));
+    }
+
+    /**
+     * Remove a game from the owned game list
+     * @param nickname User's nickname
+     * @param game DTO holding the game's uuid
+     * @return True if removed
+     */
+    @PutMapping("/games/owned/remove")
+    public ResponseEntity<Boolean> removeOwnedGame(@RequestBody UserGameDTO game,
+                                                @RequestAttribute(name = "username") String nickname) {
+        return ResponseEntity.ok(this.userService.removeOwnedGame(nickname, game));
+    }
+    /**
+     * Remove a game from the liked game list
+     * @param nickname User's nickname
+     * @param game DTO holding the game's uuid
+     * @return True if removed
+     */
+    @PutMapping("/games/liked/remove")
+    public ResponseEntity<Boolean> removeLikedGame(@RequestBody UserGameDTO game,
+                                                @RequestAttribute(name = "username") String nickname) {
+        return ResponseEntity.ok(this.userService.removeLikedGame(nickname, game));
     }
 }
