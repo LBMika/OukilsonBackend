@@ -42,4 +42,15 @@ public class GameService {
         }
         return result;
     }
+
+    /**
+     * Find the 10 games used to create an event lately
+     * @return List<GameUuidDTO>
+     */
+    public List<GameUuidDTO> findLastPlayedGame() {
+        List<GameUuidDTO> result = new LinkedList<>();
+        this.repository.findDistinctTop10ByOrderByEventsCreationDateAsc()
+                        .forEach(g -> result.add(this.mapper.map(g, GameUuidDTO.class)));
+        return result;
+    }
 }
