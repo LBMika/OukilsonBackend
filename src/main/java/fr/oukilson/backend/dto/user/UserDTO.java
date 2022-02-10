@@ -9,4 +9,5 @@ import java.util.List;
 public class UserDTO {
     private String nickname;
     private List<UserNameDTO> friendList;
+    private List<UserEventDTO> eventList;
 }
