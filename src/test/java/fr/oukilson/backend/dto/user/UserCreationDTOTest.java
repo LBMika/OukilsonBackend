@@ -1,6 +1,5 @@
 package fr.oukilson.backend.dto.user;
 
-import fr.oukilson.backend.dto.user.UserCreationDTO;
 import fr.oukilson.backend.model.RegexCollection;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -21,7 +20,7 @@ public class UserCreationDTOTest {
     /**
      * Test isValid when nicknamePattern is null
      */
-    @DisplayName("Test isValid : ")
+    @DisplayName("Test isValid : null nickname regex")
     @Test
     public void testIsValidNicknamePatternNull() {
         UserCreationDTO dto = new UserCreationDTO("Regis", "dfghjklhjjh", "regis@thales.fr");
@@ -32,7 +31,7 @@ public class UserCreationDTOTest {
     /**
      * Test isValid when emailPattern is null
      */
-    @DisplayName("Test isValid : ")
+    @DisplayName("Test isValid : null email regex")
     @Test
     public void testIsValidEmailPatternNull() {
         UserCreationDTO dto = new UserCreationDTO("Regis", "dfghjklhjjh", "regis@thales.fr");
@@ -43,7 +42,7 @@ public class UserCreationDTOTest {
     /**
      * Test isValid when nickname is null
      */
-    @DisplayName("Test isValid : ")
+    @DisplayName("Test isValid : null nickname")
     @Test
     public void testIsValidNicknameNull() {
         UserCreationDTO dto = new UserCreationDTO(null, "hsdfsqdmlhvjdfvbhld", "unemail@unserveur.fr");
@@ -63,7 +62,7 @@ public class UserCreationDTOTest {
     /**
      * Test isValid when email is null
      */
-    @DisplayName("Test isValid : ")
+    @DisplayName("Test isValid : null email")
     @Test
     public void testIsValidEmailNull() {
         UserCreationDTO dto = new UserCreationDTO("Jean", "hlsdqghosufr", null);
