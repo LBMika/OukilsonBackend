@@ -69,9 +69,9 @@ public class Event {
      */
     private boolean isUserInList(List<User> list, User user) {
         boolean result = false;
-        Iterator it = list.iterator();
+        Iterator<User> it = list.iterator();
         while (it.hasNext()) {
-            User u = (User) it.next();
+            User u = it.next();
             if (user.getId()==u.getId()) {
                 result = true;
                 break;
@@ -131,7 +131,11 @@ public class Event {
      * @return True if removed
      */
     private boolean removeUserInAttendingList(User user) {
-        return this.registeredUsers.removeIf(u -> u.getId()==user.getId());
+        boolean result = this.removeListIterator(this.registeredUsers, user);
+        if (result && this.waitingUsers.size()!=0) {
+            this.registeredUsers.add(this.waitingUsers.remove(0));
+        }
+        return result;
     }
 
     /**
@@ -140,6 +144,25 @@ public class Event {
      * @return True if removed
      */
     private boolean removeUserInWaitingQueue(User user) {
-        return this.waitingUsers.removeIf(u -> u.getId()==user.getId());
+        return this.removeListIterator(this.waitingUsers, user);
+    }
+
+    /**
+     * Remove a user from a list
+     * @param list List
+     * @param user User
+     * @return True if removed
+     */
+    private boolean removeListIterator(List<User> list, User user) {
+        boolean result = false;
+        for(Iterator<User> iter = list.iterator(); iter.hasNext();) {
+            User data = iter.next();
+            if (data.getId()==user.getId()) {
+                iter.remove();
+                result = true;
+                break;
+            }
+        }
+        return result;
     }
 }

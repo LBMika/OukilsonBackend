@@ -1,8 +1,8 @@
 package fr.oukilson.backend.controller;
 
 import com.google.gson.Gson;
-import fr.oukilson.backend.dto.GameDTO;
-import fr.oukilson.backend.dto.GameUuidDTO;
+import fr.oukilson.backend.dto.game.GameDTO;
+import fr.oukilson.backend.dto.game.GameUuidDTO;
 import fr.oukilson.backend.entity.Game;
 import fr.oukilson.backend.security.SecurityEnabledSetup;
 import fr.oukilson.backend.service.GameService;

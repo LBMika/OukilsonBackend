@@ -9,4 +9,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class GameUuidDTO {
     private String uuid;
+    private String name;
 }

@@ -1,15 +1,15 @@
 package fr.oukilson.backend.service;
 
-import fr.oukilson.backend.dto.GameDTO;
-import fr.oukilson.backend.dto.GameUuidDTO;
+import fr.oukilson.backend.dto.game.GameDTO;
+import fr.oukilson.backend.dto.game.GameUuidDTO;
 import fr.oukilson.backend.entity.Game;
 import fr.oukilson.backend.repository.GameRepository;
 import org.modelmapper.ModelMapper;
 import java.util.*;
 
 public class GameService {
-    private GameRepository repository;
-    private ModelMapper mapper;
+    private final GameRepository repository;
+    private final ModelMapper mapper;
 
     public GameService(GameRepository repository, ModelMapper mapper) {
         this.repository = repository;
@@ -35,8 +35,8 @@ public class GameService {
      */
     public List<GameUuidDTO> findByName(String name) {
         List<GameUuidDTO> result = new LinkedList<>();
-        if (name!=null) {
-            repository.findAllByNameContaining(name).forEach(
+        if (name!=null && name.length()>=3) {
+            repository.findAllByNameContainingIgnoreCase(name).forEach(
                     g -> result.add(this.mapper.map(g, GameUuidDTO.class))
             );
         }

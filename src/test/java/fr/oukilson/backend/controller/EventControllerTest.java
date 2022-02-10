@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -229,9 +230,11 @@ public class EventControllerTest extends SecurityEnabledSetup {
      */
     @DisplayName("Test : delete an existing event.")
     @Test
+    @WithMockUser(username = "Toto", password = "b41419df9bdaa5cd16d4766696bc486c8eca5fbcaa99a0e06bb034504f93f71a", roles = "")
     public void testDeleteByUuid() throws Exception {
         EventDeleteDTO eventDTO = new EventDeleteDTO(UUID.randomUUID().toString());
         this.mockMvc.perform(MockMvcRequestBuilders.delete(route)
+                        .requestAttr("username", "Toto")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new Gson().toJson(eventDTO)))
                 .andExpect(MockMvcResultMatchers.status().isOk())
@@ -244,9 +247,11 @@ public class EventControllerTest extends SecurityEnabledSetup {
      */
     @DisplayName("Test : delete a non-existing event")
     @Test
+    @WithMockUser(username = "Toto", password = "b41419df9bdaa5cd16d4766696bc486c8eca5fbcaa99a0e06bb034504f93f71a", roles = "")
     public void testDeleteByUuidWhenUuidNotValid() throws Exception {
         EventDeleteDTO eventDTO = new EventDeleteDTO("0");
         this.mockMvc.perform(MockMvcRequestBuilders.delete(route)
+                        .requestAttr("username", "Toto")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new Gson().toJson(eventDTO)))
                 .andExpect(MockMvcResultMatchers.status().isOk())
@@ -259,9 +264,11 @@ public class EventControllerTest extends SecurityEnabledSetup {
      */
     @DisplayName("Test : delete an event when the provided uuid is null")
     @Test
+    @WithMockUser(username = "Toto", password = "b41419df9bdaa5cd16d4766696bc486c8eca5fbcaa99a0e06bb034504f93f71a", roles = "")
     public void testDeleteByUuidWhenUuidIsNull() throws Exception {
         EventDeleteDTO eventDTO = new EventDeleteDTO();
         this.mockMvc.perform(MockMvcRequestBuilders.delete(route)
+                        .requestAttr("username", "Toto")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new Gson().toJson(eventDTO)))
                 .andExpect(MockMvcResultMatchers.status().isOk())
@@ -276,8 +283,10 @@ public class EventControllerTest extends SecurityEnabledSetup {
      */
     @DisplayName("Test : saving an event with a null body")
     @Test
+    @WithMockUser(username = "Toto", password = "b41419df9bdaa5cd16d4766696bc486c8eca5fbcaa99a0e06bb034504f93f71a", roles = "")
     public void testSaveNullBody() throws Exception {
         Gson gson = TestingToolBox.getInitializedGSON();
+        User user = TestingToolBox.createValidFullUser(12L, "Rodolf");
         this.mockMvc.perform(MockMvcRequestBuilders
                         .post(route)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -291,8 +300,9 @@ public class EventControllerTest extends SecurityEnabledSetup {
      */
     @DisplayName("Test : event creation when the save function throws an exception")
     @Test
+    @WithMockUser(username = "Toto", password = "b41419df9bdaa5cd16d4766696bc486c8eca5fbcaa99a0e06bb034504f93f71a", roles = "")
     public void testSaveCatchBranch() throws Exception {
-        Mockito.when(this.service.save(ArgumentMatchers.any(EventCreateDTO.class), ""))
+        Mockito.when(this.service.save(ArgumentMatchers.any(EventCreateDTO.class), ArgumentMatchers.eq("")))
                 .thenThrow(new RuntimeException());
         Gson gson = TestingToolBox.getInitializedGSON();
         this.mockMvc.perform(MockMvcRequestBuilders
@@ -308,22 +318,26 @@ public class EventControllerTest extends SecurityEnabledSetup {
      */
     @DisplayName("Test : create an event with valid fields")
     @Test
+    @WithMockUser(username = "Toto", password = "b41419df9bdaa5cd16d4766696bc486c8eca5fbcaa99a0e06bb034504f93f71a", roles = "")
     public void testSave() throws Exception {
         // Mocking
         ModelMapper mapper = new ModelMapper();
         User user = TestingToolBox.createValidFullUser(1L, "toto");
+        user.setPassword("b41419df9bdaa5cd16d4766696bc486c8eca5fbcaa99a0e06bb034504f93f71a");
         Game game = TestingToolBox.createValidFullGame(1L, "The game");
         Location location = new Location(45L, "Pau", "64000", "Boulevard des Pyrénées", null);
         Event event = TestingToolBox.createValidEvent(1L, game, user, location);
         location.setEvent(event);
         EventDTO eventDTO = mapper.map(event, EventDTO.class);
         EventCreateDTO eventCreateDTO = mapper.map(event, EventCreateDTO.class);
-        Mockito.when(service.save(ArgumentMatchers.any(EventCreateDTO.class), user.getNickname())).thenReturn(eventDTO);
+        Mockito.when(service.save(ArgumentMatchers.any(EventCreateDTO.class), ArgumentMatchers.eq(user.getNickname())))
+                .thenReturn(eventDTO);
 
         // Send request
         Gson gson = TestingToolBox.getInitializedGSON();
         MvcResult result = this.mockMvc.perform(MockMvcRequestBuilders
                         .post(route)
+                        .requestAttr("username", user.getNickname())
                         .contentType(MediaType.APPLICATION_JSON)
                         .characterEncoding(StandardCharsets.UTF_8)
                         .content(gson.toJson(eventCreateDTO)))
@@ -341,6 +355,7 @@ public class EventControllerTest extends SecurityEnabledSetup {
      */
     @DisplayName("Test : create event with invalid body")
     @Test
+    @WithMockUser(username = "Toto", password = "b41419df9bdaa5cd16d4766696bc486c8eca5fbcaa99a0e06bb034504f93f71a", roles = "")
     public void testSaveWhenEventCreateDTOIsInvalid() throws Exception {
         // Create but don't mock anything, must expect 400
         ModelMapper mapper = new ModelMapper();
@@ -369,6 +384,7 @@ public class EventControllerTest extends SecurityEnabledSetup {
      */
     @DisplayName("Test : updating an event with a null body")
     @Test
+    @WithMockUser(username = "Toto", password = "b41419df9bdaa5cd16d4766696bc486c8eca5fbcaa99a0e06bb034504f93f71a", roles = "")
     public void testUpdateNullBody() throws Exception {
         Gson gson = TestingToolBox.getInitializedGSON();
         this.mockMvc.perform(MockMvcRequestBuilders
@@ -384,8 +400,9 @@ public class EventControllerTest extends SecurityEnabledSetup {
      */
     @DisplayName("Test : event update when the update function throws an exception")
     @Test
+    @WithMockUser(username = "Toto", password = "b41419df9bdaa5cd16d4766696bc486c8eca5fbcaa99a0e06bb034504f93f71a", roles = "")
     public void testUpdateCatchBranch() throws Exception {
-        Mockito.when(this.service.update(ArgumentMatchers.any(EventUpdateDTO.class), ""))
+        Mockito.when(this.service.update(ArgumentMatchers.any(EventUpdateDTO.class), ArgumentMatchers.anyString()))
                 .thenThrow(new RuntimeException());
         Gson gson = TestingToolBox.getInitializedGSON();
         this.mockMvc.perform(MockMvcRequestBuilders
@@ -401,6 +418,7 @@ public class EventControllerTest extends SecurityEnabledSetup {
      */
     @DisplayName("Test : update an event with valid fields")
     @Test
+    @WithMockUser(username = "Toto", password = "b41419df9bdaa5cd16d4766696bc486c8eca5fbcaa99a0e06bb034504f93f71a", roles = "")
     public void testUpdate() throws Exception {
         // Mocking
         ModelMapper mapper = new ModelMapper();
@@ -413,12 +431,14 @@ public class EventControllerTest extends SecurityEnabledSetup {
         event.setMinPlayer(4);
         EventDTO newEvent = mapper.map(event, EventDTO.class);
         EventUpdateDTO toUpdate = mapper.map(event, EventUpdateDTO.class);
-        Mockito.when(service.update(ArgumentMatchers.any(EventUpdateDTO.class), user.getNickname())).thenReturn(newEvent);
+        Mockito.when(service.update(ArgumentMatchers.any(EventUpdateDTO.class), ArgumentMatchers.eq(user.getNickname())))
+                .thenReturn(newEvent);
 
         // Send request
         Gson gson = TestingToolBox.getInitializedGSON();
         MvcResult result = this.mockMvc.perform(MockMvcRequestBuilders
                         .put(route)
+                        .requestAttr("username", user.getNickname())
                         .contentType(MediaType.APPLICATION_JSON)
                         .characterEncoding(StandardCharsets.UTF_8)
                         .content(gson.toJson(toUpdate)))
@@ -437,6 +457,7 @@ public class EventControllerTest extends SecurityEnabledSetup {
      */
     @DisplayName("Test : update event with invalid body")
     @Test
+    @WithMockUser(username = "Toto", password = "b41419df9bdaa5cd16d4766696bc486c8eca5fbcaa99a0e06bb034504f93f71a", roles = "")
     public void testUpdateWhenEventUpdateDTOIsInvalid() throws Exception {
         // Create but don't mock anything, must expect 400
         ModelMapper mapper = new ModelMapper();
@@ -459,6 +480,183 @@ public class EventControllerTest extends SecurityEnabledSetup {
 
     // Method addUserInEvent
 
+    /**
+     * Test addUserInEvent : service throws exception
+     */
+    @DisplayName("Test addUserInEvent : service throws exception")
+    @Test
+    @WithMockUser(username = "Toto", password = "b41419df9bdaa5cd16d4766696bc486c8eca5fbcaa99a0e06bb034504f93f71a", roles = "")
+    public void testAddUserInEventServiceException() throws Exception {
+        // Mock
+        Mockito.when(this.service.addUserInEvent(ArgumentMatchers.anyString(), ArgumentMatchers.anyString()))
+                .thenThrow(new RuntimeException());
+
+        // Assert
+        Gson gson = TestingToolBox.getInitializedGSON();
+        EventAddUserDTO data = new EventAddUserDTO("jjjjjjjjjjjjjjjjjjjj");
+        this.mockMvc.perform(MockMvcRequestBuilders
+                            .put(route+"/add_user")
+                            .requestAttr("username", "Toto")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .characterEncoding(StandardCharsets.UTF_8)
+                            .content(gson.toJson(data)))
+                    .andExpect(MockMvcResultMatchers.status().isBadRequest());
+    }
+
+    /**
+     * Test addUserInEvent : user added in event
+     */
+    @DisplayName("Test addUserInEvent : user added in event")
+    @Test
+    @WithMockUser(username = "Toto", password = "b41419df9bdaa5cd16d4766696bc486c8eca5fbcaa99a0e06bb034504f93f71a", roles = "")
+    public void testAddUserInEventUserAdded() throws Exception {
+        // Mock
+        EventAddingResultDTO status = new EventAddingResultDTO("OK");
+        Mockito.when(this.service.addUserInEvent(ArgumentMatchers.anyString(), ArgumentMatchers.anyString()))
+                .thenReturn(status);
+
+        // Assert
+        Gson gson = TestingToolBox.getInitializedGSON();
+        EventAddUserDTO data = new EventAddUserDTO("jjjjjjjjjjjjjjjjjjjj");
+        MvcResult result = this.mockMvc.perform(MockMvcRequestBuilders
+                                                .put(route+"/add_user")
+                                                .requestAttr("username", "Toto")
+                                                .contentType(MediaType.APPLICATION_JSON)
+                                                .characterEncoding(StandardCharsets.UTF_8)
+                                                .content(gson.toJson(data)))
+                                        .andExpect(MockMvcResultMatchers.status().isOk())
+                                        .andReturn();
+        EventAddingResultDTO response = gson.fromJson(result.getResponse().getContentAsString(StandardCharsets.UTF_8),
+                EventAddingResultDTO.class);
+        Assertions.assertEquals(status, response);
+    }
+
+    /**
+     * Test addUserInEvent : user added in waiting list
+     */
+    @DisplayName("Test addUserInEvent : user added in waiting list")
+    @Test
+    @WithMockUser(username = "Toto", password = "b41419df9bdaa5cd16d4766696bc486c8eca5fbcaa99a0e06bb034504f93f71a", roles = "")
+    public void testAddUserInEventUserAddedInWaiting() throws Exception {
+        // Mock
+        EventAddingResultDTO status = new EventAddingResultDTO("WT");
+        Mockito.when(this.service.addUserInEvent(ArgumentMatchers.anyString(), ArgumentMatchers.anyString()))
+                .thenReturn(status);
+
+        // Assert
+        Gson gson = TestingToolBox.getInitializedGSON();
+        EventAddUserDTO data = new EventAddUserDTO("jjjjjjjjjjjjjjjjjjjj");
+        MvcResult result = this.mockMvc.perform(MockMvcRequestBuilders
+                        .put(route+"/add_user")
+                        .requestAttr("username", "Toto")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .characterEncoding(StandardCharsets.UTF_8)
+                        .content(gson.toJson(data)))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andReturn();
+        EventAddingResultDTO response = gson.fromJson(result.getResponse().getContentAsString(StandardCharsets.UTF_8),
+                EventAddingResultDTO.class);
+        Assertions.assertEquals(status, response);
+    }
+
+    /**
+     * Test addUserInEvent : user not add in event
+     */
+    @DisplayName("Test addUserInEvent :")
+    @Test
+    @WithMockUser(username = "Toto", password = "b41419df9bdaa5cd16d4766696bc486c8eca5fbcaa99a0e06bb034504f93f71a", roles = "")
+    public void testAddUserInEventUserNotAdded() throws Exception {
+        // Mock
+        EventAddingResultDTO status = new EventAddingResultDTO("KO");
+        Mockito.when(this.service.addUserInEvent(ArgumentMatchers.anyString(), ArgumentMatchers.anyString()))
+                .thenReturn(status);
+
+        // Assert
+        Gson gson = TestingToolBox.getInitializedGSON();
+        EventAddUserDTO data = new EventAddUserDTO("jjjjjjjjjjjjjjjjjjjj");
+        MvcResult result = this.mockMvc.perform(MockMvcRequestBuilders
+                        .put(route+"/add_user")
+                        .requestAttr("username", "Toto")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .characterEncoding(StandardCharsets.UTF_8)
+                        .content(gson.toJson(data)))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andReturn();
+        EventAddingResultDTO response = gson.fromJson(result.getResponse().getContentAsString(StandardCharsets.UTF_8),
+                EventAddingResultDTO.class);
+        Assertions.assertEquals(status, response);
+    }
+
     // Method removeUserInEvent
 
+    /**
+     * Test removeUserInEvent : service throws exception
+     */
+    @DisplayName("Test removeUserInEvent : service throws exception")
+    @Test
+    @WithMockUser(username = "Toto", password = "b41419df9bdaa5cd16d4766696bc486c8eca5fbcaa99a0e06bb034504f93f71a", roles = "")
+    public void testRemoveUserInEventServiceException() throws Exception {
+        // Mock
+        Mockito.when(this.service.removeUserInEvent(ArgumentMatchers.anyString(), ArgumentMatchers.anyString()))
+                .thenThrow(new RuntimeException());
+
+        // Assert
+        Gson gson = TestingToolBox.getInitializedGSON();
+        EventRemoveUserDTO data = new EventRemoveUserDTO("ljdsqlùghqsdgkfg");
+        this.mockMvc.perform(MockMvcRequestBuilders
+                        .put(route+"/remove_user")
+                        .requestAttr("username", "Toto")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .characterEncoding(StandardCharsets.UTF_8)
+                        .content(gson.toJson(data)))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+    }
+
+
+    /**
+     * Test removeUserInEvent : removal ok
+     */
+    @DisplayName("Test removeUserInEvent : user removed")
+    @Test
+    @WithMockUser(username = "Toto", password = "b41419df9bdaa5cd16d4766696bc486c8eca5fbcaa99a0e06bb034504f93f71a", roles = "")
+    public void testRemoveUserInEventUserRemoved() throws Exception {
+        // Mock
+        Mockito.when(this.service.removeUserInEvent(ArgumentMatchers.anyString(), ArgumentMatchers.anyString()))
+                .thenReturn(true);
+
+        // Assert
+        Gson gson = TestingToolBox.getInitializedGSON();
+        EventAddUserDTO data = new EventAddUserDTO("jjjjjjjjjjjjjjjjjjjj");
+        this.mockMvc.perform(MockMvcRequestBuilders.put(route+"/remove_user")
+                        .requestAttr("username", "Toto")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .characterEncoding(StandardCharsets.UTF_8)
+                        .content(gson.toJson(data)))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$").isBoolean())
+                .andExpect(MockMvcResultMatchers.jsonPath("$").value("true"));
+    }
+    /**
+     * Test removeUserInEvent : removal ko
+     */
+    @DisplayName("Test removeUserInEvent : user not removed")
+    @Test
+    @WithMockUser(username = "Toto", password = "b41419df9bdaa5cd16d4766696bc486c8eca5fbcaa99a0e06bb034504f93f71a", roles = "")
+    public void testRemoveUserInEventUserNotRemoved() throws Exception {
+        // Mock
+        Mockito.when(this.service.removeUserInEvent(ArgumentMatchers.anyString(), ArgumentMatchers.anyString()))
+                .thenReturn(false);
+
+        // Assert
+        Gson gson = TestingToolBox.getInitializedGSON();
+        EventAddUserDTO data = new EventAddUserDTO("jjjjjjjjjjjjjjjjjjjj");
+        this.mockMvc.perform(MockMvcRequestBuilders.put(route+"/remove_user")
+                        .requestAttr("username", "Toto")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .characterEncoding(StandardCharsets.UTF_8)
+                        .content(gson.toJson(data)))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$").isBoolean())
+                .andExpect(MockMvcResultMatchers.jsonPath("$").value("false"));
+    }
 }
