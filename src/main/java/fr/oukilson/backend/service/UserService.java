@@ -2,8 +2,10 @@ package fr.oukilson.backend.service;
 
 import fr.oukilson.backend.dto.user.UserCreationDTO;
 import fr.oukilson.backend.dto.user.UserDTO;
+import fr.oukilson.backend.dto.user.UserEventDTO;
 import fr.oukilson.backend.model.RegexCollection;
 import fr.oukilson.backend.entity.User;
+import fr.oukilson.backend.repository.EventRepository;
 import fr.oukilson.backend.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -17,11 +19,13 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class UserService implements UserDetailsService {
     private UserRepository userRepository;
+    private EventRepository eventRepository;
     private ModelMapper modelMapper;
     private RegexCollection regexCollection;
 
-    public UserService(UserRepository userRepository, ModelMapper modelMapper, RegexCollection regexCollection) {
+    public UserService(UserRepository userRepository, EventRepository eventRepository, ModelMapper modelMapper, RegexCollection regexCollection) {
         this.userRepository = userRepository;
+        this.eventRepository = eventRepository;
         this.modelMapper = modelMapper;
         this.regexCollection = regexCollection;
     }
@@ -46,10 +50,36 @@ public class UserService implements UserDetailsService {
         UserDTO result;
         if (this.regexCollection.getNicknamePattern().matcher(nickname).find()) {
             Optional<User> optionalUser = userRepository.findByNickname(nickname);
-            result = optionalUser.map(user -> this.modelMapper.map(user, UserDTO.class)).orElse(null);
+            if (optionalUser.isPresent()) {
+                User user = optionalUser.get();
+                result = this.modelMapper.map(user, UserDTO.class);
+                result.setEventList(this.findUserEvents(user.getId()));
+            }
+            else
+                result = null;
+
         }
         else
             result = null;
+        return result;
+    }
+
+    /**
+     * Find all distinct events in which a user is participating in
+     * @param userId User's Id
+     * @return List<UserEventDTO>
+     */
+    private List<UserEventDTO> findUserEvents(long userId) {
+        List<UserEventDTO> result = new LinkedList<>();
+        this.eventRepository.findAllDistinctByCreatorIdOrRegisteredUsersIdOrWaitingUsersId(userId, userId, userId)
+                            .forEach(e -> {
+                                UserEventDTO event = new UserEventDTO();
+                                event.setUuid(e.getUuid());
+                                event.setTitle(e.getTitle());
+                                event.setGame(e.getGame().getName());
+                                event.setDate(e.getStartingDate());
+                                result.add(event);
+                            });
         return result;
     }
 
