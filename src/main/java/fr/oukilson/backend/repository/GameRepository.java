@@ -8,4 +8,5 @@ import java.util.Optional;
 public interface GameRepository extends JpaRepository<Game, Long> {
     Optional<Game> findByUuid(String uuid);
     List<Game> findAllByNameContainingIgnoreCase(String name);
+    List<Game> findDistinctTop10ByOrderByEventsCreationDateAsc();
 }

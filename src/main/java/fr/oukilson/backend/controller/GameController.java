@@ -42,4 +42,13 @@ public class GameController {
     public ResponseEntity<List<GameUuidDTO>> findByName(@RequestParam(name = "name") String name) {
         return ResponseEntity.ok().body(service.findByName(name));
     }
+
+    /**
+     * Find the 10 games used to create an event lately
+     * @return List<GameUuidDTO>
+     */
+    @GetMapping("/lastplayed")
+    public ResponseEntity<List<GameUuidDTO>> findLastPlayedGame() {
+        return ResponseEntity.ok().body(service.findLastPlayedGame());
+    }
 }
