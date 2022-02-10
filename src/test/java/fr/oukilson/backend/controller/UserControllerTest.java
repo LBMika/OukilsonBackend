@@ -13,12 +13,12 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.LinkedList;
 
 @WebMvcTest(controllers = UserController.class)
@@ -233,11 +233,9 @@ public class UserControllerTest extends SecurityEnabledSetup {
      */
     @DisplayName("Test addUserToFriendList : no friend to add")
     @Test
+    @WithMockUser(username = "Toto", password = "b41419df9bdaa5cd16d4766696bc486c8eca5fbcaa99a0e06bb034504f93f71a", roles = "")
     public void testAddUserToFriendListNoFriendToAdd() throws Exception {
-        User user = TestingToolBox.generateUser(1L, "Rubix", TestingToolBox.generatePasswordHash("KloPfD;?!"));
-        String token = TestingToolBox.generateToken(user.getNickname(),"http://localhost:8080/login", new ArrayList<>());
-        this.mockMvc.perform(MockMvcRequestBuilders.put(route+"/friend/add/")
-                        .header("Authorization", "Bearer "+token))
+        this.mockMvc.perform(MockMvcRequestBuilders.put(route+"/friend/add/"))
                 .andExpect(MockMvcResultMatchers.status().isNotFound());
     }
 
@@ -246,13 +244,14 @@ public class UserControllerTest extends SecurityEnabledSetup {
      */
     @DisplayName("Test addUserToFriendList : can't add friend")
     @Test
+    @WithMockUser(username = "Toto", password = "b41419df9bdaa5cd16d4766696bc486c8eca5fbcaa99a0e06bb034504f93f71a", roles = "")
     public void testAddUserToFriendListCannotAddFriend() throws Exception {
         User user = TestingToolBox.generateUser(1L, "Borax", TestingToolBox.generatePasswordHash("fdQDHF554s"));
+        user.setPassword("b41419df9bdaa5cd16d4766696bc486c8eca5fbcaa99a0e06bb034504f93f71a");
         User friend = TestingToolBox.generateUser(2L, "Marco", "qsdftgyhujik");
         Mockito.when(this.userService.addUserToFriendList(user.getNickname(), friend.getNickname())).thenReturn(false);
-        String token = TestingToolBox.generateToken(user.getNickname(),"http://localhost:8080/login", new ArrayList<>());
         this.mockMvc.perform(MockMvcRequestBuilders.put(route+"/friend/add/"+friend.getNickname())
-                        .header("Authorization", "Bearer "+token))
+                                                    .requestAttr("username", user.getNickname()))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$").isBoolean())
                 .andExpect(MockMvcResultMatchers.jsonPath("$").value("false"));
@@ -263,13 +262,14 @@ public class UserControllerTest extends SecurityEnabledSetup {
      */
     @DisplayName("Test addUserToFriendList : friend is added")
     @Test
+    @WithMockUser(username = "Toto", password = "b41419df9bdaa5cd16d4766696bc486c8eca5fbcaa99a0e06bb034504f93f71a", roles = "")
     public void testAddUserToFriendListFriendAdded() throws Exception {
-        User user = TestingToolBox.generateUser(1L, "Borax", TestingToolBox.generatePasswordHash("fdQDHF554s"));
+        User user = TestingToolBox.generateUser(1L, "Toto", TestingToolBox.generatePasswordHash("fdQDHF554s"));
+        user.setPassword("b41419df9bdaa5cd16d4766696bc486c8eca5fbcaa99a0e06bb034504f93f71a");
         User friend = TestingToolBox.generateUser(2L, "Marco", "qsdftgyhujik");
         Mockito.when(this.userService.addUserToFriendList(user.getNickname(), friend.getNickname())).thenReturn(true);
-        String token = TestingToolBox.generateToken(user.getNickname(),"http://localhost:8080/login", new ArrayList<>());
         this.mockMvc.perform(MockMvcRequestBuilders.put(route+"/friend/add/"+friend.getNickname())
-                        .header("Authorization", "Bearer "+token))
+                                                    .requestAttr("username", user.getNickname()))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$").isBoolean())
                 .andExpect(MockMvcResultMatchers.jsonPath("$").value("true"));
@@ -292,11 +292,10 @@ public class UserControllerTest extends SecurityEnabledSetup {
      */
     @DisplayName("Test removeUserFromFriendList : no friend to remove")
     @Test
+    @WithMockUser(username = "Toto", password = "b41419df9bdaa5cd16d4766696bc486c8eca5fbcaa99a0e06bb034504f93f71a", roles = "")
     public void testRemoveUserFromFriendListNoFriendToRemove() throws Exception {
         User user = TestingToolBox.generateUser(1L, "Rubix", TestingToolBox.generatePasswordHash("KloPfD;?!"));
-        String token = TestingToolBox.generateToken(user.getNickname(),"http://localhost:8080/login", new ArrayList<>());
-        this.mockMvc.perform(MockMvcRequestBuilders.put(route+"/friend/remove/")
-                        .header("Authorization", "Bearer "+token))
+        this.mockMvc.perform(MockMvcRequestBuilders.put(route+"/friend/remove/"))
                 .andExpect(MockMvcResultMatchers.status().isNotFound());
     }
 
@@ -305,13 +304,14 @@ public class UserControllerTest extends SecurityEnabledSetup {
      */
     @DisplayName("Test removeUserFromFriendList : can't remove friend")
     @Test
+    @WithMockUser(username = "Toto", password = "b41419df9bdaa5cd16d4766696bc486c8eca5fbcaa99a0e06bb034504f93f71a", roles = "")
     public void testRemoveUserFromFriendListCannotRemoveFriend() throws Exception {
-        User user = TestingToolBox.generateUser(1L, "Borax", TestingToolBox.generatePasswordHash("fdQDHF554s"));
+        User user = TestingToolBox.generateUser(1L, "Toto", TestingToolBox.generatePasswordHash("fdQDHF554s"));
+        user.setPassword("b41419df9bdaa5cd16d4766696bc486c8eca5fbcaa99a0e06bb034504f93f71a");
         User friend = TestingToolBox.generateUser(2L, "Marco", "qsdftgyhujik");
         Mockito.when(this.userService.removeUserFromFriendList(user.getNickname(), friend.getNickname())).thenReturn(false);
-        String token = TestingToolBox.generateToken(user.getNickname(),"http://localhost:8080/login", new ArrayList<>());
         this.mockMvc.perform(MockMvcRequestBuilders.put(route+"/friend/remove/"+friend.getNickname())
-                        .header("Authorization", "Bearer "+token))
+                                                    .requestAttr("username", user.getNickname()))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$").isBoolean())
                 .andExpect(MockMvcResultMatchers.jsonPath("$").value("false"));
@@ -322,13 +322,14 @@ public class UserControllerTest extends SecurityEnabledSetup {
      */
     @DisplayName("Test removeUserFromFriendList : friend is removed")
     @Test
+    @WithMockUser(username = "Toto", password = "b41419df9bdaa5cd16d4766696bc486c8eca5fbcaa99a0e06bb034504f93f71a", roles = "")
     public void testRemoveUserFromFriendListFriendRemoved() throws Exception {
-        User user = TestingToolBox.generateUser(1L, "Borax", TestingToolBox.generatePasswordHash("fdQDHF554s"));
+        User user = TestingToolBox.generateUser(1L, "Toto", TestingToolBox.generatePasswordHash("fdQDHF554s"));
+        user.setPassword("b41419df9bdaa5cd16d4766696bc486c8eca5fbcaa99a0e06bb034504f93f71a");
         User friend = TestingToolBox.generateUser(2L, "Marco", "qsdftgyhujik");
         Mockito.when(this.userService.removeUserFromFriendList(user.getNickname(), friend.getNickname())).thenReturn(true);
-        String token = TestingToolBox.generateToken(user.getNickname(),"http://localhost:8080/login", new ArrayList<>());
         this.mockMvc.perform(MockMvcRequestBuilders.put(route+"/friend/remove/"+friend.getNickname())
-                        .header("Authorization", "Bearer "+token))
+                                                    .requestAttr("username", user.getNickname()))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$").isBoolean())
                 .andExpect(MockMvcResultMatchers.jsonPath("$").value("true"));
@@ -337,26 +338,17 @@ public class UserControllerTest extends SecurityEnabledSetup {
     // Method emptyFriendList
 
     /**
-     * Test emptyFriendList : no header
-     */
-    @DisplayName("Test emptyFriendList : no header")
-    @Test
-    public void testEmptyFriendListNoHeader() throws Exception {
-        this.mockMvc.perform(MockMvcRequestBuilders.put(route+"/friend/empty/"))
-                        .andExpect(MockMvcResultMatchers.status().is(403));
-    }
-
-    /**
      * Test emptyFriendList : user not in database
      */
     @DisplayName("Test emptyFriendList : user not in database")
     @Test
+    @WithMockUser(username = "Toto", password = "b41419df9bdaa5cd16d4766696bc486c8eca5fbcaa99a0e06bb034504f93f71a", roles = "")
     public void testEmptyFriendListUnknownUser() throws Exception {
-        User user = TestingToolBox.generateUser(1L, "William", TestingToolBox.generatePasswordHash("BestOfTheBest"));
+        User user = TestingToolBox.generateUser(1L, "Toto", TestingToolBox.generatePasswordHash("BestOfTheBest"));
+        user.setPassword("b41419df9bdaa5cd16d4766696bc486c8eca5fbcaa99a0e06bb034504f93f71a");
         Mockito.when(this.userService.emptyFriendList(user.getNickname())).thenReturn(false);
-        String token = TestingToolBox.generateToken(user.getNickname(),"http://localhost:8080/login", new ArrayList<>());
         this.mockMvc.perform(MockMvcRequestBuilders.put(route+"/friend/empty/")
-                                                    .header("Authorization", "Bearer "+token))
+                                                    .requestAttr("username", user.getNickname()))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$").isBoolean())
                 .andExpect(MockMvcResultMatchers.jsonPath("$").value("false"));
@@ -367,12 +359,13 @@ public class UserControllerTest extends SecurityEnabledSetup {
      */
     @DisplayName("Test emptyFriendList : everything is ok")
     @Test
+    @WithMockUser(username = "Toto", password = "b41419df9bdaa5cd16d4766696bc486c8eca5fbcaa99a0e06bb034504f93f71a", roles = "")
     public void testEmptyFriendListUserFound() throws Exception {
-        User user = TestingToolBox.generateUser(1L, "William", TestingToolBox.generatePasswordHash("BestOfTheBest"));
+        User user = TestingToolBox.generateUser(1L, "Toto", TestingToolBox.generatePasswordHash("BestOfTheBest"));
+        user.setPassword("b41419df9bdaa5cd16d4766696bc486c8eca5fbcaa99a0e06bb034504f93f71a");
         Mockito.when(this.userService.emptyFriendList(user.getNickname())).thenReturn(true);
-        String token = TestingToolBox.generateToken(user.getNickname(),"http://localhost:8080/login", new ArrayList<>());
         this.mockMvc.perform(MockMvcRequestBuilders.put(route+"/friend/empty/")
-                                                    .header("Authorization", "Bearer "+token))
+                                                    .requestAttr("username", user.getNickname()))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$").isBoolean())
                 .andExpect(MockMvcResultMatchers.jsonPath("$").value("true"));
