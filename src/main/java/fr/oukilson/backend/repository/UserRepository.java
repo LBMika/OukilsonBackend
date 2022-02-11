@@ -12,4 +12,5 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByNicknameOrEmail(String nickname, String email);
     @Query(value = "SELECT * FROM user ORDER BY RAND() LIMIT 10", nativeQuery = true)
     List<User> find10RandomUsers();
+    List<User> findAllByNicknameContainingIgnoreCase(String nickname);
 }

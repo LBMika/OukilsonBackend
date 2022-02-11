@@ -269,4 +269,17 @@ public class UserService implements UserDetailsService {
         this.userRepository.find10RandomUsers().forEach(u -> result.add(this.modelMapper.map(u, UserNameDTO.class)));
         return result;
     }
+
+    /**
+     * Get all the users sharing the same name or at least a part of it.
+     * @param name The string to search
+     * @return List<UserNameDTO>
+     */
+    public List<UserNameDTO> findUsers(String name) {
+        List<UserNameDTO> result = new LinkedList<>();
+        if (name!=null && name.length()>=3)
+            this.userRepository.findAllByNicknameContainingIgnoreCase(name)
+                                .forEach(u -> result.add(this.modelMapper.map(u, UserNameDTO.class)));
+        return result;
+    }
 }

@@ -152,4 +152,14 @@ public class UserController {
     public ResponseEntity<List<UserNameDTO>> find10RandomUsers() {
         return ResponseEntity.ok(this.userService.find10RandomUsers());
     }
+
+    /**
+     * Get all the users sharing the same name or at least a part of it.
+     * @param name The string to search
+     * @return List<UserNameDTO>
+     */
+    @GetMapping("/search")
+    public ResponseEntity<List<UserNameDTO>> findUsers (@RequestParam(name = "name") String name) {
+        return ResponseEntity.ok(this.userService.findUsers(name));
+    }
 }
