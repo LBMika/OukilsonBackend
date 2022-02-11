@@ -29,6 +29,8 @@ public class Game {
     private Integer minAge;             // Recommended minimal age to play
     @Column(name = "creator_name")
     private String creatorName;         // Creator's name of the game
+    private String description;
+    private String synopsis;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "game")
     List<Event> events = new LinkedList<>();
