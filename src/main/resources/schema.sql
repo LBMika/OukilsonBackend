@@ -138,6 +138,8 @@ CREATE TABLE `game` (
   `max_time` int DEFAULT NULL,
   `min_age` tinyint DEFAULT NULL,
   `creator_name` varchar(45) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
+  `description` text COLLATE utf8_bin,
+  `synopsis` varchar(200) COLLATE utf8_bin DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `id_UNIQUE` (`id`),
   UNIQUE KEY `uuid_UNIQUE` (`uuid`)
@@ -217,7 +219,7 @@ DROP TABLE IF EXISTS `user`;
 CREATE TABLE `user` (
   `id` int NOT NULL AUTO_INCREMENT,
   `nickname` varchar(45) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
-  `password` varchar(40) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL COMMENT 'Encrypted ',
+  `password` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL COMMENT 'Encrypted ',
   `first_name` varchar(45) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
   `last_name` varchar(45) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
   `email` varchar(45) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
@@ -226,7 +228,7 @@ CREATE TABLE `user` (
   UNIQUE KEY `email_UNIQUE` (`email`),
   UNIQUE KEY `nickname_UNIQUE` (`nickname`),
   UNIQUE KEY `id_UNIQUE` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -292,4 +294,4 @@ CREATE TABLE `user_token` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2022-02-08 14:31:52
+-- Dump completed on 2022-02-11 16:42:16
