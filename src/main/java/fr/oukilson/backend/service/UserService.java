@@ -1,9 +1,6 @@
 package fr.oukilson.backend.service;
 
-import fr.oukilson.backend.dto.user.UserCreationDTO;
-import fr.oukilson.backend.dto.user.UserDTO;
-import fr.oukilson.backend.dto.user.UserEventDTO;
-import fr.oukilson.backend.dto.user.UserGameDTO;
+import fr.oukilson.backend.dto.user.*;
 import fr.oukilson.backend.entity.Game;
 import fr.oukilson.backend.model.RegexCollection;
 import fr.oukilson.backend.entity.User;
@@ -260,6 +257,16 @@ public class UserService implements UserDetailsService {
         }
         else
             result = false;
+        return result;
+    }
+
+    /**
+     * Get 10 random users
+     * @return List<UserNameDTO>
+     */
+    public List<UserNameDTO> find10RandomUsers() {
+        List<UserNameDTO> result = new LinkedList<>();
+        this.userRepository.find10RandomUsers().forEach(u -> result.add(this.modelMapper.map(u, UserNameDTO.class)));
         return result;
     }
 }

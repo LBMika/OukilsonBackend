@@ -3,11 +3,13 @@ package fr.oukilson.backend.controller;
 import fr.oukilson.backend.dto.user.UserCreationDTO;
 import fr.oukilson.backend.dto.user.UserDTO;
 import fr.oukilson.backend.dto.user.UserGameDTO;
+import fr.oukilson.backend.dto.user.UserNameDTO;
 import fr.oukilson.backend.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @RequestMapping("/users")
@@ -140,5 +142,14 @@ public class UserController {
     public ResponseEntity<Boolean> removeLikedGame(@RequestBody UserGameDTO game,
                                                 @RequestAttribute(name = "username") String nickname) {
         return ResponseEntity.ok(this.userService.removeLikedGame(nickname, game));
+    }
+
+    /**
+     * Get 10 random users
+     * @return List<UserNameDTO>
+     */
+    @GetMapping("/random")
+    public ResponseEntity<List<UserNameDTO>> find10RandomUsers() {
+        return ResponseEntity.ok(this.userService.find10RandomUsers());
     }
 }
