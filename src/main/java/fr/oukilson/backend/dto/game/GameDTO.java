@@ -14,4 +14,6 @@ public class GameDTO {
     private int maxPlayingTime;
     private int minAge;
     private String creatorName;
+    private String description;
+    private String synopsis;
 }
