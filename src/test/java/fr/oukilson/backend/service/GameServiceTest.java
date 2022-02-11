@@ -1,6 +1,7 @@
 package fr.oukilson.backend.service;
 
 import fr.oukilson.backend.dto.game.GameDTO;
+import fr.oukilson.backend.dto.game.GameSearchResultDTO;
 import fr.oukilson.backend.dto.game.GameUuidDTO;
 import fr.oukilson.backend.entity.Game;
 import fr.oukilson.backend.repository.GameRepository;
@@ -75,7 +76,7 @@ public class GameServiceTest {
     @Test
     @DisplayName("Test findByName : null parameter")
     public void testFindByNameNullParameter() {
-        List<GameUuidDTO> list = this.service.findByName(null);
+        List<GameSearchResultDTO> list = this.service.findByName(null);
         Assertions.assertNotNull(list);
         Assertions.assertEquals(0, list.size());
     }
@@ -86,7 +87,7 @@ public class GameServiceTest {
     @Test
     @DisplayName("Test findByName : null given name")
     public void testFindByNameNullName() {
-        List<GameUuidDTO> list = this.service.findByName(null);
+        List<GameSearchResultDTO> list = this.service.findByName(null);
         Assertions.assertNotNull(list);
         Assertions.assertEquals(0, list.size());
     }
@@ -99,7 +100,7 @@ public class GameServiceTest {
     public void testFindByNameWithNoResultFound() {
         String name = "7 Wonders";
         BDDMockito.when(this.repository.findAllByNameContainingIgnoreCase(name)).thenReturn(new LinkedList<>());
-        List<GameUuidDTO> list = this.service.findByName(name);
+        List<GameSearchResultDTO> list = this.service.findByName(name);
         Assertions.assertNotNull(list);
         Assertions.assertEquals(0, list.size());
     }
@@ -117,11 +118,11 @@ public class GameServiceTest {
             games.add(TestingToolBox.createValidFullGame((long) i, "Jeux n°"+i));
         }
         BDDMockito.when(this.repository.findAllByNameContainingIgnoreCase(name)).thenReturn(games);
-        List<GameUuidDTO> list = this.service.findByName(name);
+        List<GameSearchResultDTO> list = this.service.findByName(name);
         Assertions.assertNotNull(list);
         Assertions.assertEquals(size, list.size());
         for (int i=0; i<size; i++) {
-            Assertions.assertEquals(this.mapper.map(games.get(i), GameUuidDTO.class), list.get(i));
+            Assertions.assertEquals(this.mapper.map(games.get(i), GameSearchResultDTO.class), list.get(i));
         }
     }
 
@@ -138,7 +139,7 @@ public class GameServiceTest {
             games.add(TestingToolBox.createValidFullGame((long) i, "Jeux n°"+i));
         }
         BDDMockito.when(this.repository.findAllByNameContainingIgnoreCase(name)).thenReturn(games);
-        List<GameUuidDTO> list = this.service.findByName(name);
+        List<GameSearchResultDTO> list = this.service.findByName(name);
         Assertions.assertNotNull(list);
         Assertions.assertEquals(0, list.size());
     }

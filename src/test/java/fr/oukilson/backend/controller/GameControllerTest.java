@@ -2,6 +2,7 @@ package fr.oukilson.backend.controller;
 
 import com.google.gson.Gson;
 import fr.oukilson.backend.dto.game.GameDTO;
+import fr.oukilson.backend.dto.game.GameSearchResultDTO;
 import fr.oukilson.backend.dto.game.GameUuidDTO;
 import fr.oukilson.backend.entity.Game;
 import fr.oukilson.backend.security.SecurityEnabledSetup;
@@ -86,11 +87,11 @@ public class GameControllerTest extends SecurityEnabledSetup {
     public void testFindByNameReturnResults() throws Exception {
         // Mocking
         String name = "Jeux";
-        List<GameUuidDTO> games = new LinkedList<>();
+        List<GameSearchResultDTO> games = new LinkedList<>();
         ModelMapper mapper = new ModelMapper();
         int size = 3;
         for (int i=0; i<size; i++) {
-            games.add(mapper.map(TestingToolBox.createValidFullGame((long) i, "Jeux n°"+i), GameUuidDTO.class));
+            games.add(mapper.map(TestingToolBox.createValidFullGame((long) i, "Jeux n°"+i), GameSearchResultDTO.class));
         }
         BDDMockito.when(this.service.findByName(name)).thenReturn(games);
 
@@ -102,9 +103,9 @@ public class GameControllerTest extends SecurityEnabledSetup {
                 .andReturn();
 
         // Assert
-        GameUuidDTO[] resultDTO = gson.fromJson(
+        GameSearchResultDTO[] resultDTO = gson.fromJson(
                 result.getResponse().getContentAsString(StandardCharsets.UTF_8),
-                GameUuidDTO[].class);
+                GameSearchResultDTO[].class);
         Assertions.assertNotNull(resultDTO);
         Assertions.assertEquals(size, resultDTO.length);
         for (int i=0; i<size; i++) {
@@ -120,9 +121,9 @@ public class GameControllerTest extends SecurityEnabledSetup {
     public void testFindByNameSpecialCharInURL() throws Exception {
         // Mock
         String name = "Les échos de Fäfnir !";
-        List<GameUuidDTO> games = new LinkedList<>();
+        List<GameSearchResultDTO> games = new LinkedList<>();
         ModelMapper mapper = new ModelMapper();
-        games.add(mapper.map(TestingToolBox.createValidFullGame(1L, name), GameUuidDTO.class));
+        games.add(mapper.map(TestingToolBox.createValidFullGame(1L, name), GameSearchResultDTO.class));
         BDDMockito.when(this.service.findByName(name)).thenReturn(games);
 
         // Request
@@ -133,9 +134,9 @@ public class GameControllerTest extends SecurityEnabledSetup {
                 .andReturn();
 
         // Assert
-        GameUuidDTO[] resultDTO = gson.fromJson(
+        GameSearchResultDTO[] resultDTO = gson.fromJson(
                 result.getResponse().getContentAsString(StandardCharsets.UTF_8),
-                GameUuidDTO[].class);
+                GameSearchResultDTO[].class);
         Assertions.assertNotNull(resultDTO);
         Assertions.assertEquals(1, resultDTO.length);
         Assertions.assertEquals(games.get(0), resultDTO[0]);

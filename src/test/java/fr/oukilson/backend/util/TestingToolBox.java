@@ -52,6 +52,8 @@ public class TestingToolBox {
         game.setCreatorName("Le créateur d'un jeu");
         game.setMinPlayingTime(30);
         game.setMaxPlayingTime(120);
+        game.setDescription("Une description basique.");
+        game.setSynopsis("Résumé");
         return game;
     }
 
