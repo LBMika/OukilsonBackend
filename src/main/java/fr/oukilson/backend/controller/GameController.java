@@ -9,7 +9,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/games")
-@CrossOrigin
+@CrossOrigin(origins = "http://localhost:4200")
 public class GameController {
     private final GameService service;
 
