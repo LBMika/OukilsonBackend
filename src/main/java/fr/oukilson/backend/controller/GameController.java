@@ -1,7 +1,7 @@
 package fr.oukilson.backend.controller;
 
 import fr.oukilson.backend.dto.game.GameDTO;
-import fr.oukilson.backend.dto.game.GameUuidDTO;
+import fr.oukilson.backend.dto.game.GameSearchResultDTO;
 import fr.oukilson.backend.service.GameService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -39,7 +39,7 @@ public class GameController {
      * @return A list of GameDTO
      */
     @GetMapping("/search")
-    public ResponseEntity<List<GameUuidDTO>> findByName(@RequestParam(name = "name") String name) {
+    public ResponseEntity<List<GameSearchResultDTO>> findByName(@RequestParam(name = "name") String name) {
         return ResponseEntity.ok().body(service.findByName(name));
     }
 
@@ -48,7 +48,7 @@ public class GameController {
      * @return List<GameUuidDTO>
      */
     @GetMapping("/lastplayed")
-    public ResponseEntity<List<GameUuidDTO>> findLastPlayedGame() {
+    public ResponseEntity<List<GameSearchResultDTO>> findLastPlayedGame() {
         return ResponseEntity.ok().body(service.findLastPlayedGame());
     }
 }

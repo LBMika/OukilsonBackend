@@ -1,6 +1,7 @@
 package fr.oukilson.backend.service;
 
 import fr.oukilson.backend.dto.game.GameDTO;
+import fr.oukilson.backend.dto.game.GameSearchResultDTO;
 import fr.oukilson.backend.dto.game.GameUuidDTO;
 import fr.oukilson.backend.entity.Game;
 import fr.oukilson.backend.repository.GameRepository;
@@ -33,11 +34,11 @@ public class GameService {
      * @param name The string to search
      * @return List of GameUuidDTO
      */
-    public List<GameUuidDTO> findByName(String name) {
-        List<GameUuidDTO> result = new LinkedList<>();
+    public List<GameSearchResultDTO> findByName(String name) {
+        List<GameSearchResultDTO> result = new LinkedList<>();
         if (name!=null && name.length()>=3) {
             repository.findAllByNameContainingIgnoreCase(name).forEach(
-                    g -> result.add(this.mapper.map(g, GameUuidDTO.class))
+                    g -> result.add(this.mapper.map(g, GameSearchResultDTO.class))
             );
         }
         return result;
@@ -47,10 +48,10 @@ public class GameService {
      * Find the 10 games used to create an event lately
      * @return List<GameUuidDTO>
      */
-    public List<GameUuidDTO> findLastPlayedGame() {
-        List<GameUuidDTO> result = new LinkedList<>();
+    public List<GameSearchResultDTO> findLastPlayedGame() {
+        List<GameSearchResultDTO> result = new LinkedList<>();
         this.repository.findDistinctTop10ByOrderByEventsCreationDateAsc()
-                        .forEach(g -> result.add(this.mapper.map(g, GameUuidDTO.class)));
+                        .forEach(g -> result.add(this.mapper.map(g, GameSearchResultDTO.class)));
         return result;
     }
 }
