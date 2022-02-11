@@ -9,7 +9,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/games")
-@CrossOrigin(origins = "*")
+@CrossOrigin
 public class GameController {
     private final GameService service;
 
