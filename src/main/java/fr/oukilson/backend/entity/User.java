@@ -77,7 +77,7 @@ public class User {
         Iterator<Game> it = list.iterator();
         while (it.hasNext()) {
             Game g = it.next();
-            if (game.getId()==g.getId()) {
+            if (game.getId().equals(g.getId())) {
                 result = false;
                 break;
             }
@@ -114,7 +114,7 @@ public class User {
         boolean result = false;
         for(Iterator<Game> iter = list.iterator(); iter.hasNext();) {
             Game data = iter.next();
-            if (data.getId()==game.getId()) {
+            if (data.getId().equals(game.getId())) {
                 iter.remove();
                 result = true;
                 break;
