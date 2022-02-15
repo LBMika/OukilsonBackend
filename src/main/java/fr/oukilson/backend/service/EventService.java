@@ -71,15 +71,12 @@ public class EventService {
         Event event = this.mapper.map(toCreate, Event.class);
         event.setCreationDate(rightNow);
         event.setUuid(UUID.randomUUID().toString());
-        try {
-            Optional<User> user = this.userRepository.findByNickname(creatorName);
-            event.setCreator(user.get());
-            Optional<Game> game = this.gameRepository.findByUuid(toCreate.getGame().getUuid());
-            event.setGame(game.get());
-        }
-        catch (Exception e) {
-            throw new NoSuchElementException("Event creation : Unknown user/game");
-        }
+        Optional<User> user = this.userRepository.findByNickname(creatorName);
+        if (user.isEmpty()) throw new NoSuchElementException("Event creation : Unknown user");
+        event.setCreator(user.get());
+        Optional<Game> game = this.gameRepository.findByUuid(toCreate.getGame().getUuid());
+        if (game.isEmpty()) throw new NoSuchElementException("Event creation : Unknown game");
+        event.setGame(game.get());
 
         // Save and return
         event.getLocation().setEvent(event);
