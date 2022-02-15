@@ -43,7 +43,7 @@ public class EventControllerTest extends SecurityEnabledSetup {
      */
     @DisplayName("Test : find a user who doesn't exist in database.")
     @Test
-    public void testFindByUuidWhenEventDoesntExist() throws Exception {
+    void testFindByUuidWhenEventDoesntExist() throws Exception {
         this.mockMvc.perform(MockMvcRequestBuilders.get(route+"/12345"))
                 .andExpect(MockMvcResultMatchers.status().isNotFound());
     }
@@ -53,7 +53,7 @@ public class EventControllerTest extends SecurityEnabledSetup {
      */
     @DisplayName("Test : find a user who exists in database.")
     @Test
-    public void testFindByUuid() throws Exception {
+    void testFindByUuid() throws Exception {
         // Mocking
         User user = TestingToolBox.createValidFullUser(3L, "toto");
         Game game = TestingToolBox.createValidFullGame(23L, "7 Wonders");
@@ -83,7 +83,7 @@ public class EventControllerTest extends SecurityEnabledSetup {
      */
     @DisplayName("Test : find all events by filters but all filters are null")
     @Test
-    public void testFindAllByFiltersWhenNoParamGiven() throws Exception {
+    void testFindAllByFiltersWhenNoParamGiven() throws Exception {
         Gson gson = TestingToolBox.getInitializedGSON();
         this.mockMvc.perform(MockMvcRequestBuilders.get(route+"/search"))
                 .andExpect(MockMvcResultMatchers.status().isOk())
@@ -97,7 +97,7 @@ public class EventControllerTest extends SecurityEnabledSetup {
      */
     @DisplayName("Test : find all events by filters but the date filter is null")
     @Test
-    public void testFindAllByFiltersWhenStartingDateIsNull() throws Exception {
+    void testFindAllByFiltersWhenStartingDateIsNull() throws Exception {
         // Mocking
         String town = "Paris";
         int size = 2;
@@ -137,7 +137,7 @@ public class EventControllerTest extends SecurityEnabledSetup {
      */
     @DisplayName("Test : find all events by filters but the town filter is null")
     @Test
-    public void testFindAllByFiltersWhenTownIsNull() throws Exception {
+    void testFindAllByFiltersWhenTownIsNull() throws Exception {
         // Setting up
         LocalDateTime mytime = LocalDateTime.now().minusMonths(2);
         List<EventDTO> events = new LinkedList<>();
@@ -178,7 +178,7 @@ public class EventControllerTest extends SecurityEnabledSetup {
      */
     @DisplayName("Test : find all events by filters with all filters initialized")
     @Test
-    public void testFindAllByFilters() throws Exception {
+    void testFindAllByFilters() throws Exception {
         // Setting up
         ModelMapper mapper = new ModelMapper();
         List<EventDTO> townEvents = new LinkedList<>();
@@ -231,7 +231,7 @@ public class EventControllerTest extends SecurityEnabledSetup {
     @DisplayName("Test : delete an existing event.")
     @Test
     @WithMockUser(username = "Toto", password = "b41419df9bdaa5cd16d4766696bc486c8eca5fbcaa99a0e06bb034504f93f71a", roles = "")
-    public void testDeleteByUuid() throws Exception {
+    void testDeleteByUuid() throws Exception {
         EventDeleteDTO eventDTO = new EventDeleteDTO(UUID.randomUUID().toString());
         this.mockMvc.perform(MockMvcRequestBuilders.delete(route)
                         .requestAttr("username", "Toto")
@@ -248,7 +248,7 @@ public class EventControllerTest extends SecurityEnabledSetup {
     @DisplayName("Test : delete a non-existing event")
     @Test
     @WithMockUser(username = "Toto", password = "b41419df9bdaa5cd16d4766696bc486c8eca5fbcaa99a0e06bb034504f93f71a", roles = "")
-    public void testDeleteByUuidWhenUuidNotValid() throws Exception {
+    void testDeleteByUuidWhenUuidNotValid() throws Exception {
         EventDeleteDTO eventDTO = new EventDeleteDTO("0");
         this.mockMvc.perform(MockMvcRequestBuilders.delete(route)
                         .requestAttr("username", "Toto")
@@ -265,7 +265,7 @@ public class EventControllerTest extends SecurityEnabledSetup {
     @DisplayName("Test : delete an event when the provided uuid is null")
     @Test
     @WithMockUser(username = "Toto", password = "b41419df9bdaa5cd16d4766696bc486c8eca5fbcaa99a0e06bb034504f93f71a", roles = "")
-    public void testDeleteByUuidWhenUuidIsNull() throws Exception {
+    void testDeleteByUuidWhenUuidIsNull() throws Exception {
         EventDeleteDTO eventDTO = new EventDeleteDTO();
         this.mockMvc.perform(MockMvcRequestBuilders.delete(route)
                         .requestAttr("username", "Toto")
@@ -284,7 +284,7 @@ public class EventControllerTest extends SecurityEnabledSetup {
     @DisplayName("Test : saving an event with a null body")
     @Test
     @WithMockUser(username = "Toto", password = "b41419df9bdaa5cd16d4766696bc486c8eca5fbcaa99a0e06bb034504f93f71a", roles = "")
-    public void testSaveNullBody() throws Exception {
+    void testSaveNullBody() throws Exception {
         Gson gson = TestingToolBox.getInitializedGSON();
         User user = TestingToolBox.createValidFullUser(12L, "Rodolf");
         this.mockMvc.perform(MockMvcRequestBuilders
@@ -301,7 +301,7 @@ public class EventControllerTest extends SecurityEnabledSetup {
     @DisplayName("Test : event creation when the save function throws an exception")
     @Test
     @WithMockUser(username = "Toto", password = "b41419df9bdaa5cd16d4766696bc486c8eca5fbcaa99a0e06bb034504f93f71a", roles = "")
-    public void testSaveCatchBranch() throws Exception {
+    void testSaveCatchBranch() throws Exception {
         Mockito.when(this.service.save(ArgumentMatchers.any(EventCreateDTO.class), ArgumentMatchers.eq("")))
                 .thenThrow(new RuntimeException());
         Gson gson = TestingToolBox.getInitializedGSON();
@@ -319,7 +319,7 @@ public class EventControllerTest extends SecurityEnabledSetup {
     @DisplayName("Test : create an event with valid fields")
     @Test
     @WithMockUser(username = "Toto", password = "b41419df9bdaa5cd16d4766696bc486c8eca5fbcaa99a0e06bb034504f93f71a", roles = "")
-    public void testSave() throws Exception {
+    void testSave() throws Exception {
         // Mocking
         ModelMapper mapper = new ModelMapper();
         User user = TestingToolBox.createValidFullUser(1L, "toto");
@@ -356,7 +356,7 @@ public class EventControllerTest extends SecurityEnabledSetup {
     @DisplayName("Test : create event with invalid body")
     @Test
     @WithMockUser(username = "Toto", password = "b41419df9bdaa5cd16d4766696bc486c8eca5fbcaa99a0e06bb034504f93f71a", roles = "")
-    public void testSaveWhenEventCreateDTOIsInvalid() throws Exception {
+    void testSaveWhenEventCreateDTOIsInvalid() throws Exception {
         // Create but don't mock anything, must expect 400
         ModelMapper mapper = new ModelMapper();
         User user = TestingToolBox.createValidFullUser(1L, "toto");
@@ -385,7 +385,7 @@ public class EventControllerTest extends SecurityEnabledSetup {
     @DisplayName("Test : updating an event with a null body")
     @Test
     @WithMockUser(username = "Toto", password = "b41419df9bdaa5cd16d4766696bc486c8eca5fbcaa99a0e06bb034504f93f71a", roles = "")
-    public void testUpdateNullBody() throws Exception {
+    void testUpdateNullBody() throws Exception {
         Gson gson = TestingToolBox.getInitializedGSON();
         this.mockMvc.perform(MockMvcRequestBuilders
                         .put(route)
@@ -401,7 +401,7 @@ public class EventControllerTest extends SecurityEnabledSetup {
     @DisplayName("Test : event update when the update function throws an exception")
     @Test
     @WithMockUser(username = "Toto", password = "b41419df9bdaa5cd16d4766696bc486c8eca5fbcaa99a0e06bb034504f93f71a", roles = "")
-    public void testUpdateCatchBranch() throws Exception {
+    void testUpdateCatchBranch() throws Exception {
         Mockito.when(this.service.update(ArgumentMatchers.any(EventUpdateDTO.class), ArgumentMatchers.anyString()))
                 .thenThrow(new RuntimeException());
         Gson gson = TestingToolBox.getInitializedGSON();
@@ -419,7 +419,7 @@ public class EventControllerTest extends SecurityEnabledSetup {
     @DisplayName("Test : update an event with valid fields")
     @Test
     @WithMockUser(username = "Toto", password = "b41419df9bdaa5cd16d4766696bc486c8eca5fbcaa99a0e06bb034504f93f71a", roles = "")
-    public void testUpdate() throws Exception {
+    void testUpdate() throws Exception {
         // Mocking
         ModelMapper mapper = new ModelMapper();
         User user = TestingToolBox.createValidFullUser(1L, "toto");
@@ -458,7 +458,7 @@ public class EventControllerTest extends SecurityEnabledSetup {
     @DisplayName("Test : update event with invalid body")
     @Test
     @WithMockUser(username = "Toto", password = "b41419df9bdaa5cd16d4766696bc486c8eca5fbcaa99a0e06bb034504f93f71a", roles = "")
-    public void testUpdateWhenEventUpdateDTOIsInvalid() throws Exception {
+    void testUpdateWhenEventUpdateDTOIsInvalid() throws Exception {
         // Create but don't mock anything, must expect 400
         ModelMapper mapper = new ModelMapper();
         User user = TestingToolBox.createValidFullUser(1L, "toto");
@@ -486,7 +486,7 @@ public class EventControllerTest extends SecurityEnabledSetup {
     @DisplayName("Test addUserInEvent : service throws exception")
     @Test
     @WithMockUser(username = "Toto", password = "b41419df9bdaa5cd16d4766696bc486c8eca5fbcaa99a0e06bb034504f93f71a", roles = "")
-    public void testAddUserInEventServiceException() throws Exception {
+    void testAddUserInEventServiceException() throws Exception {
         // Mock
         Mockito.when(this.service.addUserInEvent(ArgumentMatchers.anyString(), ArgumentMatchers.anyString()))
                 .thenThrow(new RuntimeException());
@@ -509,7 +509,7 @@ public class EventControllerTest extends SecurityEnabledSetup {
     @DisplayName("Test addUserInEvent : user added in event")
     @Test
     @WithMockUser(username = "Toto", password = "b41419df9bdaa5cd16d4766696bc486c8eca5fbcaa99a0e06bb034504f93f71a", roles = "")
-    public void testAddUserInEventUserAdded() throws Exception {
+    void testAddUserInEventUserAdded() throws Exception {
         // Mock
         EventAddingResultDTO status = new EventAddingResultDTO("OK");
         Mockito.when(this.service.addUserInEvent(ArgumentMatchers.anyString(), ArgumentMatchers.anyString()))
@@ -537,7 +537,7 @@ public class EventControllerTest extends SecurityEnabledSetup {
     @DisplayName("Test addUserInEvent : user added in waiting list")
     @Test
     @WithMockUser(username = "Toto", password = "b41419df9bdaa5cd16d4766696bc486c8eca5fbcaa99a0e06bb034504f93f71a", roles = "")
-    public void testAddUserInEventUserAddedInWaiting() throws Exception {
+    void testAddUserInEventUserAddedInWaiting() throws Exception {
         // Mock
         EventAddingResultDTO status = new EventAddingResultDTO("WT");
         Mockito.when(this.service.addUserInEvent(ArgumentMatchers.anyString(), ArgumentMatchers.anyString()))
@@ -565,7 +565,7 @@ public class EventControllerTest extends SecurityEnabledSetup {
     @DisplayName("Test addUserInEvent :")
     @Test
     @WithMockUser(username = "Toto", password = "b41419df9bdaa5cd16d4766696bc486c8eca5fbcaa99a0e06bb034504f93f71a", roles = "")
-    public void testAddUserInEventUserNotAdded() throws Exception {
+    void testAddUserInEventUserNotAdded() throws Exception {
         // Mock
         EventAddingResultDTO status = new EventAddingResultDTO("KO");
         Mockito.when(this.service.addUserInEvent(ArgumentMatchers.anyString(), ArgumentMatchers.anyString()))
@@ -595,7 +595,7 @@ public class EventControllerTest extends SecurityEnabledSetup {
     @DisplayName("Test removeUserInEvent : service throws exception")
     @Test
     @WithMockUser(username = "Toto", password = "b41419df9bdaa5cd16d4766696bc486c8eca5fbcaa99a0e06bb034504f93f71a", roles = "")
-    public void testRemoveUserInEventServiceException() throws Exception {
+    void testRemoveUserInEventServiceException() throws Exception {
         // Mock
         Mockito.when(this.service.removeUserInEvent(ArgumentMatchers.anyString(), ArgumentMatchers.anyString()))
                 .thenThrow(new RuntimeException());
@@ -619,7 +619,7 @@ public class EventControllerTest extends SecurityEnabledSetup {
     @DisplayName("Test removeUserInEvent : user removed")
     @Test
     @WithMockUser(username = "Toto", password = "b41419df9bdaa5cd16d4766696bc486c8eca5fbcaa99a0e06bb034504f93f71a", roles = "")
-    public void testRemoveUserInEventUserRemoved() throws Exception {
+    void testRemoveUserInEventUserRemoved() throws Exception {
         // Mock
         Mockito.when(this.service.removeUserInEvent(ArgumentMatchers.anyString(), ArgumentMatchers.anyString()))
                 .thenReturn(true);
@@ -642,7 +642,7 @@ public class EventControllerTest extends SecurityEnabledSetup {
     @DisplayName("Test removeUserInEvent : user not removed")
     @Test
     @WithMockUser(username = "Toto", password = "b41419df9bdaa5cd16d4766696bc486c8eca5fbcaa99a0e06bb034504f93f71a", roles = "")
-    public void testRemoveUserInEventUserNotRemoved() throws Exception {
+    void testRemoveUserInEventUserNotRemoved() throws Exception {
         // Mock
         Mockito.when(this.service.removeUserInEvent(ArgumentMatchers.anyString(), ArgumentMatchers.anyString()))
                 .thenReturn(false);

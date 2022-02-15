@@ -19,7 +19,7 @@ public class EventTest {
      */
     @DisplayName("Test addUser : add a valid user in an empty registered list")
     @Test
-    public void testAddUserWhenRegisteredListIsEmpty() {
+    void testAddUserWhenRegisteredListIsEmpty() {
         Event event = new Event();
         event.setMaxPlayer(5);
         User user = TestingToolBox.createValidFullUser(1L, "toto");
@@ -36,7 +36,7 @@ public class EventTest {
      */
     @DisplayName("Test addUser : add a valid user in registered list")
     @Test
-    public void testAddUser() {
+    void testAddUser() {
         Event event = new Event();
         event.setMaxPlayer(5);
         User user1 = TestingToolBox.createValidFullUser(1L, "toto");
@@ -57,7 +57,7 @@ public class EventTest {
      */
     @DisplayName("Test addUser : add user in a full registered list")
     @Test
-    public void testAddUserWhenListIsFull() {
+    void testAddUserWhenListIsFull() {
         Event event = new Event();
         event.setMaxPlayer(2);
         event.addUser(TestingToolBox.createValidFullUser(1L, "toto"));
@@ -71,7 +71,7 @@ public class EventTest {
      */
     @DisplayName("Test addUser : add user who's already in waiting list")
     @Test
-    public void testAddUserWhenUserIsAlreadyInWaitingList() {
+    void testAddUserWhenUserIsAlreadyInWaitingList() {
         Event event = new Event();
         event.setMaxPlayer(5);
         User user = TestingToolBox.createValidFullUser(1L, "toto");
@@ -85,7 +85,7 @@ public class EventTest {
      */
     @DisplayName("Test addUser : add user who's already in registered list")
     @Test
-    public void testAddUserWhenUserIsAlreadyInRegisteredList() {
+    void testAddUserWhenUserIsAlreadyInRegisteredList() {
         Event event = new Event();
         event.setMaxPlayer(5);
         User user = TestingToolBox.createValidFullUser(1L, "toto");
@@ -99,7 +99,7 @@ public class EventTest {
      */
     @DisplayName("Test addUserInWaitingQueue : add a valid user in an empty waiting list")
     @Test
-    public void testAddUserInWaitingListWhenEmpty() {
+    void testAddUserInWaitingListWhenEmpty() {
         Event event = new Event();
         event.setMaxPlayer(5);
         User user = TestingToolBox.createValidFullUser(1L, "toto");
@@ -116,7 +116,7 @@ public class EventTest {
      */
     @DisplayName("Test addUserInWaitingQueue : add a valid user in the waiting list")
     @Test
-    public void testAddUserInWaitingQueue() {
+    void testAddUserInWaitingQueue() {
         Event event = new Event();
         event.setMaxPlayer(5);
         User user1 = TestingToolBox.createValidFullUser(1L, "toto");
@@ -137,7 +137,7 @@ public class EventTest {
      */
     @DisplayName("Test addUserInWaitingQueue : add a valid user in a full waiting list")
     @Test
-    public void testAddUserInWaitingQueueWhenListIsFull() {
+    void testAddUserInWaitingQueueWhenListIsFull() {
         Event event = new Event();
         event.setMaxPlayer(2);
         event.addUserInWaitingQueue(TestingToolBox.createValidFullUser(1L, "toto"));
@@ -151,7 +151,7 @@ public class EventTest {
      */
     @DisplayName("Test addUserInWaitingQueue : add a valid user who's already in the waiting list")
     @Test
-    public void testAddUserInWaitingQueueWhenUserIsAlreadyInWaitingList() {
+    void testAddUserInWaitingQueueWhenUserIsAlreadyInWaitingList() {
         Event event = new Event();
         event.setMaxPlayer(5);
         User user = TestingToolBox.createValidFullUser(1L, "toto");
@@ -165,7 +165,7 @@ public class EventTest {
      */
     @DisplayName("Test addUserInWaitingQueue : add a valid user who's already in the registered list")
     @Test
-    public void testAddUserInWaitingQueueWhenUserIsAlreadyInRegisteredList() {
+    void testAddUserInWaitingQueueWhenUserIsAlreadyInRegisteredList() {
         Event event = new Event();
         event.setMaxPlayer(5);
         User user = TestingToolBox.createValidFullUser(1L, "toto");
@@ -179,7 +179,7 @@ public class EventTest {
      */
     @DisplayName("Test removeUser : remove a user in the registered list")
     @Test
-    public void testRemoveUser() {
+    void testRemoveUser() {
         Event event = new Event();
         event.setMaxPlayer(5);
         User user = TestingToolBox.createValidFullUser(1L, "toto");
@@ -194,7 +194,7 @@ public class EventTest {
      */
     @DisplayName("Test removeUser : remove a user when the registered list is empty")
     @Test
-    public void testRemoveUserWithEmptyList() {
+    void testRemoveUserWithEmptyList() {
         Event event = new Event();
         event.setMaxPlayer(5);
         User user = TestingToolBox.createValidFullUser(1L, "toto");
@@ -206,7 +206,7 @@ public class EventTest {
      */
     @DisplayName("Test removeUser : remove a user who's not in the registered list")
     @Test
-    public void testRemoveUserWhoIsNotInList() {
+    void testRemoveUserWhoIsNotInList() {
         Event event = new Event();
         event.setMaxPlayer(5);
         event.addUser(TestingToolBox.createValidFullUser(1L, "toto"));
@@ -219,7 +219,7 @@ public class EventTest {
      */
     @DisplayName("Test removeUserInWaitingQueue : remove a user in the waiting list")
     @Test
-    public void testRemoveUserInWaitingQueue() {
+    void testRemoveUserInWaitingQueue() {
         Event event = new Event();
         event.setMaxPlayer(5);
         User user = TestingToolBox.createValidFullUser(1L, "toto");
@@ -234,7 +234,7 @@ public class EventTest {
      */
     @DisplayName("Test removeUserInWaitingQueue : remove a user on an empty waiting list")
     @Test
-    public void testRemoveUserInWaitingQueueWithEmptyList() {
+    void testRemoveUserInWaitingQueueWithEmptyList() {
         Event event = new Event();
         event.setMaxPlayer(5);
         User user = TestingToolBox.createValidFullUser(1L, "toto");
@@ -247,7 +247,7 @@ public class EventTest {
      */
     @DisplayName("Test removeUserInWaitingQueue : remove a user not in the waiting list")
     @Test
-    public void testRemoveUserInWaitingQueueWhoIsNotInList() {
+    void testRemoveUserInWaitingQueueWhoIsNotInList() {
         Event event = new Event();
         event.setMaxPlayer(5);
         event.addUserInWaitingQueue(TestingToolBox.createValidFullUser(1L, "toto"));

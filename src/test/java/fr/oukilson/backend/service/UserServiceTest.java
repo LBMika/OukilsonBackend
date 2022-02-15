@@ -45,7 +45,7 @@ public class UserServiceTest {
      */
     @DisplayName("Test findUserByNickname : nickname is null")
     @Test
-    public void testFindUserByNicknameNull() {
+    void testFindUserByNicknameNull() {
         Assertions.assertThrows(NullPointerException.class, () -> this.service.findUserByNickname(null));
     }
 
@@ -54,7 +54,7 @@ public class UserServiceTest {
      */
     @DisplayName("Test findUserByNickname : nickname is invalid")
     @Test
-    public void testFindUserByNicknameInvalid() {
+    void testFindUserByNicknameInvalid() {
         String nickname = "Clément";
         Assertions.assertNull(this.service.findUserByNickname(nickname));
     }
@@ -64,7 +64,7 @@ public class UserServiceTest {
      */
     @DisplayName("Test findUserByNickname : user not found")
     @Test
-    public void testFindUserByNicknameUserNotFound() {
+    void testFindUserByNicknameUserNotFound() {
         String nickname = "Popo";
         BDDMockito.when(this.userRepository.findByNickname(nickname)).thenReturn(Optional.empty());
         Assertions.assertNull(this.service.findUserByNickname(nickname));
@@ -75,7 +75,7 @@ public class UserServiceTest {
      */
     @DisplayName("Test findUserByNickname : user found")
     @Test
-    public void testFindUserByNicknameUserFound() {
+    void testFindUserByNicknameUserFound() {
         User user = new User();
         user.setNickname("Bruce");
         user.setPassword("kljsgfsmirgu");
@@ -94,7 +94,7 @@ public class UserServiceTest {
      */
     @DisplayName("Test createUser : userCreationDTO null")
     @Test
-    public void testCreateUserNullDTO() {
+    void testCreateUserNullDTO() {
         UserDTO dto = Assertions.assertDoesNotThrow(() -> this.service.createUser(null));
         Assertions.assertNull(dto);
     }
@@ -104,7 +104,7 @@ public class UserServiceTest {
      */
     @DisplayName("Test createUser : nickname null")
     @Test
-    public void testCreateUserNullNickname() {
+    void testCreateUserNullNickname() {
         UserCreationDTO dto = new UserCreationDTO(null, "esdrftghjkkl", "blabla@tutu.com");
         Assertions.assertNull(this.service.createUser(dto));
     }
@@ -114,7 +114,7 @@ public class UserServiceTest {
      */
     @DisplayName("Test createUser : password null")
     @Test
-    public void testCreateUserNullPassword() {
+    void testCreateUserNullPassword() {
         UserCreationDTO dto = new UserCreationDTO("Raymond", null, "blabla@tutu.com");
         Assertions.assertNull(this.service.createUser(dto));
     }
@@ -124,7 +124,7 @@ public class UserServiceTest {
      */
     @DisplayName("Test createUser : email null")
     @Test
-    public void testCreateUserNullEmail() {
+    void testCreateUserNullEmail() {
         UserCreationDTO dto = new UserCreationDTO("Trevor", "esdrftghjkkl", null);
         Assertions.assertNull(this.service.createUser(dto));
     }
@@ -134,7 +134,7 @@ public class UserServiceTest {
      */
     @DisplayName("Test createUser : nickname is empty")
     @Test
-    public void testCreateUserEmptyNickname() {
+    void testCreateUserEmptyNickname() {
         UserCreationDTO dto = new UserCreationDTO("", "esdrftghjkkl", "blabla@tutu.com");
         Assertions.assertNull(this.service.createUser(dto));
     }
@@ -144,7 +144,7 @@ public class UserServiceTest {
      */
     @DisplayName("Test createUser : password is empty")
     @Test
-    public void testCreateUserEmptyPassword() {
+    void testCreateUserEmptyPassword() {
         UserCreationDTO dto = new UserCreationDTO("Billy", "", "blabla@tutu.com");
         Assertions.assertNull(this.service.createUser(dto));
     }
@@ -154,7 +154,7 @@ public class UserServiceTest {
      */
     @DisplayName("Test createUser : email is empty")
     @Test
-    public void testCreateUserEmptyEmail() {
+    void testCreateUserEmptyEmail() {
         UserCreationDTO dto = new UserCreationDTO("Jimmy", "esdrftghjkkl", "");
         Assertions.assertNull(this.service.createUser(dto));
     }
@@ -164,7 +164,7 @@ public class UserServiceTest {
      */
     @DisplayName("Test createUser : email is not valid")
     @Test
-    public void testCreateUserEmailNotValid() {
+    void testCreateUserEmailNotValid() {
         UserCreationDTO dto = new UserCreationDTO("Touty", "esdrftghjkkl", "blabla@tutu.");
         Assertions.assertNull(this.service.createUser(dto));
         dto = new UserCreationDTO("Touty", "esdrftghjkkl", "blablatutu.");
@@ -178,7 +178,7 @@ public class UserServiceTest {
      */
     @DisplayName("Test createUser : nickname is not valid")
     @Test
-    public void testCreateUserNicknameNotValid() {
+    void testCreateUserNicknameNotValid() {
         UserCreationDTO dto = new UserCreationDTO("Eloïse", "esdrftghjkkl", "blabla@tutu.com");
         Assertions.assertNull(this.service.createUser(dto));
         dto = new UserCreationDTO("Un nickname", "esdrftghjkkl", "blabla@tutu.com");
@@ -203,7 +203,7 @@ public class UserServiceTest {
      */
     @DisplayName("Test createUser : Duplicate entry")
     @Test
-    public void testCreateUserNicknameAlreadyExists() {
+    void testCreateUserNicknameAlreadyExists() {
         UserCreationDTO dto = new UserCreationDTO("Jimmy", "esdrftghjkkl", "letruc@yahoo.de");
         ModelMapper mapper = new ModelMapper();
         User user = mapper.map(dto, User.class);
@@ -217,7 +217,7 @@ public class UserServiceTest {
      */
     @DisplayName("Test createUser : everything is ok")
     @Test
-    public void testCreateUser() {
+    void testCreateUser() {
         UserCreationDTO dto = new UserCreationDTO("Jimmy", "esdrftghjkkl", "letruc@yahoo.de");
         ModelMapper mapper = new ModelMapper();
         User user = mapper.map(dto, User.class);
@@ -234,7 +234,7 @@ public class UserServiceTest {
      */
     @DisplayName("Test addUserToFriendList : mainUser is null")
     @Test
-    public void testAddUserToFriendListNullMainUser() {
+    void testAddUserToFriendListNullMainUser() {
         BDDMockito.when(userRepository.findByNickname(null)).thenThrow(NullPointerException.class);
         Assertions.assertThrows(
                 NullPointerException.class,
@@ -246,7 +246,7 @@ public class UserServiceTest {
      */
     @DisplayName("Test addUserToFriendList : secondUser is null")
     @Test
-    public void testAddUserToFriendListNullSecondUser() {
+    void testAddUserToFriendListNullSecondUser() {
         String mainUser = "Ortie";
         BDDMockito.when(userRepository.findByNickname(mainUser)).thenThrow(NullPointerException.class);
         BDDMockito.when(userRepository.findByNickname(null)).thenThrow(NullPointerException.class);
@@ -260,7 +260,7 @@ public class UserServiceTest {
      */
     @DisplayName("Test addUserToFriendList : mainUser is not found")
     @Test
-    public void testAddUserToFriendListMainUserNotFound() {
+    void testAddUserToFriendListMainUserNotFound() {
         User mainUser = new User();
         mainUser.setId(100000L);
         mainUser.setNickname("Eliott");
@@ -276,7 +276,7 @@ public class UserServiceTest {
      */
     @DisplayName("Test addUserToFriendList : secondUser is not found")
     @Test
-    public void testAddUserToFriendListSecondUserNotFound() {
+    void testAddUserToFriendListSecondUserNotFound() {
         User mainUser = new User();
         mainUser.setId(100000L);
         mainUser.setNickname("Eliott");
@@ -292,7 +292,7 @@ public class UserServiceTest {
      */
     @DisplayName("Test addUserToFriendList : secondUser already in")
     @Test
-    public void testAddUserToFriendListSecondUserAlreadyInFriendList() {
+    void testAddUserToFriendListSecondUserAlreadyInFriendList() {
         // Setting up
         User mainUser = new User();
         mainUser.setId(100000L);
@@ -315,7 +315,7 @@ public class UserServiceTest {
      */
     @DisplayName("Test addUserToFriendList : secondUser added successfully")
     @Test
-    public void testAddUserToFriendListSecondUserAddedSuccessfully() {
+    void testAddUserToFriendListSecondUserAddedSuccessfully() {
         // Setting up
         User mainUser = new User();
         mainUser.setId(100000L);
@@ -339,7 +339,7 @@ public class UserServiceTest {
      */
     @DisplayName("Test removeUserFromFriendList : mainUser is null")
     @Test
-    public void testRemoveUserFromFriendListNullMainUser() {
+    void testRemoveUserFromFriendListNullMainUser() {
         BDDMockito.when(userRepository.findByNickname(null)).thenThrow(NullPointerException.class);
         Assertions.assertThrows(
                 NullPointerException.class,
@@ -351,7 +351,7 @@ public class UserServiceTest {
      */
     @DisplayName("Test removeUserFromFriendList : secondUser is null")
     @Test
-    public void testRemoveUserFromFriendListNullSecondUser() {
+    void testRemoveUserFromFriendListNullSecondUser() {
         User mainUser = new User();
         mainUser.setNickname("Pouic");
         BDDMockito.when(userRepository.findByNickname(mainUser.getNickname())).thenReturn(Optional.of(mainUser));
@@ -366,7 +366,7 @@ public class UserServiceTest {
      */
     @DisplayName("Test removeUserFromFriendList : mainUser is not found")
     @Test
-    public void testRemoveUserFromFriendListMainUserNotFound() {
+    void testRemoveUserFromFriendListMainUserNotFound() {
         String nickname1 = "Radio";
         String nickname2 = "Gaga";
         BDDMockito.when(userRepository.findByNickname(nickname1)).thenReturn(Optional.empty());
@@ -378,7 +378,7 @@ public class UserServiceTest {
      */
     @DisplayName("Test removeUserFromFriendList : secondUser is not found")
     @Test
-    public void testRemoveUserFromFriendListSecondUserNotFound() {
+    void testRemoveUserFromFriendListSecondUserNotFound() {
         String nickname1 = "Radio";
         String nickname2 = "Gaga";
         User user = new User();
@@ -393,7 +393,7 @@ public class UserServiceTest {
      */
     @DisplayName("Test removeUserFromFriendList : user removed")
     @Test
-    public void testRemoveUserFromFriendListEverythingOk() {
+    void testRemoveUserFromFriendListEverythingOk() {
         // Populate the friend list
         String nickname1 = "Radio";
         String nickname2 = "Gaga";
@@ -428,7 +428,7 @@ public class UserServiceTest {
      */
     @DisplayName("Test emptyFriendList : null nickname")
     @Test
-    public void testEmptyFriendListNullNickname() {
+    void testEmptyFriendListNullNickname() {
         BDDMockito.when(this.userRepository.findByNickname(null)).thenThrow(NullPointerException.class);
         Assertions.assertThrows(NullPointerException.class, () -> this.service.emptyFriendList(null));
     }
@@ -438,7 +438,7 @@ public class UserServiceTest {
      */
     @DisplayName("Test emptyFriendList : user not found")
     @Test
-    public void testEmptyFriendListUserIsFound() {
+    void testEmptyFriendListUserIsFound() {
         String nickname = "Alpha";
         BDDMockito.when(this.userRepository.findByNickname(nickname)).thenReturn(Optional.empty());
         Assertions.assertFalse(this.service.emptyFriendList(nickname));
@@ -449,7 +449,7 @@ public class UserServiceTest {
      */
     @DisplayName("Test emptyFriendList : user found, empty successful")
     @Test
-    public void testEmptyFriendListUserNotFound() {
+    void testEmptyFriendListUserNotFound() {
         String nickname = "Alpha";
         User user = new User();
         user.setNickname(nickname);

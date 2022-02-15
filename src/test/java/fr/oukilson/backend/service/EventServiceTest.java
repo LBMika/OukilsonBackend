@@ -51,7 +51,7 @@ public class EventServiceTest {
      */
     @DisplayName("Test : find an event with an invalid UUID")
     @Test
-    public void testFindByUuidWithWrongUuid() {
+    void testFindByUuidWithWrongUuid() {
         Assertions.assertNull(this.service.findByUuid("00000000000000"));
     }
 
@@ -60,7 +60,7 @@ public class EventServiceTest {
      */
     @DisplayName("Test : find an event in database by its uuid")
     @Test
-    public void testFindByUuid() {
+    void testFindByUuid() {
         // Mock event
         Game game = TestingToolBox.createValidFullGame(1L, "Inis");
         User user = TestingToolBox.createValidFullUser(1L, "toto");
@@ -86,7 +86,7 @@ public class EventServiceTest {
      */
     @DisplayName("Test : find all events, town only, no date")
     @Test
-    public void testFindAllEventsByTownOnly() {
+    void testFindAllEventsByTownOnly() {
         // Setting up
         List<Event> events = new LinkedList<>();
         int size = 4;
@@ -117,7 +117,7 @@ public class EventServiceTest {
      */
     @DisplayName("Test : find all events, date only, no town")
     @Test
-    public void testFindAllEventsByDateAfterOnly() {
+    void testFindAllEventsByDateAfterOnly() {
         // Setting up
         List<Event> events = new LinkedList<>();
         int size = 8;
@@ -148,7 +148,7 @@ public class EventServiceTest {
      */
     @DisplayName("Test : find all events, empty date & town")
     @Test
-    public void testFindAllEventsWithEmptyFilters() {
+    void testFindAllEventsWithEmptyFilters() {
         EventSearchDTO toSearch = new EventSearchDTO();
         List<EventDTO> result = this.service.findByFilter("", "");
         Assertions.assertNotNull(result);
@@ -161,7 +161,7 @@ public class EventServiceTest {
      */
     @DisplayName("Test : search when date is null")
     @Test
-    public void testFindAllEventsWithNullDate() {
+    void testFindAllEventsWithNullDate() {
         EventSearchDTO toSearch = new EventSearchDTO();
         List<EventDTO> result = this.service.findByFilter(null, null);
         Assertions.assertNotNull(result);
@@ -174,7 +174,7 @@ public class EventServiceTest {
      */
     @DisplayName("Test : search when all filters are null")
     @Test
-    public void testFindAllEventsWithNullDateAndNullTown() {
+    void testFindAllEventsWithNullDateAndNullTown() {
         EventSearchDTO toSearch = new EventSearchDTO();
         List<EventDTO> result = this.service.findByFilter(null, null);
         Assertions.assertNotNull(result);
@@ -187,7 +187,7 @@ public class EventServiceTest {
      */
     @DisplayName("Test : find events when town & date filters are initialized")
     @Test
-    public void testFindAllEventsWithBothDateAndTownGiven() {
+    void testFindAllEventsWithBothDateAndTownGiven() {
         String town = "Nancy";
         List<Event> townEvents = new LinkedList<>();
         List<Event> dateEvents = new LinkedList<>();
@@ -230,7 +230,7 @@ public class EventServiceTest {
      */
     @DisplayName("Test event creation : null data")
     @Test
-    public void testSaveNullData() {
+    void testSaveNullData() {
         Assertions.assertThrows(NullPointerException.class, () -> this.service.save(null, ""));
     }
 
@@ -239,7 +239,7 @@ public class EventServiceTest {
      */
     @DisplayName("Test event creation : null username")
     @Test
-    public void testSaveNullUsername() {
+    void testSaveNullUsername() {
         // Mocking
         Game game = TestingToolBox.createValidFullGame(10L, "Innovation");
         User user = TestingToolBox.createValidFullUser(10L, "SuperAlbert");
@@ -261,7 +261,7 @@ public class EventServiceTest {
      */
     @DisplayName("Test event creation : invalid data")
     @Test
-    public void testSaveInvalidData() {
+    void testSaveInvalidData() {
         // Create a valid data
         Game game = TestingToolBox.createValidFullGame(10L, "Innovation");
         User user = TestingToolBox.createValidFullUser(10L, "SuperAlbert");
@@ -285,7 +285,7 @@ public class EventServiceTest {
      *
      * @param data A valid EventCreateDTO
      */
-    public void testInvalidTitle(EventCreateDTO data) {
+    private void testInvalidTitle(EventCreateDTO data) {
         data.setTitle(null);
         Assertions.assertThrows(IllegalArgumentException.class, () -> this.service.save(data, ""));
     }
@@ -297,7 +297,7 @@ public class EventServiceTest {
      *
      * @param data A valid EventCreateDTO
      */
-    public void testInvalidGame(EventCreateDTO data) {
+    private void testInvalidGame(EventCreateDTO data) {
         data.getGame().setUuid(null);
         Assertions.assertThrows(IllegalArgumentException.class, () -> this.service.save(data, ""));
         data.setGame(null);
@@ -310,7 +310,7 @@ public class EventServiceTest {
      *
      * @param data A valid EventCreateDTO
      */
-    public void testInvalidDescription(EventCreateDTO data) {
+    private void testInvalidDescription(EventCreateDTO data) {
         data.setDescription(null);
         Assertions.assertThrows(IllegalArgumentException.class, () -> this.service.save(data, ""));
     }
@@ -322,7 +322,7 @@ public class EventServiceTest {
      *
      * @param data A valid EventCreateDTO
      */
-    public void testInvalidPlayerCount(EventCreateDTO data) {
+    private void testInvalidPlayerCount(EventCreateDTO data) {
         data.setMinPlayer(1);
         Assertions.assertThrows(IllegalArgumentException.class, () -> this.service.save(data, ""));
         data.setMinPlayer(data.getMaxPlayer() + 1);
@@ -336,7 +336,7 @@ public class EventServiceTest {
      *
      * @param data A valid EventCreateDTO
      */
-    public void testInvalidLocation(EventCreateDTO data) {
+    private void testInvalidLocation(EventCreateDTO data) {
         data.getLocation().setTown(null);
         Assertions.assertThrows(IllegalArgumentException.class, () -> this.service.save(data, ""));
         data.setLocation(null);
@@ -353,7 +353,7 @@ public class EventServiceTest {
      *
      * @param data A valid EventCreateDTO
      */
-    public void testInvalidDate(EventCreateDTO data) {
+    private void testInvalidDate(EventCreateDTO data) {
         LocalDateTime temp;
 
         // Limit data
@@ -380,7 +380,7 @@ public class EventServiceTest {
      */
     @DisplayName("Test event creation : unknown user")
     @Test
-    public void testSaveUnknownUser() {
+    void testSaveUnknownUser() {
         // Mocking
         Game game = TestingToolBox.createValidFullGame(10L, "Innovation");
         User user = TestingToolBox.createValidFullUser(10L, "SuperAlbert");
@@ -402,7 +402,7 @@ public class EventServiceTest {
      */
     @DisplayName("Test event creation : unknown game")
     @Test
-    public void testSaveUnknownGame() {
+    void testSaveUnknownGame() {
         // Mocking
         Game game = TestingToolBox.createValidFullGame(10L, "Innovation");
         User user = TestingToolBox.createValidFullUser(10L, "SuperAlbert");
@@ -424,7 +424,7 @@ public class EventServiceTest {
      */
     @DisplayName("Test event creation : everything is ok")
     @Test
-    public void testSave() {
+    void testSave() {
         // Mocking
         Game game = TestingToolBox.createValidFullGame(10L, "Innovation");
         User user = TestingToolBox.createValidFullUser(10L, "SuperAlbert");
@@ -456,7 +456,7 @@ public class EventServiceTest {
      */
     @DisplayName("Test event update : null data")
     @Test
-    public void testUpdateNullData() {
+    void testUpdateNullData() {
         Assertions.assertThrows(NullPointerException.class, () -> this.service.update(null, ""));
     }
 
@@ -465,7 +465,7 @@ public class EventServiceTest {
      */
     @DisplayName("Test event update : data is invalid")
     @Test
-    public void testUpdateInvalidData() {
+    void testUpdateInvalidData() {
         // Mocking
         Game game = TestingToolBox.createValidFullGame(10L, "Innovation");
         User user = TestingToolBox.createValidFullUser(10L, "SuperAlbert");
@@ -494,7 +494,7 @@ public class EventServiceTest {
      *
      * @param data A valid EventCreateDTO
      */
-    public void testInvalidTitle(EventUpdateDTO data) {
+    private void testInvalidTitle(EventUpdateDTO data) {
         data.setTitle(null);
         Assertions.assertThrows(IllegalArgumentException.class, () -> this.service.update(data, ""));
     }
@@ -506,7 +506,7 @@ public class EventServiceTest {
      *
      * @param data A valid EventCreateDTO
      */
-    public void testInvalidGame(EventUpdateDTO data) {
+    private void testInvalidGame(EventUpdateDTO data) {
         data.getGame().setUuid(null);
         Assertions.assertThrows(IllegalArgumentException.class, () -> this.service.update(data, ""));
         data.setGame(null);
@@ -519,7 +519,7 @@ public class EventServiceTest {
      *
      * @param data A valid EventCreateDTO
      */
-    public void testInvalidDescription(EventUpdateDTO data) {
+    private void testInvalidDescription(EventUpdateDTO data) {
         data.setDescription(null);
         Assertions.assertThrows(IllegalArgumentException.class, () -> this.service.update(data, ""));
     }
@@ -531,7 +531,7 @@ public class EventServiceTest {
      *
      * @param data A valid EventCreateDTO
      */
-    public void testInvalidPlayerCount(EventUpdateDTO data) {
+    private void testInvalidPlayerCount(EventUpdateDTO data) {
         data.setMinPlayer(1);
         Assertions.assertThrows(IllegalArgumentException.class, () -> this.service.update(data, ""));
         data.setMinPlayer(data.getMaxPlayer() + 1);
@@ -545,7 +545,7 @@ public class EventServiceTest {
      *
      * @param data A valid EventCreateDTO
      */
-    public void testInvalidLocation(EventUpdateDTO data) {
+    private void testInvalidLocation(EventUpdateDTO data) {
         data.getLocation().setTown(null);
         Assertions.assertThrows(IllegalArgumentException.class, () -> this.service.update(data, ""));
         data.setLocation(null);
@@ -562,7 +562,7 @@ public class EventServiceTest {
      *
      * @param data A valid EventCreateDTO
      */
-    public void testInvalidDate(EventUpdateDTO data) {
+    private void testInvalidDate(EventUpdateDTO data) {
         LocalDateTime temp;
 
         // Limit data
@@ -589,7 +589,7 @@ public class EventServiceTest {
      */
     @DisplayName("Test event update : creatorName is null")
     @Test
-    public void testUpdateNullCreatorName() {
+    void testUpdateNullCreatorName() {
         // Mocking
         Game game = TestingToolBox.createValidFullGame(10L, "Innovation");
         User user = TestingToolBox.createValidFullUser(10L, "SuperAlbert");
@@ -612,7 +612,7 @@ public class EventServiceTest {
      */
     @DisplayName("Test event update : username is not the same as event's creator")
     @Test
-    public void testUpdateUnknownCreator() {
+    void testUpdateUnknownCreator() {
         // Mocking
         Game game = TestingToolBox.createValidFullGame(10L, "Innovation");
         User user = TestingToolBox.createValidFullUser(10L, "SuperAlbert");
@@ -636,7 +636,7 @@ public class EventServiceTest {
      */
     @DisplayName("Test event update : new game is not in database")
     @Test
-    public void testUpdateUnknownGame() {
+    void testUpdateUnknownGame() {
         // Mocking
         Game game = TestingToolBox.createValidFullGame(10L, "Innovation");
         User user = TestingToolBox.createValidFullUser(10L, "SuperAlbert");
@@ -660,7 +660,7 @@ public class EventServiceTest {
      */
     @DisplayName("Test event update : event is not in database")
     @Test
-    public void testUpdateUnknownEvent() {
+    void testUpdateUnknownEvent() {
         // Mocking
         Game game = TestingToolBox.createValidFullGame(10L, "Innovation");
         User user = TestingToolBox.createValidFullUser(10L, "SuperAlbert");
@@ -682,7 +682,7 @@ public class EventServiceTest {
      */
     @DisplayName("Test event update : everything is ok")
     @Test
-    public void testUpdate() {
+    void testUpdate() {
         // Mocking
         Game game = TestingToolBox.createValidFullGame(10L, "Innovation");
         User user = TestingToolBox.createValidFullUser(10L, "SuperAlbert");
@@ -707,7 +707,7 @@ public class EventServiceTest {
      */
     @DisplayName("Test event update : everything is ok when modifying game")
     @Test
-    public void testUpdateWithNewGame() {
+    void testUpdateWithNewGame() {
         // Mocking
         Game game = TestingToolBox.createValidFullGame(10L, "Innovation");
         User user = TestingToolBox.createValidFullUser(10L, "SuperAlbert");
@@ -738,7 +738,7 @@ public class EventServiceTest {
      */
     @DisplayName("Test addUserInEvent : uuid is null")
     @Test
-    public void testAddUserInEventNullUuid() {
+    void testAddUserInEventNullUuid() {
         Assertions.assertThrows(IllegalArgumentException.class,
                 () -> this.service.addUserInEvent(null, "Toto"));
     }
@@ -748,7 +748,7 @@ public class EventServiceTest {
      */
     @DisplayName("Test addUserInEvent : username is null")
     @Test
-    public void testAddUserInEventNullUsername() {
+    void testAddUserInEventNullUsername() {
         Assertions.assertThrows(IllegalArgumentException.class,
                 () -> this.service.addUserInEvent(UUID.randomUUID().toString(), null));
     }
@@ -758,7 +758,7 @@ public class EventServiceTest {
      */
     @DisplayName("Test addUserInEvent : event can't be found in database")
     @Test
-    public void testAddUserInEventUnknownEvent() {
+    void testAddUserInEventUnknownEvent() {
         User user = TestingToolBox.createValidFullUser(3L, "Alpha");
         BDDMockito.when(this.userRepository.findByNickname(user.getNickname())).thenReturn(Optional.of(user));
         Assertions.assertThrows(IllegalArgumentException.class,
@@ -770,7 +770,7 @@ public class EventServiceTest {
      */
     @DisplayName("Test addUserInEvent : user can't be found in database")
     @Test
-    public void testAddUserInEventUnknownUser() {
+    void testAddUserInEventUnknownUser() {
         User user = TestingToolBox.createValidFullUser(3L, "Alpha");
         Game game = TestingToolBox.createValidFullGame(3L, "Mafia de Cuba");
         Location location = new Location(10L, "Brest", null, null, null);
@@ -786,7 +786,7 @@ public class EventServiceTest {
      */
     @DisplayName("Test addUserInEvent : user added to attending list")
     @Test
-    public void testAddUserInEventUserAddedAttendingList() {
+    void testAddUserInEventUserAddedAttendingList() {
         // Mocking
         User user = TestingToolBox.createValidFullUser(3L, "Alpha");
         Game game = TestingToolBox.createValidFullGame(3L, "Mafia de Cuba");
@@ -821,7 +821,7 @@ public class EventServiceTest {
      */
     @DisplayName("Test addUserInEvent : user added to waiting list")
     @Test
-    public void testAddUserInEventUserAddedWaitingList() {
+    void testAddUserInEventUserAddedWaitingList() {
         // Mocking
         User user = TestingToolBox.createValidFullUser(3L, "Alpha");
         Game game = TestingToolBox.createValidFullGame(3L, "Mafia de Cuba");
@@ -860,7 +860,7 @@ public class EventServiceTest {
      */
     @DisplayName("Test addUserInEvent : can't add user in event (no more room)")
     @Test
-    public void testAddUserInEventFullEvent() {
+    void testAddUserInEventFullEvent() {
         // Mocking
         User user = TestingToolBox.createValidFullUser(3L, "Alpha");
         Game game = TestingToolBox.createValidFullGame(3L, "Mafia de Cuba");
@@ -895,7 +895,7 @@ public class EventServiceTest {
      */
     @DisplayName("Test removeUserInEvent : uuid is null")
     @Test
-    public void testRemoveUserInEventNullUuid() {
+    void testRemoveUserInEventNullUuid() {
         Assertions.assertThrows(IllegalArgumentException.class,
                 () -> this.service.removeUserInEvent(null, "Toto"));
     }
@@ -905,7 +905,7 @@ public class EventServiceTest {
      */
     @DisplayName("Test removeUserInEvent : username is null")
     @Test
-    public void testRemoveUserInEventNullUsername() {
+    void testRemoveUserInEventNullUsername() {
         Assertions.assertThrows(IllegalArgumentException.class,
                 () -> this.service.removeUserInEvent(UUID.randomUUID().toString(), null));
     }
@@ -915,7 +915,7 @@ public class EventServiceTest {
      */
     @DisplayName("Test removeUserInEvent : event not found in database")
     @Test
-    public void testRemoveUserInEventUnknownEvent() {
+    void testRemoveUserInEventUnknownEvent() {
         Assertions.assertThrows(IllegalArgumentException.class,
                 () -> this.service.removeUserInEvent(UUID.randomUUID().toString(), "Truc"));
     }
@@ -925,7 +925,7 @@ public class EventServiceTest {
      */
     @DisplayName("Test removeUserInEvent : user not found in database")
     @Test
-    public void testRemoveUserInEventUnknownUser() {
+    void testRemoveUserInEventUnknownUser() {
         // Mocking
         User user = TestingToolBox.createValidFullUser(3L, "Alpha");
         Game game = TestingToolBox.createValidFullGame(3L, "Mafia de Cuba");
@@ -944,7 +944,7 @@ public class EventServiceTest {
      */
     @DisplayName("Test removeUserInEvent : user removed from attending list")
     @Test
-    public void testRemoveUserInEventUserRemovedAttendingList() {
+    void testRemoveUserInEventUserRemovedAttendingList() {
         // Mocking
         User user = TestingToolBox.createValidFullUser(3L, "Alpha");
         Game game = TestingToolBox.createValidFullGame(3L, "Mafia de Cuba");
@@ -976,7 +976,7 @@ public class EventServiceTest {
      */
     @DisplayName("Test removeUserInEvent : user removed from waiting list")
     @Test
-    public void testRemoveUserInEventUserRemovedWaitingList() {
+    void testRemoveUserInEventUserRemovedWaitingList() {
         // Mocking
         User user = TestingToolBox.createValidFullUser(3L, "Alpha");
         Game game = TestingToolBox.createValidFullGame(3L, "Mafia de Cuba");
@@ -1003,7 +1003,7 @@ public class EventServiceTest {
      */
     @DisplayName("Test removeUserInEvent : user was not in any event's list")
     @Test
-    public void testRemoveUserInEventUserNotInAnyEventList() {
+    void testRemoveUserInEventUserNotInAnyEventList() {
         // Mocking
         User user = TestingToolBox.createValidFullUser(3L, "Alpha");
         Game game = TestingToolBox.createValidFullGame(3L, "Mafia de Cuba");

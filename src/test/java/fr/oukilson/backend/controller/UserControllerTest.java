@@ -34,7 +34,7 @@ public class UserControllerTest extends SecurityEnabledSetup {
      */
     @DisplayName("Test findByNickname : nickname found")
     @Test
-    public void testFindByNicknameFound() throws Exception {
+    void testFindByNicknameFound() throws Exception {
         String nickname = "Tutululu";
         UserDTO dto = new UserDTO(nickname, new LinkedList<>(), new LinkedList<>(), new LinkedList<>(), new LinkedList<>());
         Mockito.when(this.userService.findUserByNickname(nickname)).thenReturn(dto);
@@ -54,7 +54,7 @@ public class UserControllerTest extends SecurityEnabledSetup {
      */
     @DisplayName("Test findByNickname : nickname not found")
     @Test
-    public void testFindByNicknameNotFound() throws Exception {
+    void testFindByNicknameNotFound() throws Exception {
         String nickname = "Tutululu";
         Mockito.when(this.userService.findUserByNickname(nickname)).thenReturn(null);
         this.mockMvc.perform(MockMvcRequestBuilders.get(route+"/"+nickname))
@@ -66,7 +66,7 @@ public class UserControllerTest extends SecurityEnabledSetup {
      */
     @DisplayName("Test findByNickname : invalid nickname")
     @Test
-    public void testFindByNicknameInvalid() throws Exception {
+    void testFindByNicknameInvalid() throws Exception {
         String nickname = "rené";
         Mockito.when(this.userService.findUserByNickname(nickname)).thenReturn(null);
         this.mockMvc.perform(MockMvcRequestBuilders.get(route+"/"+nickname))
@@ -78,7 +78,7 @@ public class UserControllerTest extends SecurityEnabledSetup {
      */
     @DisplayName("Test findByNickname : null nickname")
     @Test
-    public void testFindByNicknameNull() throws Exception {
+    void testFindByNicknameNull() throws Exception {
         this.mockMvc.perform(MockMvcRequestBuilders.get(route+"/"))
                 .andExpect(MockMvcResultMatchers.status().isMethodNotAllowed());
         this.mockMvc.perform(MockMvcRequestBuilders.get(route))
@@ -90,7 +90,7 @@ public class UserControllerTest extends SecurityEnabledSetup {
      */
     @DisplayName("Test findByNickname : SQL problem")
     @Test
-    public void testFindByNicknameSQLProblem() throws Exception {
+    void testFindByNicknameSQLProblem() throws Exception {
         String nickname = "Tutululu";
         Mockito.when(this.userService.findUserByNickname(nickname)).thenThrow(RuntimeException.class);
         this.mockMvc.perform(MockMvcRequestBuilders.get(route+"/"+nickname))
@@ -104,7 +104,7 @@ public class UserControllerTest extends SecurityEnabledSetup {
      */
     @DisplayName("Test createUser : null body")
     @Test
-    public void testCreateUserNullBody() throws Exception {
+    void testCreateUserNullBody() throws Exception {
         this.mockMvc.perform(MockMvcRequestBuilders.post(route))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest());
     }
@@ -114,7 +114,7 @@ public class UserControllerTest extends SecurityEnabledSetup {
      */
     @DisplayName("Test createUser : null password")
     @Test
-    public void testCreateUserNullPassword() throws Exception {
+    void testCreateUserNullPassword() throws Exception {
         UserCreationDTO body = new UserCreationDTO("Toupie", null, "hibiscus@george.fr");
         Gson gson = new Gson();
         this.mockMvc.perform(MockMvcRequestBuilders
@@ -130,7 +130,7 @@ public class UserControllerTest extends SecurityEnabledSetup {
      */
     @DisplayName("Test createUser : null nickname")
     @Test
-    public void testCreateUserNullNickname() throws Exception {
+    void testCreateUserNullNickname() throws Exception {
         UserCreationDTO body = new UserCreationDTO(null, "sdfghjklmmdj", "hibiscus@george.fr");
         Gson gson = new Gson();
         this.mockMvc.perform(MockMvcRequestBuilders
@@ -146,7 +146,7 @@ public class UserControllerTest extends SecurityEnabledSetup {
      */
     @DisplayName("Test createUser : null email")
     @Test
-    public void testCreateUserNullEmail() throws Exception {
+    void testCreateUserNullEmail() throws Exception {
         UserCreationDTO body = new UserCreationDTO("Toupie", "sdfghjklmmdj", null);
         Gson gson = new Gson();
         this.mockMvc.perform(MockMvcRequestBuilders
@@ -162,7 +162,7 @@ public class UserControllerTest extends SecurityEnabledSetup {
      */
     @DisplayName("Test createUser : user creation failed")
     @Test
-    public void testCreateUserUserCreationFailed() throws Exception {
+    void testCreateUserUserCreationFailed() throws Exception {
         UserCreationDTO body = new UserCreationDTO("Toupie", "sdfghjklmmdj", "hibiscus@george.fr");
         Mockito.when(this.userService.createUser(body)).thenReturn(null);
         Gson gson = new Gson();
@@ -179,7 +179,7 @@ public class UserControllerTest extends SecurityEnabledSetup {
      */
     @DisplayName("Test createUser : user creation successful")
     @Test
-    public void testCreateUserUserCreationSuccess() throws Exception {
+    void testCreateUserUserCreationSuccess() throws Exception {
         String nickname = "Toupie";
         UserCreationDTO body = new UserCreationDTO(nickname, "sdfghjklmmdj", "hibiscus@george.fr");
         UserDTO userDTO = new UserDTO(nickname, new LinkedList<>(), new LinkedList<>(), new LinkedList<>(), new LinkedList<>());
@@ -205,7 +205,7 @@ public class UserControllerTest extends SecurityEnabledSetup {
      */
     @DisplayName("Test createUser : user creation throws an exception")
     @Test
-    public void testCreateUserUserCreationThrowException() throws Exception {
+    void testCreateUserUserCreationThrowException() throws Exception {
         UserCreationDTO body = new UserCreationDTO("Toupie", "sdfghjklmmdj", "hibiscus@george.fr");
         Mockito.when(this.userService.createUser(body)).thenThrow(NullPointerException.class);
         Gson gson = new Gson();
@@ -224,7 +224,7 @@ public class UserControllerTest extends SecurityEnabledSetup {
      */
     @DisplayName("Test addUserToFriendList : no header")
     @Test
-    public void testAddUserToFriendListNoHeader() throws Exception {
+    void testAddUserToFriendListNoHeader() throws Exception {
         this.mockMvc.perform(MockMvcRequestBuilders.put(route+"/friend/add/toto"))
                 .andExpect(MockMvcResultMatchers.status().is(403));
     }
@@ -235,7 +235,7 @@ public class UserControllerTest extends SecurityEnabledSetup {
     @DisplayName("Test addUserToFriendList : no friend to add")
     @Test
     @WithMockUser(username = "Toto", password = "b41419df9bdaa5cd16d4766696bc486c8eca5fbcaa99a0e06bb034504f93f71a", roles = "")
-    public void testAddUserToFriendListNoFriendToAdd() throws Exception {
+    void testAddUserToFriendListNoFriendToAdd() throws Exception {
         this.mockMvc.perform(MockMvcRequestBuilders.put(route+"/friend/add/"))
                 .andExpect(MockMvcResultMatchers.status().isNotFound());
     }
@@ -246,7 +246,7 @@ public class UserControllerTest extends SecurityEnabledSetup {
     @DisplayName("Test addUserToFriendList : can't add friend")
     @Test
     @WithMockUser(username = "Toto", password = "b41419df9bdaa5cd16d4766696bc486c8eca5fbcaa99a0e06bb034504f93f71a", roles = "")
-    public void testAddUserToFriendListCannotAddFriend() throws Exception {
+    void testAddUserToFriendListCannotAddFriend() throws Exception {
         User user = TestingToolBox.generateUser(1L, "Borax", TestingToolBox.generatePasswordHash("fdQDHF554s"));
         user.setPassword("b41419df9bdaa5cd16d4766696bc486c8eca5fbcaa99a0e06bb034504f93f71a");
         User friend = TestingToolBox.generateUser(2L, "Marco", "qsdftgyhujik");
@@ -264,7 +264,7 @@ public class UserControllerTest extends SecurityEnabledSetup {
     @DisplayName("Test addUserToFriendList : friend is added")
     @Test
     @WithMockUser(username = "Toto", password = "b41419df9bdaa5cd16d4766696bc486c8eca5fbcaa99a0e06bb034504f93f71a", roles = "")
-    public void testAddUserToFriendListFriendAdded() throws Exception {
+    void testAddUserToFriendListFriendAdded() throws Exception {
         User user = TestingToolBox.generateUser(1L, "Toto", TestingToolBox.generatePasswordHash("fdQDHF554s"));
         user.setPassword("b41419df9bdaa5cd16d4766696bc486c8eca5fbcaa99a0e06bb034504f93f71a");
         User friend = TestingToolBox.generateUser(2L, "Marco", "qsdftgyhujik");
@@ -283,7 +283,7 @@ public class UserControllerTest extends SecurityEnabledSetup {
      */
     @DisplayName("Test removeUserFromFriendList : no header")
     @Test
-    public void testRemoveUserFromFriendListNoHeader() throws Exception {
+    void testRemoveUserFromFriendListNoHeader() throws Exception {
         this.mockMvc.perform(MockMvcRequestBuilders.put(route+"/friend/remove/toto"))
                 .andExpect(MockMvcResultMatchers.status().is(403));
     }
@@ -294,7 +294,7 @@ public class UserControllerTest extends SecurityEnabledSetup {
     @DisplayName("Test removeUserFromFriendList : no friend to remove")
     @Test
     @WithMockUser(username = "Toto", password = "b41419df9bdaa5cd16d4766696bc486c8eca5fbcaa99a0e06bb034504f93f71a", roles = "")
-    public void testRemoveUserFromFriendListNoFriendToRemove() throws Exception {
+    void testRemoveUserFromFriendListNoFriendToRemove() throws Exception {
         User user = TestingToolBox.generateUser(1L, "Rubix", TestingToolBox.generatePasswordHash("KloPfD;?!"));
         this.mockMvc.perform(MockMvcRequestBuilders.put(route+"/friend/remove/"))
                 .andExpect(MockMvcResultMatchers.status().isNotFound());
@@ -306,7 +306,7 @@ public class UserControllerTest extends SecurityEnabledSetup {
     @DisplayName("Test removeUserFromFriendList : can't remove friend")
     @Test
     @WithMockUser(username = "Toto", password = "b41419df9bdaa5cd16d4766696bc486c8eca5fbcaa99a0e06bb034504f93f71a", roles = "")
-    public void testRemoveUserFromFriendListCannotRemoveFriend() throws Exception {
+    void testRemoveUserFromFriendListCannotRemoveFriend() throws Exception {
         User user = TestingToolBox.generateUser(1L, "Toto", TestingToolBox.generatePasswordHash("fdQDHF554s"));
         user.setPassword("b41419df9bdaa5cd16d4766696bc486c8eca5fbcaa99a0e06bb034504f93f71a");
         User friend = TestingToolBox.generateUser(2L, "Marco", "qsdftgyhujik");
@@ -324,7 +324,7 @@ public class UserControllerTest extends SecurityEnabledSetup {
     @DisplayName("Test removeUserFromFriendList : friend is removed")
     @Test
     @WithMockUser(username = "Toto", password = "b41419df9bdaa5cd16d4766696bc486c8eca5fbcaa99a0e06bb034504f93f71a", roles = "")
-    public void testRemoveUserFromFriendListFriendRemoved() throws Exception {
+    void testRemoveUserFromFriendListFriendRemoved() throws Exception {
         User user = TestingToolBox.generateUser(1L, "Toto", TestingToolBox.generatePasswordHash("fdQDHF554s"));
         user.setPassword("b41419df9bdaa5cd16d4766696bc486c8eca5fbcaa99a0e06bb034504f93f71a");
         User friend = TestingToolBox.generateUser(2L, "Marco", "qsdftgyhujik");
@@ -344,7 +344,7 @@ public class UserControllerTest extends SecurityEnabledSetup {
     @DisplayName("Test emptyFriendList : user not in database")
     @Test
     @WithMockUser(username = "Toto", password = "b41419df9bdaa5cd16d4766696bc486c8eca5fbcaa99a0e06bb034504f93f71a", roles = "")
-    public void testEmptyFriendListUnknownUser() throws Exception {
+    void testEmptyFriendListUnknownUser() throws Exception {
         User user = TestingToolBox.generateUser(1L, "Toto", TestingToolBox.generatePasswordHash("BestOfTheBest"));
         user.setPassword("b41419df9bdaa5cd16d4766696bc486c8eca5fbcaa99a0e06bb034504f93f71a");
         Mockito.when(this.userService.emptyFriendList(user.getNickname())).thenReturn(false);
@@ -361,7 +361,7 @@ public class UserControllerTest extends SecurityEnabledSetup {
     @DisplayName("Test emptyFriendList : everything is ok")
     @Test
     @WithMockUser(username = "Toto", password = "b41419df9bdaa5cd16d4766696bc486c8eca5fbcaa99a0e06bb034504f93f71a", roles = "")
-    public void testEmptyFriendListUserFound() throws Exception {
+    void testEmptyFriendListUserFound() throws Exception {
         User user = TestingToolBox.generateUser(1L, "Toto", TestingToolBox.generatePasswordHash("BestOfTheBest"));
         user.setPassword("b41419df9bdaa5cd16d4766696bc486c8eca5fbcaa99a0e06bb034504f93f71a");
         Mockito.when(this.userService.emptyFriendList(user.getNickname())).thenReturn(true);

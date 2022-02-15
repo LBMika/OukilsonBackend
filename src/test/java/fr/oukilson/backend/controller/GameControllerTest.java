@@ -3,7 +3,6 @@ package fr.oukilson.backend.controller;
 import com.google.gson.Gson;
 import fr.oukilson.backend.dto.game.GameDTO;
 import fr.oukilson.backend.dto.game.GameSearchResultDTO;
-import fr.oukilson.backend.dto.game.GameUuidDTO;
 import fr.oukilson.backend.entity.Game;
 import fr.oukilson.backend.security.SecurityEnabledSetup;
 import fr.oukilson.backend.service.GameService;
@@ -40,7 +39,7 @@ public class GameControllerTest extends SecurityEnabledSetup {
      */
     @DisplayName("Test findByUuid : uuid corresponding to an actual game")
     @Test
-    public void testFindByUuidWhenGameFound() throws Exception {
+    void testFindByUuidWhenGameFound() throws Exception {
         // Mocking
         Game game = TestingToolBox.createValidFullGame(1L, "Lords of Waterdeep");
         ModelMapper mapper = new ModelMapper();
@@ -67,7 +66,7 @@ public class GameControllerTest extends SecurityEnabledSetup {
      */
     @DisplayName("Test findByUuid : uuid not corresponding to an actual game")
     @Test
-    public void testFindByUuidWhenGameNotFound() throws Exception {
+    void testFindByUuidWhenGameNotFound() throws Exception {
         // Mocking
         Game game = TestingToolBox.createValidFullGame(1L, "Lords of Waterdeep");
         Mockito.when(this.service.findByUuid(game.getUuid())).thenReturn(null);
@@ -84,7 +83,7 @@ public class GameControllerTest extends SecurityEnabledSetup {
      */
     @DisplayName("Test findByName : result found")
     @Test
-    public void testFindByNameReturnResults() throws Exception {
+    void testFindByNameReturnResults() throws Exception {
         // Mocking
         String name = "Jeux";
         List<GameSearchResultDTO> games = new LinkedList<>();
@@ -118,7 +117,7 @@ public class GameControllerTest extends SecurityEnabledSetup {
      */
     @DisplayName("Test findByName : special character in url")
     @Test
-    public void testFindByNameSpecialCharInURL() throws Exception {
+    void testFindByNameSpecialCharInURL() throws Exception {
         // Mock
         String name = "Les échos de Fäfnir !";
         List<GameSearchResultDTO> games = new LinkedList<>();
@@ -147,7 +146,7 @@ public class GameControllerTest extends SecurityEnabledSetup {
      */
     @DisplayName("Test findByName : no result found")
     @Test
-    public void testFindByNameNoResultFound() throws Exception {
+    void testFindByNameNoResultFound() throws Exception {
         String name = "o";
         BDDMockito.when(this.service.findByName(name)).thenReturn(new LinkedList<>());
         this.mockMvc.perform(MockMvcRequestBuilders.get(route+"/search?name="+name))
@@ -161,7 +160,7 @@ public class GameControllerTest extends SecurityEnabledSetup {
      */
     @DisplayName("Test findByName : empty search string")
     @Test
-    public void testFindByNameWithEmptySearchString() throws Exception {
+    void testFindByNameWithEmptySearchString() throws Exception {
         String name = "";
         this.mockMvc.perform(MockMvcRequestBuilders.get(route+"/search?name="+name))
                 .andExpect(MockMvcResultMatchers.status().isOk())

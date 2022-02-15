@@ -22,7 +22,7 @@ public class UserCreationDTOTest {
      */
     @DisplayName("Test isValid : null nickname regex")
     @Test
-    public void testIsValidNicknamePatternNull() {
+    void testIsValidNicknamePatternNull() {
         UserCreationDTO dto = new UserCreationDTO("Regis", "dfghjklhjjh", "regis@thales.fr");
         Assertions.assertThrows(NullPointerException.class,
                 () -> dto.isValid(null, regexCollection.getEmailPattern()));
@@ -33,7 +33,7 @@ public class UserCreationDTOTest {
      */
     @DisplayName("Test isValid : null email regex")
     @Test
-    public void testIsValidEmailPatternNull() {
+    void testIsValidEmailPatternNull() {
         UserCreationDTO dto = new UserCreationDTO("Regis", "dfghjklhjjh", "regis@thales.fr");
         Assertions.assertThrows(NullPointerException.class,
                 () -> dto.isValid(regexCollection.getNicknamePattern(), null));
@@ -44,7 +44,7 @@ public class UserCreationDTOTest {
      */
     @DisplayName("Test isValid : null nickname")
     @Test
-    public void testIsValidNicknameNull() {
+    void testIsValidNicknameNull() {
         UserCreationDTO dto = new UserCreationDTO(null, "hsdfsqdmlhvjdfvbhld", "unemail@unserveur.fr");
         Assertions.assertFalse(dto.isValid(regexCollection.getNicknamePattern(), regexCollection.getEmailPattern()));
     }
@@ -54,7 +54,7 @@ public class UserCreationDTOTest {
      */
     @DisplayName("Test isValid : password is null")
     @Test
-    public void testIsValidPasswordNull() {
+    void testIsValidPasswordNull() {
         UserCreationDTO dto = new UserCreationDTO("Jean", null, "unemail@unserveur.fr");
         Assertions.assertFalse(dto.isValid(regexCollection.getNicknamePattern(), regexCollection.getEmailPattern()));
     }
@@ -64,7 +64,7 @@ public class UserCreationDTOTest {
      */
     @DisplayName("Test isValid : null email")
     @Test
-    public void testIsValidEmailNull() {
+    void testIsValidEmailNull() {
         UserCreationDTO dto = new UserCreationDTO("Jean", "hlsdqghosufr", null);
         Assertions.assertFalse(dto.isValid(regexCollection.getNicknamePattern(), regexCollection.getEmailPattern()));
     }
@@ -74,7 +74,7 @@ public class UserCreationDTOTest {
      */
     @DisplayName("Test isValid : password is blank")
     @Test
-    public void testIsValidPasswordBlank() {
+    void testIsValidPasswordBlank() {
         UserCreationDTO dto = new UserCreationDTO("Jean", "    ", "regis@thales.fr");
         Assertions.assertFalse(dto.isValid(regexCollection.getNicknamePattern(), regexCollection.getEmailPattern()));
         dto = new UserCreationDTO("Jean", "", "regis@thales.fr");
@@ -86,7 +86,7 @@ public class UserCreationDTOTest {
      */
     @DisplayName("Test isValid : email doesn't match the pattern")
     @Test
-    public void testIsValidEmailInvalid() {
+    void testIsValidEmailInvalid() {
         UserCreationDTO dto = new UserCreationDTO("Jean", "dfghjklhjjh", "regis@.fr");
         Assertions.assertFalse(dto.isValid(regexCollection.getNicknamePattern(), regexCollection.getEmailPattern()));
     }
@@ -96,7 +96,7 @@ public class UserCreationDTOTest {
      */
     @DisplayName("Test isValid : nickname doesn't match the pattern")
     @Test
-    public void testIsValidNicknameInvalid() {
+    void testIsValidNicknameInvalid() {
         UserCreationDTO dto = new UserCreationDTO("Rébecca", "dfghjklhjjh", "regis@thales.fr");
         Assertions.assertFalse(dto.isValid(regexCollection.getNicknamePattern(), regexCollection.getEmailPattern()));
     }
@@ -106,7 +106,7 @@ public class UserCreationDTOTest {
      */
     @DisplayName("Test isValid : everything is valid")
     @Test
-    public void testIsValid() {
+    void testIsValid() {
         UserCreationDTO dto = new UserCreationDTO("Regis", "dfghjklhjjh", "regis@thales.fr");
         Assertions.assertTrue(dto.isValid(regexCollection.getNicknamePattern(), regexCollection.getEmailPattern()));
     }

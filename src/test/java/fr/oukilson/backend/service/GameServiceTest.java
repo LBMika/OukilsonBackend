@@ -2,7 +2,6 @@ package fr.oukilson.backend.service;
 
 import fr.oukilson.backend.dto.game.GameDTO;
 import fr.oukilson.backend.dto.game.GameSearchResultDTO;
-import fr.oukilson.backend.dto.game.GameUuidDTO;
 import fr.oukilson.backend.entity.Game;
 import fr.oukilson.backend.repository.GameRepository;
 import fr.oukilson.backend.util.TestingToolBox;
@@ -29,7 +28,7 @@ public class GameServiceTest {
     private GameService service;
 
     @BeforeAll
-    public void init() {
+    void init() {
         this.service = new GameService(repository, mapper);
     }
 
@@ -40,7 +39,7 @@ public class GameServiceTest {
      */
     @Test
     @DisplayName("Test findByUuid : null parameter")
-    public void testFindByUuidNullParameter() {
+    void testFindByUuidNullParameter() {
         Assertions.assertNull(this.service.findByUuid(null));
     }
 
@@ -49,7 +48,7 @@ public class GameServiceTest {
      */
     @DisplayName("Test findByUuid : game is in database")
     @Test
-    public void testFindByUuidGameInDatabase() {
+    void testFindByUuidGameInDatabase() {
         Game game = TestingToolBox.createValidFullGame(1L, "Root");
         BDDMockito.when(this.repository.findByUuid(game.getUuid())).thenReturn(Optional.of(game));
         GameDTO dto = this.service.findByUuid(game.getUuid());
@@ -62,7 +61,7 @@ public class GameServiceTest {
      */
     @DisplayName("Test findByUuid : game is not in database")
     @Test
-    public void testFindByUuidGameNotInDatabase() {
+    void testFindByUuidGameNotInDatabase() {
         Game game = TestingToolBox.createValidFullGame(1L, "Root");
         GameDTO dto = this.service.findByUuid(game.getUuid());
         Assertions.assertNull(dto);
@@ -75,7 +74,7 @@ public class GameServiceTest {
      */
     @Test
     @DisplayName("Test findByName : null parameter")
-    public void testFindByNameNullParameter() {
+    void testFindByNameNullParameter() {
         List<GameSearchResultDTO> list = this.service.findByName(null);
         Assertions.assertNotNull(list);
         Assertions.assertEquals(0, list.size());
@@ -86,7 +85,7 @@ public class GameServiceTest {
      */
     @Test
     @DisplayName("Test findByName : null given name")
-    public void testFindByNameNullName() {
+    void testFindByNameNullName() {
         List<GameSearchResultDTO> list = this.service.findByName(null);
         Assertions.assertNotNull(list);
         Assertions.assertEquals(0, list.size());
@@ -97,7 +96,7 @@ public class GameServiceTest {
      */
     @Test
     @DisplayName("Test findByName : no result found")
-    public void testFindByNameWithNoResultFound() {
+    void testFindByNameWithNoResultFound() {
         String name = "7 Wonders";
         BDDMockito.when(this.repository.findAllByNameContainingIgnoreCase(name)).thenReturn(new LinkedList<>());
         List<GameSearchResultDTO> list = this.service.findByName(name);
@@ -110,7 +109,7 @@ public class GameServiceTest {
      */
     @Test
     @DisplayName("Test findByName : result found")
-    public void testFindByNameWithResultFound() {
+    void testFindByNameWithResultFound() {
         String name = "7 Wonders";
         List<Game> games = new LinkedList<>();
         int size = 4;
@@ -131,7 +130,7 @@ public class GameServiceTest {
      */
     @Test
     @DisplayName("Test findByName : name's length below 3 characters")
-    public void testFindByNameTooShortName() {
+    void testFindByNameTooShortName() {
         String name = "a";
         List<Game> games = new LinkedList<>();
         int size = 4;

@@ -41,7 +41,7 @@ public class EventCreateDTOTest {
      */
     @DisplayName("Test IsValid : when everything is ok")
     @Test
-    public void testIsValid() {
+    void testIsValid() {
         EventCreateDTO event = createValidEventCreateDTO();
         Assertions.assertTrue(event.isValid(LocalDateTime.now()));
     }
@@ -51,7 +51,7 @@ public class EventCreateDTOTest {
      */
     @DisplayName("Test isValid : minimal player count less than 2")
     @Test
-    public void testIsValidWhenMinPlayerLessThan2() {
+    void testIsValidWhenMinPlayerLessThan2() {
         EventCreateDTO event = createValidEventCreateDTO();
         event.setMinPlayer(1);
         Assertions.assertFalse(event.isValid(LocalDateTime.now()));
@@ -62,7 +62,7 @@ public class EventCreateDTOTest {
      */
     @DisplayName("Test isValid : minimal player count equals 2")
     @Test
-    public void testIsValidWhenMinPlayerEquals2() {
+    void testIsValidWhenMinPlayerEquals2() {
         EventCreateDTO event = createValidEventCreateDTO();
         event.setMinPlayer(2);
         Assertions.assertTrue(event.isValid(LocalDateTime.now()));
@@ -73,7 +73,7 @@ public class EventCreateDTOTest {
      */
     @DisplayName("Test isValid : minimal player count equals maximal player count")
     @Test
-    public void testIsValidWhenMinPlayerEqualsMaxPlayer() {
+    void testIsValidWhenMinPlayerEqualsMaxPlayer() {
         EventCreateDTO event = createValidEventCreateDTO();
         event.setMinPlayer(event.getMaxPlayer());
         Assertions.assertTrue(event.isValid(LocalDateTime.now()));
@@ -84,7 +84,7 @@ public class EventCreateDTOTest {
      */
     @DisplayName("Test isValid : minimal player count higher than maximal player count")
     @Test
-    public void testIsValidWhenMinPlayerHigherThanMaxPlayer() {
+    void testIsValidWhenMinPlayerHigherThanMaxPlayer() {
         EventCreateDTO event = createValidEventCreateDTO();
         event.setMinPlayer(1+event.getMaxPlayer());
         Assertions.assertFalse(event.isValid(LocalDateTime.now()));
@@ -95,7 +95,7 @@ public class EventCreateDTOTest {
      */
     @DisplayName("Test isValid : title is null")
     @Test
-    public void testIsValidWhenTitleIsNull() {
+    void testIsValidWhenTitleIsNull() {
         EventCreateDTO event = createValidEventCreateDTO();
         event.setTitle(null);
         Assertions.assertFalse(event.isValid(LocalDateTime.now()));
@@ -106,7 +106,7 @@ public class EventCreateDTOTest {
      */
     @DisplayName("Test isValid : description is null")
     @Test
-    public void testIsValidWhenDescriptionIsNull() {
+    void testIsValidWhenDescriptionIsNull() {
         EventCreateDTO event = createValidEventCreateDTO();
         event.setDescription(null);
         Assertions.assertFalse(event.isValid(LocalDateTime.now()));
@@ -117,7 +117,7 @@ public class EventCreateDTOTest {
      */
     @DisplayName("Test isValid : game is null")
     @Test
-    public void testIsValidWhenGameIsNull() {
+    void testIsValidWhenGameIsNull() {
         EventCreateDTO event = createValidEventCreateDTO();
         event.setGame(null);
         Assertions.assertFalse(event.isValid(LocalDateTime.now()));
@@ -128,7 +128,7 @@ public class EventCreateDTOTest {
      */
     @DisplayName("Test isValid : location is null")
     @Test
-    public void testIsValidWhenLocationIsNull() {
+    void testIsValidWhenLocationIsNull() {
         EventCreateDTO event = createValidEventCreateDTO();
         event.setLocation(null);
         Assertions.assertFalse(event.isValid(LocalDateTime.now()));
@@ -139,7 +139,7 @@ public class EventCreateDTOTest {
      */
     @DisplayName("Test isValid : location.town is null")
     @Test
-    public void testIsValidWhenLocationTownIsNull() {
+    void testIsValidWhenLocationTownIsNull() {
         EventCreateDTO event = createValidEventCreateDTO();
         event.getLocation().setTown(null);
         Assertions.assertFalse(event.isValid(LocalDateTime.now()));
@@ -150,7 +150,7 @@ public class EventCreateDTOTest {
      */
     @DisplayName("Test isValid : game.uuid is null")
     @Test
-    public void testIsValidWhenGameUuidIsNull() {
+    void testIsValidWhenGameUuidIsNull() {
         EventCreateDTO event = createValidEventCreateDTO();
         event.getGame().setUuid(null);
         Assertions.assertFalse(event.isValid(LocalDateTime.now()));
@@ -161,7 +161,7 @@ public class EventCreateDTOTest {
      */
     @DisplayName("Test isValid : limit inscription date is null")
     @Test
-    public void testIsValidWhenLimitDateIsNull() {
+    void testIsValidWhenLimitDateIsNull() {
         EventCreateDTO event = createValidEventCreateDTO();
         event.setLimitDate(null);
         Assertions.assertFalse(event.isValid(LocalDateTime.now()));
@@ -172,7 +172,7 @@ public class EventCreateDTOTest {
      */
     @DisplayName("Test isValid : starting date is null")
     @Test
-    public void testIsValidWhenStartingDateIsNull() {
+    void testIsValidWhenStartingDateIsNull() {
         EventCreateDTO event = createValidEventCreateDTO();
         event.setStartingDate(null);
         Assertions.assertFalse(event.isValid(LocalDateTime.now()));
@@ -183,7 +183,7 @@ public class EventCreateDTOTest {
      */
     @DisplayName("Test isValid : ending date is null")
     @Test
-    public void testIsValidWhenEndingDateIsNull() {
+    void testIsValidWhenEndingDateIsNull() {
         EventCreateDTO event = createValidEventCreateDTO();
         event.setEndingDate(null);
         Assertions.assertTrue(event.isValid(LocalDateTime.now()));
@@ -194,7 +194,7 @@ public class EventCreateDTOTest {
      */
     @DisplayName("Test isValid : limit inscription date is before creation date")
     @Test
-    public void testIsValidWhenLimitDateIsBeforeCreationDate() {
+    void testIsValidWhenLimitDateIsBeforeCreationDate() {
         EventCreateDTO event = createValidEventCreateDTO();
         event.setLimitDate(LocalDateTime.now().minusYears(10));
         Assertions.assertFalse(event.isValid(LocalDateTime.now()));
@@ -205,7 +205,7 @@ public class EventCreateDTOTest {
      */
     @DisplayName("Test isValid : starting date is before limit inscription date")
     @Test
-    public void testIsValidWhenStartingDateIsBeforeLimitDate() {
+    void testIsValidWhenStartingDateIsBeforeLimitDate() {
         EventCreateDTO event = createValidEventCreateDTO();
         event.setStartingDate(event.getLimitDate().minusYears(1));
         Assertions.assertFalse(event.isValid(LocalDateTime.now()));
@@ -216,7 +216,7 @@ public class EventCreateDTOTest {
      */
     @DisplayName("Test isValid : ending date is before starting date")
     @Test
-    public void testIsValidWhenEndingDateIsBeforeStartingDate() {
+    void testIsValidWhenEndingDateIsBeforeStartingDate() {
         EventCreateDTO event = createValidEventCreateDTO();
         event.setEndingDate(event.getStartingDate().minusYears(1));
         Assertions.assertFalse(event.isValid(LocalDateTime.now()));
