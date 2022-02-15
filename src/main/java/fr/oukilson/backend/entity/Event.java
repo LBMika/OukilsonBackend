@@ -72,7 +72,7 @@ public class Event {
         Iterator<User> it = list.iterator();
         while (it.hasNext()) {
             User u = it.next();
-            if (user.getId()==u.getId()) {
+            if (user.getId().equals(u.getId())) {
                 result = true;
                 break;
             }
@@ -157,7 +157,7 @@ public class Event {
         boolean result = false;
         for(Iterator<User> iter = list.iterator(); iter.hasNext();) {
             User data = iter.next();
-            if (data.getId()==user.getId()) {
+            if (data.getId().equals(user.getId())) {
                 iter.remove();
                 result = true;
                 break;
